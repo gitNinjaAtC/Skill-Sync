@@ -12,6 +12,6 @@ const router = express.Router();
 router.get("/", getPosts);
 router.post("/", validateToken, addPost);
 router.put("/review", validateToken, reviewPost); // Admin reviews posts
-router.delete("/:id", deletePost);
+router.delete("/:postId", validateToken, deletePost);
 
 export default router;
