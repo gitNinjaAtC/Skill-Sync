@@ -1,5 +1,4 @@
 import { db } from "../connect.js";
-import jwt from "jsonwebtoken";
 
 // Get all the posts
 export const getPosts = async (req, res) => {
@@ -230,41 +229,3 @@ export const deletePost = (req, res) => {
     });
   });
 };
-
-// export const deletePost = (req, res) => {
-//   const postId = req.params.id; // Get post ID from URL
-//   const token = req.cookies.accessToken; // Get token from cookies
-
-//   if (!token) {
-//     return res.status(401).json({ message: "Unauthorized: No token provided" });
-//   }
-
-//   // Verify JWT Token
-//   jwt.verify(token, "secretKey", (err, userInfo) => {
-//     if (err) {
-//       return res.status(403).json({ message: "Forbidden: Invalid token" });
-//     }
-
-//     // Get the owner of the post
-//     const checkOwnerQuery = "SELECT userId FROM posts WHERE id = ?";
-//     db.query(checkOwnerQuery, [postId], (err, data) => {
-//       if (err) return res.status(500).json(err);
-//       if (data.length === 0)
-//         return res.status(404).json({ message: "Post not found" });
-
-//       // Compare logged-in user ID with post owner's ID
-//       if (data[0].userId !== userInfo.id) {
-//         return res
-//           .status(403)
-//           .json({ message: "You can only delete your own posts" });
-//       }
-
-//       // Delete the post if the user is the owner
-//       const deleteQuery = "DELETE FROM posts WHERE id = ?";
-//       db.query(deleteQuery, [postId], (err, result) => {
-//         if (err) return res.status(500).json(err);
-//         return res.status(200).json({ message: "Post deleted successfully" });
-//       });
-//     });
-//   });
-// };

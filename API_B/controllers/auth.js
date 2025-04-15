@@ -75,12 +75,16 @@ export const login = (req, res) => {
 //LOGOUT
 
 export const logout = (req, res) => {
-  res
-    .clearCookie("accessToken", {
-      httpOnly: true, // Extra security
-      secure: process.env.NODE_ENV === "production", // Secure only in production
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Lax for localhost
-    })
-    .status(200)
-    .json("User has been logged out");
+  try {
+    // Simply clear the token cookie
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
+
+    return res.status(200).json({ message: "Successfully logged out." });
+  } catch (err) {
+    return res.status(500).json({ message: "Logout failed", error: err });
+  }
 };
