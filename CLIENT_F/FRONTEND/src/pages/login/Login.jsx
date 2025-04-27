@@ -5,30 +5,31 @@ import "./login.scss";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-   const [inputs, setInputs] = useState({
-      username: "",
-      password: "",
-    });
-  
-    const [err, setErr] = useState(null);
+  const [inputs, setInputs] = useState({
+    username: "",
+    password: "",
+  });
 
-    const navigate = useNavigate();
-  
-    const handleChange = (e) => {
-      setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    };
-  
+  const [err, setErr] = useState(null);
 
+  const navigate = useNavigate();
   const { login } = useContext(AuthContext);
+
+  const handleChange = (e) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       await login(inputs);
       navigate("/");
-    }
-    catch (err) {
-      setErr(err.response.data);
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.error ||
+        err.message ||
+        "Login failed. Please try again.";
+      setErr(errorMessage);
     }
   };
 
@@ -36,12 +37,11 @@ const Login = () => {
     <div className="login">
       <div className="card">
         <div className="left">
-        <h1>SISTEC</h1>
+          <h1>SISTEC</h1>
           <p>
-          Reconnect with classmates,
-           explore career opportunities,
-            and stay updated on events and achievements.
-             Join a network that lasts a lifetime!"
+            Reconnect with classmates, explore career opportunities, and stay
+            updated on events and achievements. Join a network that lasts a
+            lifetime!
           </p>
           <span>Don't you have an account?</span>
           <Link to="/register">
@@ -50,21 +50,25 @@ const Login = () => {
         </div>
         <div className="right">
           <h1>Login</h1>
-          <form>
-            <input 
-            type="text" 
-            placeholder="Username" 
-            name="username" 
-            onChange={handleChange}  
+          <form onSubmit={handleLogin}>
+            <input
+              type="text"
+              placeholder="Username"
+              name="username"
+              onChange={handleChange}
+              value={inputs.username}
+              required
             />
-            <input 
-            type="password" 
-            placeholder="Password" 
-            name="password" 
-            onChange={handleChange} 
+            <input
+              type="password"
+              placeholder="Password"
+              name="password"
+              onChange={handleChange}
+              value={inputs.password}
+              required
             />
-            {err && err}
-            <button onClick={handleLogin}>Login</button>
+            {err && <p className="error">{err}</p>}
+            <button type="submit">Login</button>
           </form>
         </div>
       </div>

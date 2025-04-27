@@ -1,82 +1,114 @@
-@import "../../style.scss";
-
 .navbar {
-  @include themify($themes) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  height: 60px;
+
+  .left {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px;
-    height: 50px;
-    border-bottom: 1px solid themed("border");
-    position: sticky;
-    top: 0;
-    background-color: themed("bg");
-    color:themed("textColor");
-    z-index: 999;
+    gap: 15px;
 
-    .left {
+    span {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .MuiSvgIcon-root {
+      font-size: 24px;
+      color: #555;
+      cursor: pointer;
+
+      &:hover {
+        color: #007bff;
+      }
+    }
+  }
+
+  .center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .search {
       display: flex;
       align-items: center;
-      gap: 30px;
+      background-color: #f5f5f5;
+      border-radius: 20px;
+      padding: 5px 10px;
+      width: 100%;
+      max-width: 400px; /* Adjust as needed */
 
-      span {
-        font-weight: bold;
+      .MuiSvgIcon-root {
         font-size: 20px;
-        color: themed("logo");
+        color: #777;
       }
 
-      .search {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        border: 1px solid themed("border");
-        border-radius: 5px;
-        padding: 5px;
+      input {
+        border: none;
+        background: transparent;
+        outline: none;
+        margin-left: 5px;
+        font-size: 14px;
+        color: #333;
+        width: 100%;
 
-        input {
-          border: none;
-          width: 500px;
-          background-color: transparent;
-          color: themed("textColor");
-
-          @include mobile{
-            display: none;
-          }
-
-          @include tablet{
-            width: 200px;
-          }
+        &::placeholder {
+          color: #999;
         }
       }
     }
+  }
 
-    .right {
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .MuiSvgIcon-root {
+      font-size: 24px;
+      color: #555;
+      cursor: pointer;
+
+      &:hover {
+        color: #007bff;
+      }
+    }
+
+    .user {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 10px;
 
-      @include mobile{
-        display: none;
+      img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
       }
 
-      .user {
-        display: flex;
-        align-items: center;
-        gap: 10px;
+      span {
+        font-size: 14px;
         font-weight: 500;
+        color: #333;
+      }
 
-        @include tablet{
-          display: none;
-        }
+      .logout-button {
+        padding: 5px 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
 
-        img {
-          width: 30px;
-          height: 30px;
-          border-radius: 50%;
-          object-fit: cover;
-        }
-
-        span {
+        &:hover {
+          background-color: #0056b3;
         }
       }
     }

@@ -1,10 +1,9 @@
 import { useContext } from "react";
-import "./stories.scss"
-import { AuthContext } from "../../context/authContext"
+import "./stories.scss";
+import { AuthContext } from "../../context/authContext";
 
 const Stories = () => {
-
-  const {currentUser} = useContext(AuthContext)
+  const { currentUser } = useContext(AuthContext);
 
   //TEMPORARY
   const stories = [
@@ -22,24 +21,24 @@ const Stories = () => {
       id: 3,
       name: "Shivam",
       img: "https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg?auto=compress&cs=tinysrgb&w=600",
-    },    
+    },
   ];
 
   return (
     <div className="stories">
       <div className="story">
-          <img src={currentUser.profilePic} alt="" />
-          <span>{currentUser.name}</span>
-          <button>+</button>
-        </div>
-      {stories.map(story=>(
+        <img src={currentUser.profilePic} alt="" />
+        <span>{currentUser.name}</span>
+        <button>+</button>
+      </div>
+      {stories.map((story) => (
         <div className="story" key={story.id}>
           <img src={story.img} alt="" />
           <span>{story.name}</span>
         </div>
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default Stories
+export default Stories;

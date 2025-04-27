@@ -36,56 +36,81 @@ export const addPost = (req, res) => {
     }
 
     if (results.length === 0) {
+      console.log("User not found for id:", userId);
       return res.status(404).json({ message: "User not found" });
     }
 
     const userRole = results[0].role;
+    console.log("addPost: User role:", userRole);
 
-    // ✅ Only "Alumni" users can create a post
-    if (userRole !== "Alumni") {
+    // ✅ Only "Alumni" and "Admin" users can create a post
+    if (userRole !== "Alumni" && userRole !== "Admin") {
+      console.log("Access denied: User role not allowed to post:", userRole);
       return res
         .status(403)
-        .json({ message: "Access denied: Only Alumni can post" });
+        .json({ message: "Access denied: Only Alumni and Admins can post" });
     }
 
-    // ✅ Send request to admin for approval
+    // ✅ Validate post content
     const { desc } = req.body;
     if (!desc) {
+      console.log("Post content missing for userId:", userId);
       return res.status(400).json({ message: "Post content is required" });
     }
 
-    const adminApprovalQuery =
-      "INSERT INTO pending_posts (userId, `desc`, createdAt) VALUES (?, ?, NOW())";
-
-    db.query(adminApprovalQuery, [userId, desc], (err, result) => {
-      if (err) {
-        console.error("Error sending post for admin approval:", err);
-        return res
-          .status(500)
-          .json({ message: "Internal Server Error", error: err });
-      }
-
-      return res.status(201).json({
-        success: true,
-        message: "Post sent for admin approval",
-        pendingPostId: result.insertId,
+    if (userRole === "Admin") {
+      // ✅ Admin: Insert directly into posts with status "approved"
+      const directPostQuery =
+        "INSERT INTO posts (userId, `desc`, createdAt, status) VALUES (?, ?, NOW(), 'approved')";
+      db.query(directPostQuery, [userId, desc], (err, result) => {
+        if (err) {
+          console.error("Error creating admin post:", err);
+          return res
+            .status(500)
+            .json({ message: "Internal Server Error", error: err });
+        }
+        console.log("Admin post created, postId:", result.insertId);
+        return res.status(201).json({
+          success: true,
+          message: "Post created successfully",
+          postId: result.insertId,
+        });
       });
-    });
+    } else {
+      // ✅ Alumni: Send to pending_posts for approval
+      const adminApprovalQuery =
+        "INSERT INTO pending_posts (userId, `desc`, createdAt) VALUES (?, ?, NOW())";
+      db.query(adminApprovalQuery, [userId, desc], (err, result) => {
+        if (err) {
+          console.error("Error sending post for admin approval:", err);
+          return res
+            .status(500)
+            .json({ message: "Internal Server Error", error: err });
+        }
+        console.log("Post created, pendingPostId:", result.insertId);
+        return res.status(201).json({
+          success: true,
+          message: "Post sent for admin approval",
+          pendingPostId: result.insertId,
+        });
+      });
+    }
   });
 };
 
-//admin approval
-export const reviewPost = (req, res) => {
-  console.log("🛑 Running reviewPost middleware...");
+// ADMIN APPROVAL
 
-  // ✅ Ensure user data exists (handled by validateToken middleware)
+export const reviewPost = (req, res) => {
+  console.log("🛑 Running reviewPost controller...");
+  console.log("Request user:", req.user);
+
   if (!req.user || !req.user.id) {
+    console.log("Error: User data missing from request");
     return res.status(400).json({ message: "User data missing from request" });
   }
 
   const userId = req.user.id;
 
-  // ✅ Fetch user role from the database (DO NOT trust JWT alone)
   const roleQuery = "SELECT role FROM users WHERE id = ?";
   db.query(roleQuery, [userId], (err, results) => {
     if (err) {
@@ -94,22 +119,25 @@ export const reviewPost = (req, res) => {
     }
 
     if (results.length === 0) {
+      console.log("Error: User not found, id:", userId);
       return res.status(404).json({ message: "User not found" });
     }
 
     const userRole = results[0].role;
+    console.log("User role:", userRole);
     if (userRole !== "Admin") {
+      console.log("Access denied: User is not Admin, role:", userRole);
       return res.status(403).json({ message: "Access denied: Admins only" });
     }
 
-    // ✅ Extract post review details
     const { postId, action } = req.body;
+    console.log("Review request: postId:", postId, "action:", action);
     if (!postId || !["approved", "declined"].includes(action)) {
+      console.log("Invalid request: postId or action missing/invalid");
       return res.status(400).json({ message: "Invalid request" });
     }
 
     if (action === "approved") {
-      // ✅ Move post from `pending_posts` to `posts`
       const approveQuery = `
         INSERT INTO posts (userId, \`desc\`, createdAt, status)
         SELECT userId, \`desc\`, createdAt, 'approved' FROM pending_posts WHERE id = ?;
@@ -128,6 +156,7 @@ export const reviewPost = (req, res) => {
             return res.status(500).json({ message: "Internal Server Error" });
           }
 
+          console.log("Post approved, postId:", postId);
           return res.status(200).json({
             success: true,
             message: "Post approved and moved to live posts",
@@ -135,7 +164,6 @@ export const reviewPost = (req, res) => {
         });
       });
     } else {
-      // ✅ Delete post if declined
       const declineQuery = "DELETE FROM pending_posts WHERE id = ?";
       db.query(declineQuery, [postId], (err) => {
         if (err) {
@@ -143,6 +171,7 @@ export const reviewPost = (req, res) => {
           return res.status(500).json({ message: "Internal Server Error" });
         }
 
+        console.log("Post declined, postId:", postId);
         return res.status(200).json({
           success: true,
           message: "Post declined and removed",

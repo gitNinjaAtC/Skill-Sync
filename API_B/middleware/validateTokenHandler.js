@@ -2,31 +2,38 @@ import jwt from "jsonwebtoken";
 
 const validateToken = (req, res, next) => {
   console.log("🛑 Running validateToken middleware...");
+  console.log("Request cookies:", req.cookies);
+  console.log("Request headers:", req.headers);
 
-  // ✅ Extract token from Authorization header
-  const authHeader = req.headers.authorization;
+  // Extract token from cookie (cookie-based auth only)
+  const token = req.cookies?.accessToken;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    console.log("❌ No Bearer token found. Rejecting request.");
+  // Check if token exists
+  if (!token) {
+    console.log("❌ No accessToken cookie found. Rejecting request.");
     return res.status(401).json({ message: "Unauthorized: No token provided" });
   }
 
-  // ✅ Get the token (remove "Bearer ")
-  const token = authHeader.split(" ")[1];
+  console.log("✅ Token found:", token.substring(0, 10) + "...");
 
-  // ✅ Verify Token
-  jwt.verify(token, process.env.JWT_SECRET, (err, userData) => {
-    if (err) {
-      console.log("❌ Invalid token:", err.message);
-      return res
-        .status(403)
-        .json({ message: "Forbidden: Invalid or expired token" });
-    }
-
-    console.log("✅ Token valid. User authenticated:", userData);
-    req.user = userData; // Store user data for further use
+  // Verify Token
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET, {
+      clockTolerance: 300, // Allow 5-minute clock skew
+    });
+    console.log("✅ Token valid. User authenticated:", decoded);
+    req.user = decoded;
     next();
-  });
+  } catch (err) {
+    console.error("❌ Token verification error:", {
+      name: err.name,
+      message: err.message,
+      token: token.substring(0, 10) + "...",
+    });
+    return res
+      .status(403)
+      .json({ message: "Forbidden: Invalid or expired token" });
+  }
 };
 
 export default validateToken;

@@ -13,19 +13,14 @@ import { AuthContext } from "../../context/authContext";
 import { useContext } from "react";
 
 const LeftBar = () => {
-
   const { currentUser } = useContext(AuthContext);
 
   return (
     <div className="leftBar">
       <div className="container">
         <div className="menu">
-
           <div className="user">
-            <img
-              src={currentUser.profilePic}
-              alt=""
-            />
+            <img src={currentUser.profilePic} alt="" />
             <span>{currentUser.name}</span>
           </div>
           <div className="item">
@@ -38,8 +33,8 @@ const LeftBar = () => {
           </div>
           <div className="item">
             <img src={Market} alt="" />
-            <span>Marketplace</span>
-          </div>          
+            <span>Jobs</span>
+          </div>
           <div className="item">
             <img src={Memories} alt="" />
             <span>Memories</span>
@@ -52,7 +47,7 @@ const LeftBar = () => {
           <div className="item">
             <img src={Events} alt="" />
             <span>Events</span>
-          </div>          
+          </div>
           <div className="item">
             <img src={Gallery} alt="" />
             <span>Gallery</span>
@@ -67,7 +62,7 @@ const LeftBar = () => {
           </div>
         </div>
         <hr />
-        
+
         <div className="menu">
           <span>Others</span>
           <div className="item">
@@ -77,7 +72,7 @@ const LeftBar = () => {
           <div className="item">
             <img src={Resume} alt="" />
             <span>Resume Builder</span>
-          </div>          
+          </div>
         </div>
       </div>
     </div>

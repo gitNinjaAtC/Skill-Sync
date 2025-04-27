@@ -31,17 +31,17 @@ export const register = (req, res) => {
   });
 };
 
-//LOGIN
-
 export const login = (req, res) => {
   try {
     const q = "SELECT * FROM users WHERE username = ?";
 
     db.query(q, [req.body.username], (err, data) => {
-      if (err) return res.status(500).json({ error: err.message });
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ error: err.message });
+      }
       if (data.length === 0) return res.status(404).json("User not found");
 
-      // Check password
       const validPassword = bcrypt.compareSync(
         req.body.password,
         data[0].password
@@ -49,25 +49,40 @@ export const login = (req, res) => {
       if (!validPassword)
         return res.status(400).json("Wrong password or username");
 
-      // Generate JWT token with expiration time
       const token = jwt.sign({ id: data[0].id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
-      console.log(token);
-
-      // Store token in an HTTP-Only cookie
-      res.cookie("accessToken", token, {
-        httpOnly: true, // Secure, prevents client-side JavaScript access
-        secure: true, // Set to true in production with HTTPS
-        sameSite: "Strict", // Prevents CSRF attacks
-        maxAge: 60 * 60 * 1000, // 1 hour expiration
+      const decoded = jwt.decode(token);
+      console.log("Generated token:", token);
+      console.log("Token payload:", {
+        id: decoded.id,
+        iat: new Date(decoded.iat * 1000).toISOString(),
+        exp: new Date(decoded.exp * 1000).toISOString(),
       });
 
-      const { password, ...others } = data[0];
+      // Clear old cookie
+      res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        path: "/",
+      });
 
+      // Set new cookie
+      res.cookie("accessToken", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 60 * 60 * 1000, // 1 hour
+        path: "/",
+      });
+
+      console.log("Set cookie: accessToken=", token.substring(0, 10) + "...");
+      const { password, ...others } = data[0];
       return res.status(200).json(others);
     });
   } catch (error) {
+    console.error("Login error:", error);
     return res.status(500).json({ error: error.message });
   }
 };
@@ -76,15 +91,15 @@ export const login = (req, res) => {
 
 export const logout = (req, res) => {
   try {
-    // Simply clear the token cookie
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // Align with login
     });
-
     return res.status(200).json({ message: "Successfully logged out." });
   } catch (err) {
-    return res.status(500).json({ message: "Logout failed", error: err });
+    return res
+      .status(500)
+      .json({ message: "Logout failed", error: err.message });
   }
 };
