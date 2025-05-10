@@ -31,6 +31,7 @@ export const register = (req, res) => {
   });
 };
 
+//login
 export const login = (req, res) => {
   try {
     const q = "SELECT * FROM users WHERE username = ?";

@@ -25,13 +25,10 @@ const Navbar = () => {
       console.error("Logout error:", err.response?.data || err.message);
     }
   };
-  const handleProfile = async () => {
-    try {
-      await logout();
-      navigate("/profile");
-    } catch (err) {
-      console.error("Profile error:", err.response?.data || err.message);
-    }
+
+  // Updated to navigate to profile page instead of logging out
+  const handleProfile = () => {
+    navigate(`/profile/${currentUser?.id}`); // Pass user id to the profile route
   };
 
   return (
@@ -40,7 +37,10 @@ const Navbar = () => {
         <Link to="/" style={{ textDecoration: "none" }}>
           <span>SISTec</span>
         </Link>
+        <Link to="/" style={{ textDecoration: "none" }}>
         <HomeOutlinedIcon />
+        </Link>
+        
         {darkMode ? (
           <WbSunnyOutlinedIcon onClick={toggle} />
         ) : (
@@ -55,14 +55,15 @@ const Navbar = () => {
         </div>
       </div>
       <div className="right">
-        <button onClick={handleProfile}>
+        {/* Updated this button to navigate to profile instead of logging out */}
+        <button className="profile-button" onClick={handleProfile}>
           <PersonOutlinedIcon />
         </button>
 
         <EmailOutlinedIcon />
         <NotificationsOutlinedIcon />
         <div className="user">
-          <img src={currentUser?.profilePic} alt="" />
+          <img src={currentUser?.profilePic} alt="Profile" />
           <span>{currentUser?.name}</span>
           {currentUser && (
             <button className="logout-button" onClick={handleLogout}>

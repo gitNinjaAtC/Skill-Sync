@@ -1,70 +1,65 @@
+import { useParams } from "react-router-dom";
 import "./profile.scss";
-import FacebookTwoToneIcon from "@mui/icons-material/FacebookTwoTone";
-import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import PinterestIcon from "@mui/icons-material/Pinterest";
-import TwitterIcon from "@mui/icons-material/Twitter";
-import PlaceIcon from "@mui/icons-material/Place";
-import LanguageIcon from "@mui/icons-material/Language";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import {
+  FacebookTwoTone as FacebookTwoToneIcon,
+  LinkedIn as LinkedInIcon,
+  Instagram as InstagramIcon, 
+  Twitter as TwitterIcon,
+  Place as PlaceIcon,
+  Language as LanguageIcon,
+  EmailOutlined as EmailOutlinedIcon,
+  MoreVert as MoreVertIcon,
+} from "@mui/icons-material";
 import Posts from "../../components/posts/Posts";
+import { useContext } from "react";
+import { AuthContext } from "../../context/authContext";
 
 const Profile = () => {
+  const { id } = useParams(); // Access the dynamic id from the URL
+  const { currentUser } = useContext(AuthContext);
+
   return (
     <div className="profile">
       <div className="images">
+        {/* Display cover and profile images */}
         <img
-          src="https://images.pexels.com/photos/13440765/pexels-photo-13440765.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+          src="https://images.pexels.com/photos/13440765/pexels-photo-13440765.jpeg"
           alt=""
           className="cover"
         />
+        {/* If profilePic is available, use it, otherwise fallback to default image */}
         <img
-          src="https://images.pexels.com/photos/14028501/pexels-photo-14028501.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load"
-          alt=""
+          src={currentUser?.profilePic || "/default-profile.jpg"}
+          alt="Profile"
           className="profilePic"
         />
       </div>
       <div className="profileContainer">
         <div className="uInfo">
           <div className="left">
-            <a href="http://facebook.com">
-              <FacebookTwoToneIcon fontSize="large" />
-            </a>
-            <a href="http://facebook.com">
-              <InstagramIcon fontSize="large" />
-            </a>
-            <a href="http://facebook.com">
-              <TwitterIcon fontSize="large" />
-            </a>
-            <a href="http://facebook.com">
-              <LinkedInIcon fontSize="large" />
-            </a>
-            <a href="http://facebook.com">
-              <PinterestIcon fontSize="large" />
-            </a>
+            {/* Added links to social media */}
+            <a href="http://facebook.com"><FacebookTwoToneIcon fontSize="large" /></a>
+            <a href="http://instagram.com"><InstagramIcon fontSize="large" /></a>
+            <a href="http://twitter.com"><TwitterIcon fontSize="large" /></a>
+            <a href="http://linkedin.com"><LinkedInIcon fontSize="large" /></a>
+            
           </div>
           <div className="center">
-            <span>Purushottam</span>
+            {/* Display current user's name, or "Guest" if no name available */}
+            <span>{currentUser?.name || "Guest"}</span>
             <div className="info">
-              <div className="item">
-                <PlaceIcon />
-                <span>India</span>
-              </div>
-              <div className="item">
-                <LanguageIcon />
-                <span>English</span>
-              </div>
+              {/* Display user's country and language */}
+              <div className="item"><PlaceIcon /><span>India</span></div>
+              <div className="item"><LanguageIcon /><span>English</span></div>
             </div>
-            <button>follow</button>
+            <button>Follow</button>
           </div>
-
           <div className="right">
             <EmailOutlinedIcon />
             <MoreVertIcon />
           </div>
         </div>
-
+        {/* Rendering Posts component */}
         <Posts />
       </div>
     </div>
