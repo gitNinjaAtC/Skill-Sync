@@ -1,11 +1,6 @@
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Navigate,
-  Outlet,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate, Outlet } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import LeftBar from "./components/leftBar/LeftBar";
 import Home from "./pages/home/Home";
@@ -13,6 +8,7 @@ import Profile from "./pages/profile/Profile";
 import Forums from "./pages/forums/Forums";
 import CreateForum from "./pages/createForum/createForum";
 import Jobs from "./pages/jobs/Jobs"; // ✅ Import the Jobs page
+import CreateOffer from "./pages/jobs/CreateOffer";  // Import CreateOffer page
 import "./style.scss";
 
 import { useContext } from "react";
@@ -63,6 +59,7 @@ function App() {
         { path: "/forums", element: <Forums /> },
         { path: "/create-forum", element: <CreateForum /> },
         { path: "/jobs", element: <Jobs /> }, // ✅ Add Jobs route
+        { path: "/create-offer", element: <CreateOffer /> }, // ✅ Add Create Offer route
       ],
     },
     { path: "/login", element: <Login /> },

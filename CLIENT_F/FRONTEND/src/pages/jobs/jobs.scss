@@ -1,147 +1,190 @@
+@import "../../style.scss";
+
 .jobs-container {
-    font-family: 'Segoe UI', sans-serif;
-    padding: 20px;
-    background: #f9f9f9;
-  
-    .header {
+  font-family: 'Segoe UI', sans-serif;
+  padding: 1.5rem;
+
+  @include themify($themes) {
+    background-color: themed("bgSoft");
+    color: themed("textColor");
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+
+    h1 {
       display: flex;
-      flex-direction: column;
-      margin-bottom: 20px;
-  
-      h1 {
-        display: flex;
-        align-items: center;
-        font-size: 28px;
-        font-weight: bold;
-        color: #2e2e2e;
-  
-        .icon {
-          font-size: 32px;
-          margin-right: 10px;
+      align-items: center;
+      font-size: 1.75rem;
+      font-weight: bold;
+
+      .icon {
+        font-size: 2rem;
+        margin-right: 0.75rem;
+        color: #7a59e0;
+      }
+    }
+
+    nav {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 0.75rem;
+
+      .tab {
+        cursor: pointer;
+        padding: 0.5rem 0;
+        font-weight: 500;
+
+        @include themify($themes) {
+          color: themed("textColorSoft");
+        }
+
+        &:hover {
           color: #7a59e0;
         }
-      }
-  
-      nav {
-        display: flex;
-        gap: 25px;
-        margin-top: 10px;
-  
-        .tab {
-          cursor: pointer;
-          padding: 8px;
-          color: #555;
-  
-          &.active {
-            font-weight: bold;
-            color: #7a59e0;
-            border-bottom: 2px solid #7a59e0;
-          }
+
+        &.active {
+          font-weight: bold;
+          color: #7a59e0;
+          border-bottom: 2px solid #7a59e0;
         }
       }
     }
-  
-    .main-section {
+  }
+
+  .main-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    .offers-section {
+      flex: 3;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      font-size: 1.125rem;
+      position: relative;
+      min-height: 200px;
       display: flex;
-      justify-content: space-between;
-  
-      .offers-section {
-        flex: 3;
-        background: white;
-        padding: 40px;
-        border-radius: 8px;
-        text-align: center;
-        font-size: 18px;
-        color: #444;
-        position: relative;
-  
-        .dropdown {
-          position: absolute;
-          top: 20px;
-          right: 20px;
-          padding: 6px 10px;
-          border-radius: 6px;
-          border: 1px solid #ccc;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+
+      @include themify($themes) {
+        background-color: themed("bg");
+        color: themed("textColor");
+        border: 1px solid themed("border");
+      }
+
+      .dropdown {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+        padding: 0.4rem 0.625rem;
+        border-radius: 0.375rem;
+        font-size: 0.9rem;
+
+        @include themify($themes) {
+          background-color: themed("bgSoft");
+          color: themed("textColor");
+          border: 1px solid themed("border");
         }
       }
-  
-      .sidebar {
-        flex: 1;
-        margin-left: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-  
-        .offer-note {
-          background: #fff;
-          padding: 20px;
-          border-radius: 10px;
-          text-align: center;
-          box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
-  
-          .illustration {
-            height: 100px;
-            background: url('../../assets/jobs.jpg') no-repeat center;
-            background-size: contain;
-            margin-bottom: 10px;
-          }
-  
-          h4 {
-            margin: 10px 0;
-            font-size: 16px;
-            color: #2d2d2d;
-          }
-  
-          p {
-            font-size: 14px;
-            color: #666;
-          }
-  
-          .create-offer {
-            margin-top: 10px;
-            background: none;
-            color: #0866ff;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
+    }
+
+.sidebar {
+      flex: 1;
+      margin-left: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+
+      .offer-note {
+        padding: 1.25rem;
+        border-radius: 0.625rem;
+        text-align: center;
+
+        @include themify($themes) {
+          background-color: themed("bg");
+          box-shadow: 0 2px 6px themed("border");
+        }
+
+        .illustration {
+          height: 100px;
+          background: url("../../assets/jobs.jpg") no-repeat center;
+          background-size: contain;
+          margin-bottom: 0.75rem;
+        }
+
+        h4 {
+          margin: 0.5rem 0;
+          font-size: 1rem;
+
+          @include themify($themes) {
+            color: themed("textColor");
           }
         }
-  
-        .stats-card {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-  
-          .stat {
-            padding: 15px;
-            border-radius: 10px;
-            background: #f0f0f0;
-            text-align: center;
-  
-            .title {
-              font-weight: bold;
-              font-size: 12px;
-              color: #666;
+
+        p {
+          font-size: 0.875rem;
+
+          @include themify($themes) {
+            color: themed("textColorSoft");
+          }
+        }
+
+        .create-offer {
+          margin-top: 0.75rem;
+          background: none;
+          color: #0866ff;
+          border: none;
+          cursor: pointer;
+          font-weight: 600;
+        }
+      }
+
+      .stats-card {
+        display: flex;
+        flex-direction: column;
+        gap: 0.625rem;
+
+        .stat {
+          padding: 1rem;
+          border-radius: 0.625rem;
+          text-align: center;
+
+          @include themify($themes) {
+            background: themed("bgSoft");
+            color: themed("textColor");
+          }
+
+          .title {
+            font-weight: bold;
+            font-size: 0.75rem;
+            @include themify($themes) {
+              color: themed("textColorSoft");
             }
-  
-            .value {
-              font-size: 24px;
-              font-weight: bold;
-              color: #444;
+          }
+
+          .value {
+            font-size: 1.5rem;
+            font-weight: bold;
+          }
+
+          .desc {
+            font-size: 0.813rem;
+            @include themify($themes) {
+              color: themed("textColorSoft");
             }
-  
-            .desc {
-              font-size: 13px;
-              color: #666;
-            }
-  
-            &.offer {
-              background: #e6ddfa;
-              color: #333;
-            }
+          }
+
+          &.offer {
+            background: #e6ddfa;
+            color: #333;
           }
         }
       }
     }
   }
-  
+}
