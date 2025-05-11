@@ -11,32 +11,45 @@ import Resume from "../../assets/11.png";
 import Fund from "../../assets/13.png";
 import { AuthContext } from "../../context/authContext";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LeftBar = () => {
   const { currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleProfile = () => {
+    if (currentUser?.id) {
+      navigate(`/profile/${currentUser.id}`);
+    }
+  };
 
   return (
     <div className="leftBar">
       <div className="container">
         <div className="menu">
           <div className="user">
-            <img src={currentUser.profilePic} alt="" />
-            <span>{currentUser.name}</span>
+            <button className="profile-button" onClick={handleProfile}>
+              <img
+                src={currentUser?.profilePic || "/defaultProfilePic.png"}
+                alt="User"
+              />
+              <span>{currentUser?.name}</span>
+            </button>
           </div>
           <div className="item">
-            <img src={Friends} alt="" />
+            <img src={Friends} alt="Friends" />
             <span>Friends</span>
           </div>
-          <div className="item">
-            <img src={Groups} alt="" />
-            <span>Groups</span>
+          <div className="item" onClick={() => navigate("/forums")}>
+            <img src={Groups} alt="Groups" />
+            <span>Forums</span>
           </div>
-          <div className="item">
-            <img src={Market} alt="" />
+          <div className="item" onClick={() => navigate("/jobs")}>
+            <img src={Market} alt="Market" />
             <span>Jobs</span>
           </div>
           <div className="item">
-            <img src={Memories} alt="" />
+            <img src={Memories} alt="Memories" />
             <span>Memories</span>
           </div>
         </div>
@@ -45,19 +58,19 @@ const LeftBar = () => {
         <div className="menu">
           <span>Your shortcuts</span>
           <div className="item">
-            <img src={Events} alt="" />
+            <img src={Events} alt="Events" />
             <span>Events</span>
           </div>
           <div className="item">
-            <img src={Gallery} alt="" />
+            <img src={Gallery} alt="Gallery" />
             <span>Gallery</span>
           </div>
           <div className="item">
-            <img src={Videos} alt="" />
+            <img src={Videos} alt="Videos" />
             <span>Videos</span>
           </div>
           <div className="item">
-            <img src={Messages} alt="" />
+            <img src={Messages} alt="Messages" />
             <span>Messages</span>
           </div>
         </div>
@@ -66,11 +79,11 @@ const LeftBar = () => {
         <div className="menu">
           <span>Others</span>
           <div className="item">
-            <img src={Fund} alt="" />
+            <img src={Fund} alt="Fundraiser" />
             <span>Fundraiser</span>
           </div>
           <div className="item">
-            <img src={Resume} alt="" />
+            <img src={Resume} alt="Resume Builder" />
             <span>Resume Builder</span>
           </div>
         </div>

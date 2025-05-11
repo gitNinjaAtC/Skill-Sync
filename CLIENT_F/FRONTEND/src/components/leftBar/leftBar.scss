@@ -6,11 +6,11 @@
     position: sticky;
     top: 70px;
     height: calc(100vh - 70px);
-    overflow: scroll;
+    overflow-y: auto;
     background-color: themed("bg");
     color: themed("textColor");
 
-    @include mobile{
+    @include mobile {
       display: none;
     }
 
@@ -22,9 +22,9 @@
       padding: 20px;
 
       hr {
-        margin: 20px 0px;
+        margin: 20px 0;
         border: none;
-        height: 0.5px;
+        height: 1px;
         background-color: themed("border");
       }
 
@@ -35,36 +35,64 @@
 
         span {
           font-size: 12px;
+          font-weight: 500;
+          color: themed("textColorSoft");
         }
 
         .user {
-          display: flex;
-          align-items: center;
-          gap: 10px;
+          .profile-button {
+            background-color: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 8px;
 
-          img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            object-fit: cover;
-          }
+            &:hover {
+              background-color: themed("hoverBg");
+            }
 
-          span {
-            font-size: 14px;
+            img {
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 2px solid themed("border");
+            }
+
+            span {
+              font-size: 14px;
+              font-weight: 600;
+              color: themed("textColor");
+            }
           }
         }
 
         .item {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 12px;
+          cursor: pointer;
+          padding: 6px 8px;
+          border-radius: 8px;
+          transition: background 0.2s ease;
+          margin: 0px;
+
+          &:hover {
+            background-color: themed("hoverBg");
+          }
 
           img {
-            width: 30px;
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
           }
 
           span {
             font-size: 14px;
+            font-weight: 500;
           }
         }
       }
