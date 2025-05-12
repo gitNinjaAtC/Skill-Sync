@@ -1,114 +1,119 @@
-import React from "react";
-import "./forums.scss";
-import Forum from "../../assets/forums.png";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/authContext";
+import axios from "axios";
+import Forum from "../../assets/forums.png";
+import "./forums.scss";
 
 const Forums = () => {
+  const { currentUser, loading: authLoading } = useContext(AuthContext);
+  const [forums, setForums] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const forumPosts = [
-    {
-      title:
-        "Maxop Engineering Co. Pvt. Ltd. – MAXOP – Campus Placement Drive – 2025 Batch Recruitment Event Experiences",
-      createdAgo: "2 months ago",
-      description:
-        "This post has been created for all the students to share and discuss the Recruitment Event conducted for Maxop Engineering Co. Pvt. Ltd.",
-      tags: [
-        "Placement Event",
-        "On Campus",
-        "Interviews Experience",
-        "Recruitment Experience",
-        "MAXOP – Campus Placement Drive",
-        "Maxop Engineering Co. Pvt. Ltd.",
-        "2025",
-      ],
-      interviewExperience: {
-        name: "Kaishav Kumar",
-        qa: [
-          {
-            question: "For what role was the interview conducted?",
-            answer: "Trainee engineer",
-          },
-          {
-            question: "What was their selection and interview process like?",
-            answer:
-              "In my words, The process depends on the resume and in my interview questions are taken from my past project and activities.",
-          },
-        ],
-      },
-    },
-    {
-      title:
-        "Pay1India Payment Solutions – Customer Support Executive – 2024 Batch Recruitment Experience",
-      createdAgo: "1 year ago",
-      description:
-        "Students shared their experience attending the placement drive by Pay1India for a Customer Support Executive role.",
-      tags: [
-        "Customer Support",
-        "Off Campus",
-        "Recruitment Experience",
-        "Pay1India",
-        "2024",
-      ],
-      interviewExperience: {
-        name: "Sneha Raj",
-        qa: [
-          {
-            question: "For what role was the interview conducted?",
-            answer: "Customer Support Executive",
-          },
-          {
-            question: "What was the difficulty level of the interview?",
-            answer:
-              "The questions were mostly related to communication skills and situational judgment. It was fairly easy.",
-          },
-        ],
-      },
-    },
-  ];
 
-  const handlecreateForum = () => {
-    navigate("/create-forum"); // Navigate to the Create Forum page
+  useEffect(() => {
+    const fetchForums = async () => {
+      setLoading(true);
+      try {
+        console.log("Fetching forums...");
+        const res = await axios.get("http://localhost:8800/API_B/forums", {
+          withCredentials: true,
+        });
+        console.log("Fetched forums:", res.data);
+        setForums(res.data);
+        setError(null);
+      } catch (err) {
+        console.error(
+          "Error fetching forums:",
+          err.response?.data || err.message
+        );
+        setError(err.response?.data?.message || "Failed to load forums.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchForums();
+  }, []);
+
+  const handleCreateForum = () => {
+    navigate("/create-forum");
   };
+
+  const handleDeleteForum = async (forumId) => {
+    if (!window.confirm("Are you sure you want to delete this forum?")) return;
+
+    try {
+      console.log("Deleting forum, id:", forumId);
+      await axios.delete(`http://localhost:8800/API_B/forums/${forumId}`, {
+        withCredentials: true,
+      });
+      console.log("Forum deleted, id:", forumId);
+      setForums(forums.filter((forum) => forum.id !== forumId));
+      setError(null);
+    } catch (err) {
+      console.error("Error deleting forum:", err.response?.data || err.message);
+      setError(err.response?.data?.message || "Failed to delete forum.");
+    }
+  };
+
+  if (authLoading || loading) {
+    return <div className="forum-container">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="forum-container error">{error}</div>;
+  }
 
   return (
     <div className="forum-container">
       <div className="item">
-      <img src={Forum} alt="" />
-      <span>Forums</span>
+        <img src={Forum} alt="Forums" />
+        <span>Forums</span>
       </div>
-      
 
-      {forumPosts.map((post, i) => (
-        <div key={i} className="forum-card">
-          <p className="timestamp">{post.createdAgo}</p>
-          <h2 className="title">{post.title}</h2>
-          <p className="description">{post.description}</p>
+      {forums.length === 0 ? (
+        <p>No forums available.</p>
+      ) : (
+        forums.map((post) => (
+          <div key={post.id} className="forum-card">
+            <div className="forum-header">
+              <p className="timestamp">{post.createdAgo}</p>
+              {currentUser && currentUser.id === post.created_by && (
+                <button
+                  className="delete-btn"
+                  onClick={() => handleDeleteForum(post.id)}
+                >
+                  Delete
+                </button>
+              )}
+            </div>
+            <h2 className="title">{post.title}</h2>
+            <p className="description">{post.description}</p>
 
-          <div className="tags">
-            {post.tags.map((tag, idx) => (
-              <span key={idx}>{tag}</span>
-            ))}
+            <div className="tags">
+              {post.tags.map((tag, idx) => (
+                <span key={idx}>{tag}</span>
+              ))}
+            </div>
+
+            <div className="interview-section">
+              <p className="interview-name">
+                Created by {post.created_by_name}
+              </p>
+              {/* Placeholder for future interview experience */}
+            </div>
+
+            <div className="comment-count">💬 0 Comments so far</div>
           </div>
+        ))
+      )}
 
-          <div className="interview-section">
-            <p className="interview-name">
-              {post.interviewExperience.name} shared interview experience
-            </p>
-            {post.interviewExperience.qa.map((item, index) => (
-              <div key={index} className="qa-pair">
-                <p className="question">Q. {item.question}</p>
-                <p className="answer">A. {item.answer}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="comment-count">💬 1 Comment so far</div>
-        </div>
-      ))}
-
-      {/* Create Forum Button (New Button Added) */}
-      <button className="create-forum-btn" onClick={handlecreateForum}>
-        Create Forum</button>
+      {currentUser && ["Admin", "Alumni"].includes(currentUser.role) && (
+        <button className="create-forum-btn" onClick={handleCreateForum}>
+          Create Forum
+        </button>
+      )}
     </div>
   );
 };

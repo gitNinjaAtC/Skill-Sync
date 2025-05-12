@@ -7,6 +7,7 @@ import userRoutes from "./routes/users.js";
 import postRoutes from "./routes/posts.js";
 import commentRoutes from "./routes/comments.js";
 import likeRoutes from "./routes/likes.js";
+import forumRoutes from "./routes/forums.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -46,6 +47,7 @@ app.use("/API_B/users", userRoutes);
 app.use("/API_B/posts", postRoutes);
 app.use("/API_B/comments", commentRoutes);
 app.use("/API_B/likes", likeRoutes);
+app.use("/API_B/forums", forumRoutes);
 
 // ✅ Start Server
 app.listen(8800, () => {
