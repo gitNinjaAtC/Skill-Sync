@@ -48,32 +48,21 @@ const LeftBar = () => {
             <img src={Market} alt="Market" />
             <span>Jobs</span>
           </div>
-          <div className="item">
-            <img src={Memories} alt="Memories" />
-            <span>Memories</span>
-          </div>
-        </div>
-        <hr />
-
-        <div className="menu">
-          <span>Your shortcuts</span>
-          <div className="item">
+          <div className="item" onClick={() => navigate("/events")}>
             <img src={Events} alt="Events" />
             <span>Events</span>
-          </div>
+          </div>  
           <div className="item">
             <img src={Gallery} alt="Gallery" />
             <span>Gallery</span>
-          </div>
-          <div className="item">
-            <img src={Videos} alt="Videos" />
-            <span>Videos</span>
-          </div>
-          <div className="item">
+          </div>          
+          <div className="item" >
             <img src={Messages} alt="Messages" />
             <span>Messages</span>
-          </div>
-        </div>
+          </div>   
+        
+        </div>        
+
         <hr />
 
         <div className="menu">

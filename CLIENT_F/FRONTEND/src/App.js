@@ -7,8 +7,10 @@ import Home from "./pages/home/Home";
 import Profile from "./pages/profile/Profile";
 import Forums from "./pages/forums/Forums";
 import CreateForum from "./pages/createForum/createForum";
-import Jobs from "./pages/jobs/Jobs"; // ✅ Import the Jobs page
-import CreateOffer from "./pages/jobs/CreateOffer";  // Import CreateOffer page
+import Jobs from "./pages/jobs/Jobs";
+import CreateOffer from "./pages/jobs/CreateOffer";
+import Events from "./pages/events/Events";
+import EventDescription from "./pages/events/EventDescription";
 import "./style.scss";
 
 import { useContext } from "react";
@@ -22,28 +24,22 @@ function App() {
 
   const queryClient = new QueryClient();
 
-  const Layout = () => {
-    return (
-      <QueryClientProvider client={queryClient}>
-        <div className={`theme-${darkMode ? "dark" : "light"}`}>
-          <Navbar />
-          <div style={{ display: "flex" }}>
-            <LeftBar />
-            <div style={{ flex: 6 }}>
-              <Outlet />
-            </div>
+  const Layout = () => (
+    <QueryClientProvider client={queryClient}>
+      <div className={`theme-${darkMode ? "dark" : "light"}`}>
+        <Navbar />
+        <div style={{ display: "flex" }}>
+          <LeftBar />
+          <div style={{ flex: 6 }}>
+            <Outlet />
           </div>
         </div>
-      </QueryClientProvider>
-    );
-  };
+      </div>
+    </QueryClientProvider>
+  );
 
-  const ProtectedRoute = ({ children }) => {
-    if (!currentUser) {
-      return <Navigate to="/login" />;
-    }
-    return children;
-  };
+  const ProtectedRoute = ({ children }) =>
+    currentUser ? children : <Navigate to="/login" />;
 
   const router = createBrowserRouter([
     {
@@ -58,8 +54,11 @@ function App() {
         { path: "/profile/:id", element: <Profile /> },
         { path: "/forums", element: <Forums /> },
         { path: "/create-forum", element: <CreateForum /> },
-        { path: "/jobs", element: <Jobs /> }, // ✅ Add Jobs route
-        { path: "/create-offer", element: <CreateOffer /> }, // ✅ Add Create Offer route
+        { path: "/jobs", element: <Jobs /> },
+        { path: "/create-offer", element: <CreateOffer /> },
+        { path: "/events", element: <Events /> },
+        { path: "/events/:tab", element: <Events /> },
+        { path: "/event/:id", element: <EventDescription /> },        
       ],
     },
     { path: "/login", element: <Login /> },

@@ -9,6 +9,7 @@
     overflow-y: auto;
     background-color: themed("bg");
     color: themed("textColor");
+    z-index: 11;
 
     @include mobile {
       display: none;
