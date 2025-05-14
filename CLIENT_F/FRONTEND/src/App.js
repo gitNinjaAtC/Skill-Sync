@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider, Navigate, Outlet } from "react-rou
 import Navbar from "./components/navbar/Navbar";
 import LeftBar from "./components/leftBar/LeftBar";
 import Home from "./pages/home/Home";
-import Profile from "./pages/profile/Profile";
+import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import Forums from "./pages/forums/Forums";
 import CreateForum from "./pages/createForum/createForum";
 import Jobs from "./pages/jobs/Jobs";
@@ -51,7 +51,7 @@ function App() {
       ),
       children: [
         { path: "/", element: <Home /> },
-        { path: "/profile/:id", element: <Profile /> },
+        { path: "/profile/:id", element: <ProfilePage /> },
         { path: "/forums", element: <Forums /> },
         { path: "/create-forum", element: <CreateForum /> },
         { path: "/jobs", element: <Jobs /> },
