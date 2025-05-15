@@ -118,7 +118,7 @@
         }
       }
     }
-    
+
     .profile-info {
       flex: 1;
 
@@ -139,8 +139,8 @@
           border-radius: 8px;
           cursor: pointer;
         }
-      }   
-      
+      }
+
       .description {
         margin: 15px -123px 11px;
         padding: 12px 16px;
@@ -153,14 +153,23 @@
         max-width: 943px;
       }
 
-      .profile-actions,
-      .social-links,
-      .profile-tabs {
-        margin: 0px -100px;
+      .profile-actions {
+        margin: 0px 0px 0px -100px;
         margin-top: 10px;
         display: flex;
-        gap: 10px;
+        align-items: center;
         flex-wrap: wrap;
+        gap: 50px;
+
+        .social-links {
+          display: flex;
+          gap: 10px;
+          a {
+            color: inherit;
+            display: flex;
+            align-items: center;
+          }
+        }
 
         .message-btn {
           background-color: #3593e5;
@@ -169,12 +178,16 @@
           padding: 8px 16px;
           border-radius: 8px;
           cursor: pointer;
+          white-space: nowrap;
         }
+      }
 
-        a {
-          color: inherit;
-          display: flex;
-        }
+      .profile-tabs {
+        margin: 0px -100px;
+        margin-top: 10px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
 
         button {
           background: none;
@@ -194,11 +207,11 @@
     }
   }
 
-  .about,
   .skills-section,
   .education-section,
-  .professional-experience-section,
+  .experience-section,
   .others-section {
+    margin-left: -100px;
     padding: 16px;
     border-top: 1px solid #eee;
 
@@ -216,8 +229,8 @@
     }
 
     ul {
-      text-align: justify;
       padding-left: 18px;
+
       li {
         margin-bottom: 6px;
       }
