@@ -45,11 +45,11 @@ const CreateOffer = () => {
       <div className="top-bar">
         <button className="back-btn" onClick={handleGoBack}>
           <span className="arrow-symbol">{"<"}</span>
-          <span className="go-back-text">Back To Offers</span>
+          <span className="go-back-text">Back To Jobs</span>
         </button>
       </div>
 
-      <h1>Create Offer</h1>
+      <h1>Create Job</h1>
 
       <form onSubmit={handleSubmit} className="offer-form">
         <label>

@@ -18,7 +18,7 @@ const ProfileInfo = ({ userId }) => {
   return (
     <div className="profile-info">
       <div className="profile-header">
-        <h2>Elton Johns</h2>
+        <h2>Shivam Kumar Kesharwani</h2>
         <button className="edit-btn">Edit Profile</button>
       </div>
 
