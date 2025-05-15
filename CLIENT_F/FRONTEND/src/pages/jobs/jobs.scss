@@ -1,7 +1,7 @@
 @import "../../style.scss";
 
 .jobs-container {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
   padding: 1.5rem;
 
   @include themify($themes) {
@@ -67,6 +67,7 @@
       position: relative;
       min-height: 200px;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
@@ -91,9 +92,82 @@
           border: 1px solid themed("border");
         }
       }
+
+      .job-list {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        .job-card {
+          padding: 1.25rem;
+          border-radius: 0.625rem;
+          text-align: left;
+
+          @include themify($themes) {
+            background-color: themed("bg");
+            border: 1px solid themed("border");
+            box-shadow: 0 2px 6px themed("border");
+          }
+
+          h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem;
+            color: #7a59e0;
+          }
+
+          .organisation {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+
+            @include themify($themes) {
+              color: themed("textColor");
+            }
+          }
+
+          .ctc {
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+            color: #0866ff;
+          }
+
+          .location,
+          .remote,
+          .offer-type,
+          .posted-by,
+          .created-at {
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+
+            @include themify($themes) {
+              color: themed("textColorSoft");
+            }
+          }
+
+          .created-at {
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+
+            @include themify($themes) {
+              color: themed("textColorSoft");
+            }
+          }
+        }
+      }
+
+      .error-message {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 0.75rem;
+        border-radius: 0.375rem;
+        text-align: center;
+        width: 100%;
+        margin-bottom: 1rem;
+      }
     }
 
-.sidebar {
+    .sidebar {
       flex: 1;
       margin-left: 1.25rem;
       display: flex;
