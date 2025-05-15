@@ -157,7 +157,7 @@ const Post = ({ post }) => {
             <TextsmsOutlinedIcon />
             Comments
           </div>
-          <div className="item" onClick={handleShare}>
+          <div className="item">
             <ShareOutlinedIcon />
             Share
           </div>

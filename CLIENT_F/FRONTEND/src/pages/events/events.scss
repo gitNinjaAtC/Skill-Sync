@@ -1,0 +1,97 @@
+@import "../../style.scss";
+
+.events-container {
+  max-width: 64rem;
+
+  @include themify($themes) {
+    background-color: themed("bgSoft");
+    color: themed("textColorSoft");
+
+    .main-section {
+      margin-top: 5rem;
+
+      .events-section {
+        .event-card {
+          background-color: themed("bg");
+
+          .event-details {
+            h3 {
+              color: themed("textColor");
+            }
+
+            .date {
+              color: themed("date");
+            }
+
+            p {
+              color: themed("textColorSoft");
+              // text-align: center;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .main-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    .events-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+
+      .event-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        justify-content: center;
+      }
+
+      .event-card {
+        text-decoration: none;
+        width: 64rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+        }
+
+        .event-image {
+          width: 100%;
+          height: 150px;
+          object-fit: cover;
+        }
+
+        .event-details {
+          padding: 1rem;
+          text-align: center;
+
+          h3 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+          }
+
+          .date {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+          }
+
+          p {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+}
