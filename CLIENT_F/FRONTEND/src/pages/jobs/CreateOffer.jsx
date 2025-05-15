@@ -1,9 +1,12 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import the useNavigate hook
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/authContext";
+import axios from "axios";
 import "./createOffer.scss";
 
 const CreateOffer = () => {
-  const navigate = useNavigate(); // Initialize the useNavigate hook
+  const navigate = useNavigate();
+  const { currentUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     jobTitle: "",
     organizationName: "",
@@ -18,8 +21,10 @@ const CreateOffer = () => {
     loi: null,
     jobDescription: "",
     bondDetails: "",
-    otherBenefits: ""
+    otherBenefits: "",
   });
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,13 +36,59 @@ const CreateOffer = () => {
     setFormData({ ...formData, [name]: files[0] });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    setError(null);
+    setSuccess(null);
+
+    if (!currentUser || currentUser.role !== "Alumni") {
+      setError("Only Alumni can create job offers.");
+      return;
+    }
+
+    try {
+      const data = new FormData();
+      data.append("job_title", formData.jobTitle);
+      data.append("organisation_name", formData.organizationName);
+      data.append("offer_type", formData.offerType);
+      data.append("joining_date", formData.joiningDate);
+      data.append("location", formData.locations);
+      data.append("remote_working", formData.remoteWorking);
+      data.append("cost_to_company", formData.ctc);
+      data.append("fixed_gross", formData.fixedGross);
+      data.append("bonuses", formData.bonuses);
+      if (formData.offerLetter) {
+        data.append("offer_letter", formData.offerLetter);
+      }
+      if (formData.loi) {
+        data.append("letter_of_intent", formData.loi);
+      }
+      data.append("job_description", formData.jobDescription);
+      data.append("bond_details", formData.bondDetails);
+      data.append("other_benefits", formData.otherBenefits);
+
+      console.log("Submitting job data:", Object.fromEntries(data));
+
+      const res = await axios.post("http://localhost:8800/API_B/jobs", data, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log("Job created:", res.data);
+      setSuccess("Job created successfully! Redirecting to jobs...");
+      setTimeout(() => {
+        navigate("/jobs");
+      }, 2000);
+    } catch (err) {
+      console.error("Error creating job:", err.response?.data || err.message);
+      setError(err.response?.data?.message || "Failed to create job.");
+    }
   };
 
   const handleGoBack = () => {
-    navigate("/jobs"); // Navigate back to the jobs page
+    navigate("/jobs");
   };
 
   return (
@@ -50,6 +101,9 @@ const CreateOffer = () => {
       </div>
 
       <h1>Create Job</h1>
+
+      {error && <div className="error-message">{error}</div>}
+      {success && <div className="success-message">{success}</div>}
 
       <form onSubmit={handleSubmit} className="offer-form">
         <label>
