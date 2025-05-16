@@ -1,11 +1,20 @@
-// import express from "express";
-// import { getProfile } from "../controllers/profile.js";
-// import validateToken from "../middleware/validateTokenHandler.js";
+import express from "express";
+import {
+  getProfileInfo,
+  updateProfile,
+  uploadCoverPhotoMiddleware,
+  updateCoverPhoto,
+} from "../controllers/profileControllers.js";
 
-// const router = express.Router();
+const router = express.Router();
 
-// // Get profile by user ID
-// router.get("/:id", validateToken, getProfile);
+// GET /API_B/profile/:id
+router.get("/:id", getProfileInfo);
 
-// export default router;
-// // 
+// PUT /API_B/profile/update/:id
+router.put("/update/:id", updateProfile);
+
+// ✅ NEW: PUT /API_B/profile/cover/:id
+router.put("/cover/:id", uploadCoverPhotoMiddleware, updateCoverPhoto);
+
+export default router;

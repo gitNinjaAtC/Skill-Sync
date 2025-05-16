@@ -1,11 +1,17 @@
-const SkillsSection = () => (
+import React from "react";
+
+const SkillsSection = ({ skills }) => (
   <div className="skills-section" id="skills">
     <h3>Skills</h3>
-    <ul>
-      <li>React</li>
-      <li>Node.js</li>
-      <li>MySQL</li>
-    </ul>
+    {skills ? (
+      <ul>
+        {skills.split(",").map((skill, index) => (
+          <li key={index}>{skill.trim()}</li>
+        ))}
+      </ul>
+    ) : (
+      <p>No skills listed.</p>
+    )}
   </div>
 );
 

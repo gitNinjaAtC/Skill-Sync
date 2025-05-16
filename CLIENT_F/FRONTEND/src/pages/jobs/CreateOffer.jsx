@@ -8,32 +8,47 @@ const CreateOffer = () => {
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
-    jobTitle: "",
-    organizationName: "",
-    offerType: "",
-    joiningDate: "",
-    locations: "",
-    remoteWorking: "",
-    ctc: 0,
-    fixedGross: 0,
+    job_title: "",
+    organisation_name: "",
+    offer_type: "",
+    employment_type: "",
+    job_description: "",
+    skills_required: "",
+    // eligibleCourses: "",
+    bond_details: "",
+    selection_process: "",
+    registration_start_date: "",
+    registration_end_date: "",
+    joining_date: "",
+    // duration: "",
+    // timing: "",
+    remote_working: "",
+    cost_to_company: "",
+    // stipend: "",
+    fixed_gross: "",
     bonuses: "",
-    offerLetter: null,
-    loi: null,
-    jobDescription: "",
-    bondDetails: "",
-    otherBenefits: "",
+    other_benefits: "",
+    // companyWebsite: "",
+    // industry: "",
+    // companySize: "",
+    location: "",
+    logo_path: null,
+    offer_letter_path: null,
+    letter_of_intent_path: null,
   });
+  
+
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-    setFormData({ ...formData, [name]: files[0] });
+    setFormData((prev) => ({ ...prev, [name]: files[0] }));
   };
 
   const handleSubmit = async (e) => {
@@ -42,54 +57,30 @@ const CreateOffer = () => {
     setSuccess(null);
 
     if (!currentUser || currentUser.role !== "Alumni") {
-      setError("Only Alumni can create job offers.");
-      return;
+      return setError("Only Alumni can create job offers.");
     }
 
     try {
       const data = new FormData();
-      data.append("job_title", formData.jobTitle);
-      data.append("organisation_name", formData.organizationName);
-      data.append("offer_type", formData.offerType);
-      data.append("joining_date", formData.joiningDate);
-      data.append("location", formData.locations);
-      data.append("remote_working", formData.remoteWorking);
-      data.append("cost_to_company", formData.ctc);
-      data.append("fixed_gross", formData.fixedGross);
-      data.append("bonuses", formData.bonuses);
-      if (formData.offerLetter) {
-        data.append("offer_letter", formData.offerLetter);
-      }
-      if (formData.loi) {
-        data.append("letter_of_intent", formData.loi);
-      }
-      data.append("job_description", formData.jobDescription);
-      data.append("bond_details", formData.bondDetails);
-      data.append("other_benefits", formData.otherBenefits);
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value) data.append(key, value);
+      });
 
-      console.log("Submitting job data:", Object.fromEntries(data));
-
-      const res = await axios.post("http://localhost:8800/API_B/jobs", data, {
+      await axios.post("http://localhost:8800/API_B/jobs", data, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      console.log("Job created:", res.data);
-      setSuccess("Job created successfully! Redirecting to jobs...");
-      setTimeout(() => {
-        navigate("/jobs");
-      }, 2000);
+      setSuccess("Job created successfully! Redirecting...");
+      setTimeout(() => navigate("/job"), 2000);
     } catch (err) {
-      console.error("Error creating job:", err.response?.data || err.message);
       setError(err.response?.data?.message || "Failed to create job.");
     }
   };
 
-  const handleGoBack = () => {
-    navigate("/jobs");
-  };
+  const handleGoBack = () => navigate("/job");
 
   return (
     <div className="create-offer-container">
@@ -106,171 +97,219 @@ const CreateOffer = () => {
       {success && <div className="success-message">{success}</div>}
 
       <form onSubmit={handleSubmit} className="offer-form">
+        {/* Group 1: Basic Info */}
         <label>
-          <span className="label-with-required">
-            Job Title <span className="required">*</span>
-          </span>
+          Job Title <span className="required">*</span>
           <input
             type="text"
-            name="jobTitle"
-            value={formData.jobTitle}
+            name="job_title"
+            value={formData.job_title}
             onChange={handleChange}
-            placeholder="Specify Title"
-            required
+            placeholder="e.g. Software Developer"
           />
+          
         </label>
 
         <label>
-          <span className="label-with-required">
-            Organisation Name <span className="required">*</span>
-          </span>
+          Organisation Name <span className="required">*</span>
           <input
             type="text"
-            name="organizationName"
-            value={formData.organizationName}
+            name="organisation_name"
+            value={formData.organisation_name}
             onChange={handleChange}
-            placeholder="Specify the name of organisation / company"
-            required
+            placeholder="e.g. Google India"
           />
         </label>
 
         <label>
           Offer Type
-          <select
-            name="offerType"
-            value={formData.offerType}
-            onChange={handleChange}
-          >
-            <option value="">Select Offer Type</option>
-            <option value="Permanent">Permanent</option>
+          <select name="offer_type" value={formData.offer_type} onChange={handleChange}>
+            <option value="">Select</option>
+            <option value="Permanent">Job</option>
             <option value="Internship">Internship</option>
           </select>
         </label>
 
         <label>
-          Joining Date
-          <input
-            type="date"
-            name="joiningDate"
-            value={formData.joiningDate}
-            onChange={handleChange}
-          />
+          Employment Type
+          <select name="employment_type" value={formData.employment_type} onChange={handleChange}>
+            <option value="">Select</option>
+            <option value="Full-time">Full-time</option>
+            <option value="Part-time">Part-time</option>
+          </select>
         </label>
 
+        {/* Group 2: Description */}
         <label>
-          Location(s)
+          Job Description
           <textarea
-            name="locations"
-            value={formData.locations}
+            name="job_description"
+            value={formData.job_description}
             onChange={handleChange}
-            placeholder="Please mention the work location(s)"
+            maxLength={6000}
+            placeholder="Describe the role, responsibilities..."
           />
+          <div className="char-count">{formData.job_description.length}/6000</div>
         </label>
 
         <label>
-          Remote Working
-          <input
-            type="text"
-            name="remoteWorking"
-            value={formData.remoteWorking}
-            onChange={handleChange}
-            placeholder="Specify if remote working is available"
-          />
-        </label>
-
-        <label>
-          Cost to Company (INR) <span className="required">*</span>
-          <input
-            type="number"
-            name="ctc"
-            value={formData.ctc}
-            onChange={handleChange}
-            required
-          />
-        </label>
-
-        <label>
-          Fixed Gross (INR)
-          <input
-            type="number"
-            name="fixedGross"
-            value={formData.fixedGross}
-            onChange={handleChange}
-          />
-        </label>
-
-        <label>
-          Bonuses
+          Skills Required
           <textarea
-            name="bonuses"
-            value={formData.bonuses}
+            name="skills_required"
+            value={formData.skills_required}
             onChange={handleChange}
-            placeholder="Mention any bonus components"
+            placeholder="Comma-separated skills"
           />
         </label>
 
-        <label>
-          Offer Letter
-          <input
-            type="file"
-            name="offerLetter"
-            accept=".pdf, .doc, .docx"
-            onChange={handleFileChange}
-          />
-        </label>
-
-        <label>
-          Letter of Intent
-          <input
-            type="file"
-            name="loi"
-            accept=".pdf, .doc, .docx"
-            onChange={handleFileChange}
-          />
-        </label>
-
-        <label>
-          Job Description / Specifications
+        {/* <label>
+          Eligible Branch
           <textarea
-            name="jobDescription"
-            value={formData.jobDescription}
+            name="eligibleCourses"
+            value={formData.eligibleCourses}
             onChange={handleChange}
-            placeholder="Specify job description"
-            maxLength="6000"
+            placeholder="Branches or degrees allowed"
           />
-          <div className="char-count">
-            {formData.jobDescription.length}/6000 characters
-          </div>
-        </label>
+        </label> */}
 
         <label>
           Bond Details
           <textarea
-            name="bondDetails"
-            value={formData.bondDetails}
+            name="bond_details"
+            value={formData.bond_details}
             onChange={handleChange}
-            placeholder="Specify bond details"
-            maxLength="6000"
+            placeholder="Mention bond duration or conditions"
           />
         </label>
 
         <label>
-          Other Benefits
+          Selection Process
           <textarea
-            name="otherBenefits"
-            value={formData.otherBenefits}
+            name="selection_process"
+            value={formData.selection_process}
             onChange={handleChange}
-            placeholder="Specify other benefits"
-            maxLength="6000"
+            placeholder="Describe interview rounds, tests etc."
           />
         </label>
 
+        {/* Group 3: Dates & Timing */}
+        <label>
+          Registration Open Date
+          <input type="date" name="registration_start_date" value={formData.registration_start_date} onChange={handleChange} />
+        </label>
+
+        <label>
+          Registration Close Date
+          <input type="date" name="registration_end_date" value={formData.registration_end_date} onChange={handleChange} />
+        </label>
+
+        <label>
+          Joining Date
+          <input type="date" name="joining_date" value={formData.joining_date} onChange={handleChange} />
+        </label>
+
+        {/* <label>
+          Duration
+          <input
+            type="text"
+            name="duration"
+            value={formData.duration}
+            onChange={handleChange}
+            placeholder="e.g. 6 months"
+          />
+        </label> */}
+
+        {/* <label>
+          Timing
+          <input
+            type="text"
+            name="timing"
+            value={formData.timing}
+            onChange={handleChange}
+            placeholder="e.g. 9AM - 5PM"
+          />
+        </label> */}
+
+        <label>
+          Working Mode (Remote/On-site/Hybrid)
+          <input
+            type="text"
+            name="remote_working"
+            value={formData.remote_working}
+            onChange={handleChange}
+          />
+        </label>
+
+        {/* Group 4: Compensation */}
+        <label>
+          Cost to Company (INR)
+          <input type="number" name="cost_to_company" value={formData.cost_to_company} onChange={handleChange} />
+        </label>
+
+        {/* <label>
+          Stipend (if any)
+          <input type="text" name="stipend" value={formData.stipend} onChange={handleChange} />
+        </label> */}
+
+        <label>
+          Fixed Gross (INR)
+          <input type="number" name="fixed_gross" value={formData.fixed_gross} onChange={handleChange} />
+        </label>
+
+        <label>
+          Bonuses
+          <textarea name="bonuses" value={formData.bonuses} onChange={handleChange} />
+        </label>
+
+        <label>
+          Other Benefits
+          <textarea name="other_benefits" value={formData.other_benefits} onChange={handleChange} />
+        </label>
+
+        {/* Group 5: Company Info */}
+        {/* <label>
+          Company Website
+          <input type="url" name="companyWebsite" value={formData.companyWebsite} onChange={handleChange} />
+        </label> */}
+{/* 
+        <label>
+          Industry
+          <input type="text" name="industry" value={formData.industry} onChange={handleChange} />
+        </label> */}
+
+        {/* <label>
+          Company Size
+          <input type="text" name="companySize" value={formData.companySize} onChange={handleChange} />
+        </label> */}
+
+        <label>
+          Location(s)
+          <textarea name="location" value={formData.location} onChange={handleChange} />
+        </label>
+
+        {/* Files */}
+        <label>
+          Company Logo          
+          <input type="file" name="logo_path" accept=".jpg,.jpeg,.png" onChange={handleFileChange} />
+        </label>
+
+        <label>
+          Offer Letter
+          <input type="file" name="offer_letter_path" accept=".pdf,.doc,.docx" onChange={handleFileChange} />
+        </label>
+
+        <label>
+          Letter of Intent
+          <input type="file" name="letter_of_intent_path" accept=".pdf,.doc,.docx" onChange={handleFileChange} />
+        </label>
+
+        {/* Buttons */}
         <div className="form-buttons">
           <button type="button" className="cancel-btn" onClick={handleGoBack}>
             Cancel
           </button>
           <button type="submit" className="submit-btn">
-            Submit For Approval
+            Submit for Approval
           </button>
         </div>
       </form>

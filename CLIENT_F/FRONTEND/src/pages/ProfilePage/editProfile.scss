@@ -1,0 +1,137 @@
+.edit-profile-container {
+  max-width: 600px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 32px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+
+  .top-bar {
+    margin-bottom: 20px;
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: #3593e5;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #1976d2;
+      }
+    }
+  }
+
+  h1 {
+    margin-bottom: 24px;
+    font-weight: 700;
+    font-size: 28px;
+    color: #222;
+    text-align: center;
+  }
+
+  form.edit-profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 600;
+      font-size: 14px;
+      color: #555;
+
+      .required {
+        color: #e63946;
+        margin-left: 4px;
+      }
+
+      input,
+      textarea {
+        margin-top: 6px;
+        padding: 10px 14px;
+        font-size: 15px;
+        border: 1.5px solid #ccc;
+        border-radius: 8px;
+        outline: none;
+        transition: border-color 0.3s ease;
+
+        &:focus {
+          border-color: #3593e5;
+          box-shadow: 0 0 0 2px rgba(53, 147, 229, 0.25);
+        }
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 90px;
+        font-family: inherit;
+      }
+
+      input::placeholder {
+        color: #aaa;
+        font-style: italic;
+      }
+    }
+
+    .form-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      margin-top: 12px;
+
+      button {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        border: none;
+        transition: background-color 0.3s ease;
+
+        &.cancel-btn {
+          background-color: #eee;
+          color: #555;
+
+          &:hover {
+            background-color: #ddd;
+          }
+        }
+
+        &.save-btn {
+          background-color: #3593e5;
+          color: white;
+
+          &:hover {
+            background-color: #1976d2;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 20px 16px;
+
+    h1 {
+      font-size: 24px;
+    }
+
+    form.edit-profile-form {
+      .form-buttons {
+        flex-direction: column;
+
+        button {
+          width: 100%;
+          padding: 12px 0;
+        }
+      }
+    }
+  }
+}

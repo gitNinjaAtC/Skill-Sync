@@ -1,3 +1,6 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import {
   FacebookTwoTone as FacebookTwoToneIcon,
   LinkedIn as LinkedInIcon,
@@ -5,56 +8,114 @@ import {
   Twitter as TwitterIcon,
 } from "@mui/icons-material";
 
+import SkillsSection from "./SkillsSection";
+import EducationSection from "./EducationSection";
+import ProfessionalExperienceSection from "./ProfessionalExperienceSection";
+import OthersSection from "./OthersSection";
+
 const ProfileInfo = ({ userId }) => {
-  const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth",
-        block: "center",
-       });
-    }
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState("skills");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8800/API_B/profile/${userId}`, {
+          withCredentials: true,
+        });
+        setUserData(res.data);
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+        setError("Failed to load profile info.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) fetchUserData();
+  }, [userId]);
+
+  const handleEditClick = () => navigate(`/edit-profile/${userId}`);
+
+  if (loading) return <div>Loading profile...</div>;
+  if (error) return <div className="error">{error}</div>;
+
+  const {
+    name = "No Name Provided",
+    description = "",
+    skills = "",
+    education = "",
+    experience = "",
+    others = "",
+    socialLinks = {},
+    facebook,
+    instagram,
+    twitter,
+    linkedin,
+  } = userData;
+
+  const finalLinks = {
+    facebook: facebook || socialLinks.facebook,
+    instagram: instagram || socialLinks.instagram,
+    twitter: twitter || socialLinks.twitter,
+    linkedin: linkedin || socialLinks.linkedin,
   };
 
   return (
     <div className="profile-info">
       <div className="profile-header">
-        <h2>Shivam Kumar Kesharwani</h2>
-        <button className="edit-btn">Edit Profile</button>
+        <h2>{name}</h2>
+        <button className="edit-btn" onClick={handleEditClick}>
+          Edit Profile
+        </button>
       </div>
 
-      <p className="description">
-        Motivated Computer Science and Engineering student with practical experience
-        in web development using HTML, CSS, JavaScript, React.js, and MySQL. Passionate
-        about building responsive, user-friendly applications and contributing to impactful,
-        real-world projects. Eager to grow as a full-stack developer while supporting the organization’s
-        technological goals through continuous learning and collaboration.
-      </p>
+      {/* Always-visible description */}
+      <p className="description">{description}</p>
 
-      <div className="profile-actions">
-        <button className="message-btn">Message</button>
-      </div>
-
+    <div className="profile-actions">
       <div className="social-links">
-        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-          <FacebookTwoToneIcon fontSize="large" />
-        </a>
-        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-          <InstagramIcon fontSize="large" />
-        </a>
-        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-          <TwitterIcon fontSize="large" />
-        </a>
-        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-          <LinkedInIcon fontSize="large" />
-        </a>
+        {finalLinks.facebook && (
+          <a href={finalLinks.facebook} target="_blank" rel="noopener noreferrer" title="Facebook">
+            <FacebookTwoToneIcon fontSize="large" />
+          </a>
+        )}
+        {finalLinks.instagram && (
+          <a href={finalLinks.instagram} target="_blank" rel="noopener noreferrer" title="Instagram">
+            <InstagramIcon fontSize="large" />
+          </a>
+        )}
+        {finalLinks.twitter && (
+          <a href={finalLinks.twitter} target="_blank" rel="noopener noreferrer" title="Twitter">
+            <TwitterIcon fontSize="large" />
+          </a>
+        )}
+        {finalLinks.linkedin && (
+          <a href={finalLinks.linkedin} target="_blank" rel="noopener noreferrer" title="LinkedIn">
+            <LinkedInIcon fontSize="large" />
+          </a>
+        )}
+      </div>
+      <button className="message-btn">Message</button>
+    </div>
+
+      {/* Tab Navigation (without "About") */}
+      <div className="profile-tabs">
+        <button className={activeTab === "skills" ? "active" : ""} onClick={() => setActiveTab("skills")}>Skills</button>
+        <button className={activeTab === "education" ? "active" : ""} onClick={() => setActiveTab("education")}>Education</button>
+        <button className={activeTab === "experience" ? "active" : ""} onClick={() => setActiveTab("experience")}>Professional Experience</button>
+        <button className={activeTab === "others" ? "active" : ""} onClick={() => setActiveTab("others")}>Others</button>
       </div>
 
-      <div className="profile-tabs">
-        <button onClick={() => scrollToSection("about")}>About</button>
-        <button onClick={() => scrollToSection("skills")}>Skills</button>
-        <button onClick={() => scrollToSection("education")}>Education</button>
-        <button onClick={() => scrollToSection("experience")}>Professional Experience</button>
-        <button onClick={() => scrollToSection("others")}>Others</button>
+      {/* Conditional Tab Content */}
+      <div className="tab-content">
+        {activeTab === "skills" && <SkillsSection skills={skills} />}
+        {activeTab === "education" && <EducationSection education={education} />}
+        {activeTab === "experience" && <ProfessionalExperienceSection experience={experience} />}
+        {activeTab === "others" && <OthersSection others={others} />}
       </div>
     </div>
   );

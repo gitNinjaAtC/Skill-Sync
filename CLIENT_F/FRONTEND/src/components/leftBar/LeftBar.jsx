@@ -44,7 +44,7 @@ const LeftBar = () => {
             <img src={Groups} alt="Groups" />
             <span>Forums</span>
           </div>
-          <div className="item" onClick={() => navigate("/jobs")}>
+          <div className="item" onClick={() => navigate("/job")}>
             <img src={Market} alt="Market" />
             <span>Jobs</span>
           </div>
