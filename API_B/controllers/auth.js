@@ -50,7 +50,7 @@ export const login = (req, res) => {
       if (!validPassword)
         return res.status(400).json("Wrong password or username");
 
-      const token = jwt.sign({ id: data[0].id }, process.env.JWT_SECRET, {
+      const token = jwt.sign({ id: data[0].id , role: data[0].role}, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
       const decoded = jwt.decode(token);

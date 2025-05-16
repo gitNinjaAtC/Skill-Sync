@@ -19,7 +19,8 @@ import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import EditProfile from "./pages/ProfilePage/EditProfile";
 import Forums from "./pages/forums/Forums";
 import CreateForum from "./pages/createForum/createForum";
-import Jobs from "./pages/jobs/Jobs";
+import Jobs from "./pages/job/job";
+import JobDescription from "./pages/job/JobDescription"; // 👈 Add this
 import CreateOffer from "./pages/jobs/CreateOffer";
 import Events from "./pages/events/Events";
 import EventDescription from "./pages/events/EventDescription";
@@ -29,7 +30,6 @@ function App() {
   const { darkMode } = useContext(DarkModeContext);
   const queryClient = new QueryClient();
 
-  // Main layout with Navbar, LeftBar, and nested routing (Outlet)
   const Layout = () => (
     <QueryClientProvider client={queryClient}>
       <div className={`theme-${darkMode ? "dark" : "light"}`}>
@@ -44,12 +44,10 @@ function App() {
     </QueryClientProvider>
   );
 
-  // Redirect unauthenticated users
   const ProtectedRoute = ({ children }) => {
     return currentUser ? children : <Navigate to="/login" replace />;
   };
 
-  // Define application routes
   const router = createBrowserRouter([
     {
       path: "/",
@@ -59,17 +57,18 @@ function App() {
         </ProtectedRoute>
       ),
       children: [
-        { path: "/", element: <Home /> },
-        { path: "/profile/:id", element: <ProfilePage /> },
-        { path: "/edit-profile/:id", element: <EditProfile /> },
-        { path: "/forums", element: <Forums /> },
-        { path: "/create-forum", element: <CreateForum /> },
-        { path: "/jobs", element: <Jobs /> },
-        { path: "/create-offer", element: <CreateOffer /> },
-        { path: "/events", element: <Events /> },
-        { path: "/events/:tab", element: <Events /> },
-        { path: "/event/:id", element: <EventDescription /> },
-      ],
+  { path: "/", element: <Home /> },
+  { path: "/profile/:id", element: <ProfilePage /> },
+  { path: "/edit-profile/:id", element: <EditProfile /> },
+  { path: "/forums", element: <Forums /> },
+  { path: "/create-forum", element: <CreateForum /> },
+  { path: "/job", element: <Jobs /> },
+  { path: "/jobs/:id", element: <JobDescription /> },
+  { path: "/jobs/CreateOffer", element: <CreateOffer /> }, // ✅ Fixed
+  { path: "/events", element: <Events /> },
+  { path: "/events/:tab", element: <Events /> },
+  { path: "/event/:id", element: <EventDescription /> },
+],
     },
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
