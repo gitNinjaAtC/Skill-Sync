@@ -15,6 +15,7 @@ const Post = ({ post }) => {
   const [commentOpen, setCommentOpen] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
+  const [commentsCount, setCommentsCount] = useState(0);
   const [likedBy, setLikedBy] = useState([]);
   const [showLikedBy, setShowLikedBy] = useState(false);
 
@@ -155,7 +156,7 @@ const Post = ({ post }) => {
           </div>
           <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
             <TextsmsOutlinedIcon />
-            Comments
+            {commentsCount} Comments
           </div>
           <div className="item">
             <ShareOutlinedIcon />

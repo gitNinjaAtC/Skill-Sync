@@ -1,12 +1,10 @@
 import "./leftBar.scss";
-import Friends from "../../assets/1.png";
-import Groups from "../../assets/2.png";
-import Market from "../../assets/3.png";
-import Memories from "../../assets/5.png";
-import Events from "../../assets/6.png";
-import Gallery from "../../assets/8.png";
-import Videos from "../../assets/9.png";
-import Messages from "../../assets/10.png";
+import Friends from "../../assets/peoples.png";
+import Forums from "../../assets/forums.png";
+import Jobs from "../../assets/Job.png";
+import Events from "../../assets/Events.png";
+import Gallery from "../../assets/gallery.png";
+import Messages from "../../assets/message.png";
 import Resume from "../../assets/11.png";
 import Fund from "../../assets/13.png";
 import { AuthContext } from "../../context/authContext";
@@ -41,11 +39,11 @@ const LeftBar = () => {
             <span>Friends</span>
           </div>
           <div className="item" onClick={() => navigate("/forums")}>
-            <img src={Groups} alt="Groups" />
+            <img src={Forums} alt="Forums" />
             <span>Forums</span>
           </div>
           <div className="item" onClick={() => navigate("/job")}>
-            <img src={Market} alt="Market" />
+            <img src={Jobs} alt="Jobs" />
             <span>Jobs</span>
           </div>
           <div className="item" onClick={() => navigate("/events")}>

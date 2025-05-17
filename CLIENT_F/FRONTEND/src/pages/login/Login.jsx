@@ -1,8 +1,7 @@
-import { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import "./login.scss";
-import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [inputs, setInputs] = useState({
@@ -11,9 +10,8 @@ const Login = () => {
   });
 
   const [err, setErr] = useState(null);
-
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
+  const { login, currentUser } = useContext(AuthContext);
 
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -21,9 +19,10 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setErr(null);
     try {
       await login(inputs);
-      navigate("/");
+      // Do not navigate here
     } catch (err) {
       const errorMessage =
         err.response?.data?.error ||
@@ -32,6 +31,13 @@ const Login = () => {
       setErr(errorMessage);
     }
   };
+
+  // ✅ Navigate only when currentUser is set
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/");
+    }
+  }, [currentUser, navigate]);
 
   return (
     <div className="login">

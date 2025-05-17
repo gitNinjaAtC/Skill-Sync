@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Job.scss";
+import Jobs from "../../assets/Job.png";
 
 const popularTags = [
   "CSS",
@@ -68,9 +69,7 @@ const Job = () => {
     <div className="job-page">
       <header className="job-header">
         <div className="job-header-icon" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#7a59e0" viewBox="0 0 24 24">
-            <path d="M14 4V3a1 1 0 0 0-2 0v1H5a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-5zM4 16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3H4v3zm10-4h-4v-2h4v2z" />
-          </svg>
+          <img src={Jobs} alt="Jobs" />
         </div>
         <h1>Jobs</h1>
       </header>

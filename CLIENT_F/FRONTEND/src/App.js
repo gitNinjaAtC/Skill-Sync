@@ -1,6 +1,11 @@
 import "./style.scss";
 import { useContext } from "react";
-import { createBrowserRouter, RouterProvider, Navigate, Outlet } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+  Outlet,
+} from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Contexts
@@ -10,6 +15,7 @@ import { AuthContext } from "./context/authContext";
 // Layout Components
 import Navbar from "./components/navbar/Navbar";
 import LeftBar from "./components/leftBar/LeftBar";
+import Footer from "./components/footer/Footer"; // ✅ Import Footer
 
 // Pages
 import Login from "./pages/login/Login";
@@ -20,7 +26,7 @@ import EditProfile from "./pages/ProfilePage/EditProfile";
 import Forums from "./pages/forums/Forums";
 import CreateForum from "./pages/createForum/createForum";
 import Jobs from "./pages/job/job";
-import JobDescription from "./pages/job/JobDescription"; // 👈 Add this
+import JobDescription from "./pages/job/JobDescription";
 import CreateOffer from "./pages/jobs/CreateOffer";
 import Events from "./pages/events/Events";
 import EventDescription from "./pages/events/EventDescription";
@@ -37,9 +43,10 @@ function App() {
         <div style={{ display: "flex" }}>
           <LeftBar />
           <div style={{ flex: 6 }}>
-            <Outlet />
+            <Outlet />            
           </div>
         </div>
+        <Footer /> {/* ✅ Footer placed at the bottom */}
       </div>
     </QueryClientProvider>
   );
@@ -57,18 +64,18 @@ function App() {
         </ProtectedRoute>
       ),
       children: [
-  { path: "/", element: <Home /> },
-  { path: "/profile/:id", element: <ProfilePage /> },
-  { path: "/edit-profile/:id", element: <EditProfile /> },
-  { path: "/forums", element: <Forums /> },
-  { path: "/create-forum", element: <CreateForum /> },
-  { path: "/job", element: <Jobs /> },
-  { path: "/jobs/:id", element: <JobDescription /> },
-  { path: "/jobs/CreateOffer", element: <CreateOffer /> }, // ✅ Fixed
-  { path: "/events", element: <Events /> },
-  { path: "/events/:tab", element: <Events /> },
-  { path: "/event/:id", element: <EventDescription /> },
-],
+        { path: "/", element: <Home /> },
+        { path: "/profile/:id", element: <ProfilePage /> },
+        { path: "/edit-profile/:id", element: <EditProfile /> },
+        { path: "/forums", element: <Forums /> },
+        { path: "/create-forum", element: <CreateForum /> },
+        { path: "/job", element: <Jobs /> },
+        { path: "/jobs/:id", element: <JobDescription /> },
+        { path: "/jobs/CreateOffer", element: <CreateOffer /> },
+        { path: "/events", element: <Events /> },
+        { path: "/events/:tab", element: <Events /> },
+        { path: "/event/:id", element: <EventDescription /> },
+      ],
     },
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
