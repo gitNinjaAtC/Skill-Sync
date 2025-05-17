@@ -6,6 +6,8 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { DarkModeContext } from "../../context/darkModeContext";
@@ -17,6 +19,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -35,14 +38,14 @@ const Navbar = () => {
     <>
       <div className="navbar">
         <div className="left">
-          <Link to="/" className="logo">
-            SISTec
-          </Link>
+          {/* Hamburger Menu Icon for Mobile */}
+          <div className="hamburgerMenu" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            {mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
+          </div>
 
-          <div
-            className="mobileSearchIcon"
-            onClick={() => setMobileSearchOpen(true)}
-          >
+          <Link to="/" className="logo">SISTec</Link>
+
+          <div className="mobileSearchIcon" onClick={() => setMobileSearchOpen(true)}>
             <SearchOutlinedIcon />
           </div>
         </div>
@@ -55,29 +58,24 @@ const Navbar = () => {
         </div>
 
         <div className="right">
-          {/* Home icon always visible */}
           <Link to="/" className="homeIconWrapper">
             <HomeOutlinedIcon className="homeIcon" />
           </Link>
 
-          {/* Theme toggle icon */}
           {darkMode ? (
             <WbSunnyOutlinedIcon onClick={toggle} className="themeIcon" />
           ) : (
             <DarkModeOutlinedIcon onClick={toggle} className="themeIcon" />
           )}
 
-          {/* Desktop-only icons */}
           <div className="rightIconsDesktop">
             <button className="profile-button" onClick={handleProfile}>
               <PersonOutlinedIcon />
             </button>
-
             <EmailOutlinedIcon />
             <NotificationsOutlinedIcon />
           </div>
 
-          {/* User section always visible */}
           <div className="user">
             <img src={currentUser?.profilePic} alt="Profile" />
             <span>{currentUser?.name}</span>
@@ -90,6 +88,7 @@ const Navbar = () => {
         </div>
       </div>
 
+      {/* Mobile Search Overlay */}
       {mobileSearchOpen && (
         <div className="mobileSearchOverlay">
           <div className="mobileSearchContainer">
@@ -101,6 +100,13 @@ const Navbar = () => {
               onBlur={() => setMobileSearchOpen(false)}
             />
           </div>
+        </div>
+      )}
+
+      {/* Mobile Sidebar Placeholder (Replace with actual sidebar if needed) */}
+      {mobileMenuOpen && (
+        <div className="mobileSidebar">
+          <p>Sidebar content here...</p>
         </div>
       )}
     </>

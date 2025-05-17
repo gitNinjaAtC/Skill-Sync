@@ -1,3 +1,5 @@
+@import "../../style.scss";
+
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -22,8 +24,9 @@
       text-decoration: none;
     }
 
-    .mobileSearchIcon {
-      display: none; // hidden on desktop
+    .mobileSearchIcon,
+    .hamburgerMenu {
+      display: none;
       cursor: pointer;
 
       svg {
@@ -74,7 +77,6 @@
     align-items: center;
     gap: 15px;
 
-    /* Home icon always visible */
     .homeIconWrapper {
       display: flex;
       align-items: center;
@@ -115,8 +117,8 @@
       align-items: center;
       gap: 15px;
 
-      @media (max-width: 768px) {
-        display: none; // hide desktop-only icons on mobile
+      @include tablet {
+        display: none;
       }
     }
 
@@ -137,6 +139,10 @@
         font-weight: 500;
         color: #333;
         white-space: nowrap;
+
+        @include tablet {
+          display: none;
+        }
       }
 
       .logout-button {
@@ -155,39 +161,20 @@
     }
   }
 
-  @media (max-width: 768px) {
+  @include tablet {
     .left {
-      .mobileSearchIcon {
-        display: block; // show on mobile
+      .mobileSearchIcon,
+      .hamburgerMenu {
+        display: block;
       }
     }
 
     .center {
-      display: none; // hide search bar on mobile
-    }
-
-    .right {
-      /* Ensure home icon stays visible */
-      .homeIconWrapper {
-        display: flex;
-      }
-
-      /* desktop icons hidden on mobile */
-      .rightIconsDesktop {
-        display: none;
-      }
-
-      /* user section stays visible */
-      .user {
-        span {
-          display: none; // optional: hide username on small mobile to save space
-        }
-      }
+      display: none;
     }
   }
 }
 
-/* Mobile search popup overlay */
 .mobileSearchOverlay {
   position: fixed;
   top: 60px;
@@ -223,4 +210,16 @@
       }
     }
   }
+}
+
+.mobileSidebar {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 250px;
+  height: calc(100% - 60px);
+  background-color: #fff;
+  border-right: 1px solid #e0e0e0;
+  z-index: 1100;
+  padding: 20px;
 }

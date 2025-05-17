@@ -49,17 +49,16 @@ const LeftBar = () => {
           <div className="item" onClick={() => navigate("/events")}>
             <img src={Events} alt="Events" />
             <span>Events</span>
-          </div>  
+          </div>
           <div className="item">
             <img src={Gallery} alt="Gallery" />
             <span>Gallery</span>
-          </div>          
-          <div className="item" >
+          </div>
+          <div className="item">
             <img src={Messages} alt="Messages" />
             <span>Messages</span>
-          </div>   
-        
-        </div>        
+          </div>
+        </div>
 
         <hr />
 

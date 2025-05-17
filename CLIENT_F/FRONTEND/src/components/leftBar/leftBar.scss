@@ -11,6 +11,10 @@
     color: themed("textColor");
     z-index: 11;
 
+    @include tablet {
+      display: none;
+    }
+
     @include mobile {
       display: none;
     }
@@ -79,7 +83,6 @@
           padding: 6px 8px;
           border-radius: 8px;
           transition: background 0.2s ease;
-          margin: 0px;
 
           &:hover {
             background-color: themed("hoverBg");
