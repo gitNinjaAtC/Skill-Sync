@@ -66,56 +66,57 @@ const ProfileInfo = ({ userId }) => {
 
   return (
     <div className="profile-info">
-      <div className="profile-header">
-        <h2>{name}</h2>
-        <button className="edit-btn" onClick={handleEditClick}>
-          Edit Profile
-        </button>
+      {/* 1st Division: Header only */}
+      <div className="profile-info-header">
+        <div className="profile-header">
+          <h2>{name}</h2>
+          <button className="edit-btn" onClick={handleEditClick}>Edit Profile</button>
+        </div>
       </div>
 
-      {/* Always-visible description */}
-      <p className="description">{description}</p>
+      {/* 2nd Division: Everything below header */}
+      <div className="profile-info-body">
+        <p className="description">{description}</p>
 
-    <div className="profile-actions">
-      <div className="social-links">
-        {finalLinks.facebook && (
-          <a href={finalLinks.facebook} target="_blank" rel="noopener noreferrer" title="Facebook">
-            <FacebookTwoToneIcon fontSize="large" />
-          </a>
-        )}
-        {finalLinks.instagram && (
-          <a href={finalLinks.instagram} target="_blank" rel="noopener noreferrer" title="Instagram">
-            <InstagramIcon fontSize="large" />
-          </a>
-        )}
-        {finalLinks.twitter && (
-          <a href={finalLinks.twitter} target="_blank" rel="noopener noreferrer" title="Twitter">
-            <TwitterIcon fontSize="large" />
-          </a>
-        )}
-        {finalLinks.linkedin && (
-          <a href={finalLinks.linkedin} target="_blank" rel="noopener noreferrer" title="LinkedIn">
-            <LinkedInIcon fontSize="large" />
-          </a>
-        )}
-      </div>
-      <button className="message-btn">Message</button>
-    </div>
+        <div className="profile-actions">
+          <div className="social-links">
+            {finalLinks.facebook && (
+              <a href={finalLinks.facebook} target="_blank" rel="noopener noreferrer" title="Facebook">
+                <FacebookTwoToneIcon fontSize="large" />
+              </a>
+            )}
+            {finalLinks.instagram && (
+              <a href={finalLinks.instagram} target="_blank" rel="noopener noreferrer" title="Instagram">
+                <InstagramIcon fontSize="large" />
+              </a>
+            )}
+            {finalLinks.twitter && (
+              <a href={finalLinks.twitter} target="_blank" rel="noopener noreferrer" title="Twitter">
+                <TwitterIcon fontSize="large" />
+              </a>
+            )}
+            {finalLinks.linkedin && (
+              <a href={finalLinks.linkedin} target="_blank" rel="noopener noreferrer" title="LinkedIn">
+                <LinkedInIcon fontSize="large" />
+              </a>
+            )}
+          </div>
+          <button className="message-btn">Message</button>
+        </div>
 
-      {/* Tab Navigation (without "About") */}
-      <div className="profile-tabs">
-        <button className={activeTab === "skills" ? "active" : ""} onClick={() => setActiveTab("skills")}>Skills</button>
-        <button className={activeTab === "education" ? "active" : ""} onClick={() => setActiveTab("education")}>Education</button>
-        <button className={activeTab === "experience" ? "active" : ""} onClick={() => setActiveTab("experience")}>Professional Experience</button>
-        <button className={activeTab === "others" ? "active" : ""} onClick={() => setActiveTab("others")}>Others</button>
-      </div>
+        <div className="profile-tabs">
+          <button className={activeTab === "skills" ? "active" : ""} onClick={() => setActiveTab("skills")}>Skills</button>
+          <button className={activeTab === "education" ? "active" : ""} onClick={() => setActiveTab("education")}>Education</button>
+          <button className={activeTab === "experience" ? "active" : ""} onClick={() => setActiveTab("experience")}>Professional Experience</button>
+          <button className={activeTab === "others" ? "active" : ""} onClick={() => setActiveTab("others")}>Others</button>
+        </div>
 
-      {/* Conditional Tab Content */}
-      <div className="tab-content">
-        {activeTab === "skills" && <SkillsSection skills={skills} />}
-        {activeTab === "education" && <EducationSection education={education} />}
-        {activeTab === "experience" && <ProfessionalExperienceSection experience={experience} />}
-        {activeTab === "others" && <OthersSection others={others} />}
+        <div className="tab-content">
+          {activeTab === "skills" && <SkillsSection skills={skills} />}
+          {activeTab === "education" && <EducationSection education={education} />}
+          {activeTab === "experience" && <ProfessionalExperienceSection experience={experience} />}
+          {activeTab === "others" && <OthersSection others={others} />}
+        </div>
       </div>
     </div>
   );

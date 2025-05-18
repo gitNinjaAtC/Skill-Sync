@@ -29,7 +29,6 @@ import Jobs from "./pages/job/job";
 import JobDescription from "./pages/job/JobDescription";
 import CreateOffer from "./pages/jobs/CreateOffer";
 import Events from "./pages/events/Events";
-import EventDescription from "./pages/events/EventDescription";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -73,8 +72,7 @@ function App() {
         { path: "/jobs/:id", element: <JobDescription /> },
         { path: "/jobs/CreateOffer", element: <CreateOffer /> },
         { path: "/events", element: <Events /> },
-        { path: "/events/:tab", element: <Events /> },
-        { path: "/event/:id", element: <EventDescription /> },
+
       ],
     },
     { path: "/login", element: <Login /> },

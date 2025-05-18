@@ -19,7 +19,6 @@ const Post = ({ post }) => {
   const [likedBy, setLikedBy] = useState([]);
   const [showLikedBy, setShowLikedBy] = useState(false);
 
-  // Fetch like status, count, and users who liked on mount
   useEffect(() => {
     const fetchLikes = async () => {
       try {
@@ -43,7 +42,6 @@ const Post = ({ post }) => {
     }
   }, [post.id, currentUser, loading]);
 
-  // Like or unlike the post
   const handleLike = async () => {
     if (!currentUser) {
       alert("Please log in to like posts.");
@@ -58,10 +56,12 @@ const Post = ({ post }) => {
         });
         setLiked(false);
         setLikesCount((prev) => prev - 1);
-        setLikedBy((prev) => prev.filter((user) => user.id !== currentUser.id));
+        setLikedBy((prev) =>
+          prev.filter((user) => user.id !== currentUser.id)
+        );
       } else {
         await axios.post(
-          `http://localhost:8800/API_B/likes`,
+          "http://localhost:8800/API_B/likes",
           {
             postId: post.id,
             userId: currentUser.id,
@@ -81,7 +81,6 @@ const Post = ({ post }) => {
     }
   };
 
-  // Share the post
   const handleShare = async () => {
     if (!currentUser) {
       alert("Please log in to share posts.");
@@ -90,7 +89,7 @@ const Post = ({ post }) => {
 
     try {
       const res = await axios.post(
-        `http://localhost:8800/API_B/posts`,
+        "http://localhost:8800/API_B/posts",
         {
           desc: `Shared: ${post.desc}`,
           originalPostId: post.id,
@@ -99,7 +98,6 @@ const Post = ({ post }) => {
         { withCredentials: true }
       );
       alert(res.data.message || "Post shared successfully!");
-      // Refresh page for Admin posts
       if (res.data.message === "Post created successfully") {
         setTimeout(() => window.location.reload(), 3000);
       }
@@ -133,10 +131,12 @@ const Post = ({ post }) => {
           </div>
           <MoreHorizIcon />
         </div>
+
         <div className="content">
           <p>{post.desc}</p>
           {post.img && <img src={post.img} alt="" />}
         </div>
+
         <div className="info">
           <div
             className="item"
@@ -154,15 +154,18 @@ const Post = ({ post }) => {
               </div>
             )}
           </div>
+
           <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
             <TextsmsOutlinedIcon />
             {commentsCount} Comments
           </div>
-          <div className="item">
+
+          <div className="item" onClick={handleShare}>
             <ShareOutlinedIcon />
             Share
           </div>
         </div>
+
         {commentOpen && <Comments postId={post.id} />}
       </div>
     </div>
