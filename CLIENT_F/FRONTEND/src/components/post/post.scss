@@ -6,6 +6,7 @@
     -moz-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
     box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
     border-radius: 20px;
+    margin-bottom: 20px;
     background-color: themed("bg");
     color: themed("textColor");
 
@@ -16,10 +17,12 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        flex-wrap: wrap;
 
         .userInfo {
           display: flex;
           gap: 20px;
+          align-items: center;
 
           img {
             width: 40px;
@@ -34,10 +37,12 @@
 
             .name {
               font-weight: 500;
+              font-size: 16px;
             }
 
             .date {
               font-size: 12px;
+              color: gray;
             }
           }
         }
@@ -49,8 +54,8 @@
         img {
           width: 100%;
           max-height: 500px;
-          object-fit: cover;
-          margin-top: 20px;
+          object-fit: cover;          
+          border-radius: 10px;
         }
       }
 
@@ -58,6 +63,7 @@
         display: flex;
         align-items: center;
         gap: 20px;
+        flex-wrap: wrap;
 
         .item {
           display: flex;
@@ -65,6 +71,93 @@
           gap: 10px;
           cursor: pointer;
           font-size: 14px;
+        }
+      }
+    }
+
+    // Tablet: max-width 768px
+    @media (max-width: 768px) {
+      .container {
+        padding: 16px;
+
+        .user {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .userInfo {
+          gap: 12px;
+
+          img {
+            width: 36px;
+            height: 36px;
+          }
+
+          .details {
+            .name {
+              font-size: 15px;
+            }
+
+            .date {
+              font-size: 11px;
+            }
+          }
+        }
+
+        .content {
+          img {
+            max-height: 400px;
+          }
+        }
+
+        .info {
+          gap: 16px;
+
+          .item {
+            font-size: 13px;
+          }
+        }
+      }
+    }
+
+    // Mobile: max-width 480px
+    @media (max-width: 480px) {
+      .container {
+        padding: 12px;
+
+        .userInfo {
+          gap: 10px;
+
+          img {
+            width: 32px;
+            height: 32px;
+          }
+
+          .details {
+            .name {
+              font-size: 14px;
+            }
+
+            .date {
+              font-size: 10px;
+            }
+          }
+        }
+
+        .content {
+          img {
+            max-height: 300px;
+          }
+        }
+
+        .info {
+          gap: 12px;
+
+          .item {
+            font-size: 12px;
+            gap: 8px;
+          }
         }
       }
     }

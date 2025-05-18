@@ -1,0 +1,149 @@
+@import "../../style.scss";
+
+.footer {
+  width: 100%;
+  background-color: #0e1628;
+  color: #d1d5db;
+  padding: 10px 20px 40px;
+  font-size: 14px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+
+  .footer-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 60px;
+    margin-top: 30px;
+    padding-left: 150px;
+    margin-bottom: 40px;
+
+    @include tablet {
+      padding-left: 0px;
+      align-content: center;
+      flex-direction: column;
+      gap: 30px;
+    }
+  }
+
+  .footer-section {
+    flex: 1;
+    min-width: 240px;
+
+    h2 {
+      color: #ffffff;
+      font-size: 25px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      position: relative;
+
+
+    }
+
+    p {
+      margin-bottom: 20px;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    a {
+      display: block;
+      margin-bottom: 15px;
+      color: #d1d5db;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+
+      &:hover {
+        color: #38bdf8;
+      }
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 10px;
+      color: #f3f4f6;
+      font-weight: 500;
+
+      svg {
+        color: #38bdf8;
+      }
+
+      span {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.3s;
+
+        &:hover {
+          color: #38bdf8;
+        }
+      }
+
+      @include tablet {
+        padding-left: 0px;
+        align-content: center;
+        flex-direction: column;
+        gap: 5px;
+        justify-content: center;
+        text-align: center;
+      }
+    }
+
+    .social-icons {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+
+      a {
+        font-size: 24px;
+        color: #9ca3af;
+        transition: all 0.3s ease;
+        display: inline-flex;
+
+        svg {
+          width: 36px;
+          height: 36px;
+        }
+
+        &:hover {
+          color: #38bdf8;
+          transform: scale(1.2);
+        }
+      }
+
+      @include tablet {
+        padding-left: 0px;
+        align-content: center;
+        justify-content: center;
+      }
+    }
+
+    @include tablet {
+      padding-left: 0px;
+      align-content: center;
+      text-align: center;
+    }
+  }
+
+  .footer-bottom {
+    border-top: 2px solid #1f2937;
+    padding-top: 30px;
+    text-align: center;
+    font-size: 13px;
+    color: #9ca3af;
+
+    span {
+      color: #38bdf8;
+      font-weight: 600;
+    }
+  }
+}
