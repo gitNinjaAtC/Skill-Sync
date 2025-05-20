@@ -50,9 +50,13 @@ export const login = (req, res) => {
       if (!validPassword)
         return res.status(400).json("Wrong password or username");
 
-      const token = jwt.sign({ id: data[0].id , role: data[0].role}, process.env.JWT_SECRET, {
-        expiresIn: "1h",
-      });
+      const token = jwt.sign(
+        { id: data[0].id, role: data[0].role },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "1h",
+        }
+      );
       const decoded = jwt.decode(token);
       console.log("Generated token:", token);
       console.log("Token payload:", {
@@ -86,6 +90,36 @@ export const login = (req, res) => {
     console.error("Login error:", error);
     return res.status(500).json({ error: error.message });
   }
+};
+
+export const verifyToken = (req, res) => {
+  const token = req.cookies.accessToken;
+
+  if (!token) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      console.error("JWT verification failed:", err);
+      return res.status(403).json({ error: "Invalid token" });
+    }
+
+    const q = "SELECT * FROM users WHERE id = ?";
+    db.query(q, [decoded.id], (err, data) => {
+      if (err) {
+        console.error("Database error during verify:", err);
+        return res.status(500).json({ error: "Database error" });
+      }
+
+      if (data.length === 0) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      const { password, ...user } = data[0];
+      return res.status(200).json({ user });
+    });
+  });
 };
 
 //LOGOUT
