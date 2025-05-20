@@ -26,21 +26,22 @@ const Post = ({ post }) => {
           `http://localhost:8800/API_B/likes/${post.id}`,
           { withCredentials: true }
         );
-        setLikesCount(res.data.totalLikes || 0);
-        setLiked(res.data.likedBy.some((user) => user.id === currentUser?.id));
-        setLikedBy(res.data.likedBy); // Array of { id, name }
+        //setLikedBy(res.data);
+        setLikesCount(res.data.length);
+        setLiked(res.data.some((user) => user.id === currentUser?.id));
       } catch (err) {
-        console.error(
-          "Failed to load likes:",
-          err.response?.data || err.message
-        );
+        console.error("Failed to fetch likes:", err);
       }
     };
 
-    if (currentUser && !loading) {
-      fetchLikes();
+    fetchLikes();
+  }, [post.id, currentUser?.id]);
+
+  useEffect(() => {
+    if (post?.id) {
+      fetchCommentsCount();
     }
-  }, [post.id, currentUser, loading]);
+  }, [post.id]);
 
   const handleLike = async () => {
     if (!currentUser) {
@@ -50,24 +51,22 @@ const Post = ({ post }) => {
 
     try {
       if (liked) {
+        // Unlike the post
         await axios.delete(`http://localhost:8800/API_B/likes/${post.id}`, {
-          data: { userId: currentUser.id },
           withCredentials: true,
         });
+
         setLiked(false);
-        setLikesCount((prev) => prev - 1);
-        setLikedBy((prev) =>
-          prev.filter((user) => user.id !== currentUser.id)
-        );
+        setLikesCount((prev) => Math.max(prev - 1, 0));
+        setLikedBy((prev) => prev.filter((user) => user.id !== currentUser.id));
       } else {
+        // Like the post
         await axios.post(
           "http://localhost:8800/API_B/likes",
-          {
-            postId: post.id,
-            userId: currentUser.id,
-          },
+          { postId: post.id },
           { withCredentials: true }
         );
+
         setLiked(true);
         setLikesCount((prev) => prev + 1);
         setLikedBy((prev) => [
@@ -81,30 +80,41 @@ const Post = ({ post }) => {
     }
   };
 
-  const handleShare = async () => {
+  const fetchCommentsCount = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8800/API_B/comments/${post.id}`,
+        {
+          withCredentials: true,
+        }
+      );
+      setCommentsCount(res.data.length); // Update count based on number of comments
+    } catch (err) {
+      console.error(
+        "Error fetching comments:",
+        err.response?.data || err.message
+      );
+    }
+  };
+
+  const handleShare = () => {
     if (!currentUser) {
       alert("Please log in to share posts.");
       return;
     }
 
-    try {
-      const res = await axios.post(
-        "http://localhost:8800/API_B/posts",
-        {
-          desc: `Shared: ${post.desc}`,
-          originalPostId: post.id,
-          userId: currentUser.id,
-        },
-        { withCredentials: true }
-      );
-      alert(res.data.message || "Post shared successfully!");
-      if (res.data.message === "Post created successfully") {
-        setTimeout(() => window.location.reload(), 3000);
-      }
-    } catch (err) {
-      console.error("Failed to share post:", err.response?.data || err.message);
-      alert("Failed to share the post.");
-    }
+    // The link to the post (you may want to replace with actual post URL if available)
+    const postUrl = `http://localhost:3000/post/${post.id}`; // replace with real frontend route if different
+    const shareText = encodeURIComponent(`Check out this post: ${post.desc}`);
+    const shareLink = encodeURIComponent(postUrl);
+
+    // You can modify this to open different platforms — here's an example with WhatsApp:
+    const whatsappUrl = `https://wa.me/?text=${shareText}%20${shareLink}`;
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${shareLink}`;
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${shareText}&url=${shareLink}`;
+
+    // You can choose one platform to open, or show a UI with options
+    window.open(whatsappUrl, "_blank");
   };
 
   if (loading) {
