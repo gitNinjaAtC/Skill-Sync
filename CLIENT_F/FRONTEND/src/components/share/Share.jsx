@@ -38,7 +38,7 @@ const Share = () => {
         { withCredentials: true }
       );
       console.log("Post response:", res.data);
-      setSuccess("Post sent for admin approval!");
+      setSuccess(res.data.message);
       setError(null);
       setDesc(""); // Clear input
       setTimeout(() => setSuccess(null), 3000); // Clear success message

@@ -77,7 +77,9 @@ const Job = () => {
       <main className="job-layout">
         <section className="job-main">
           <div className="filter-container">
-            <label htmlFor="filter-select" className="filter-label">Filter by Tag:</label>
+            <label htmlFor="filter-select" className="filter-label">
+              Filter by Tag:
+            </label>
             <select
               id="filter-select"
               aria-label="Filter jobs by tag"
@@ -86,7 +88,9 @@ const Job = () => {
             >
               <option value="All">All</option>
               {popularTags.map((tag) => (
-                <option key={tag} value={tag}>{tag}</option>
+                <option key={tag} value={tag}>
+                  {tag}
+                </option>
               ))}
             </select>
           </div>
@@ -97,71 +101,77 @@ const Job = () => {
             <p className="end-message">No jobs found for selected filter.</p>
           )}
 
-          {!loading && !error && filteredJobs.map((job) => (
-            <article key={job.id} className="job-card">
-              <div className="job-card-header">
-                <img
-                  src={job.logo}
-                  alt={`${job.company} logo`}
-                  className="job-logo"
-                />
-                <div className="job-title-company">
-                  <h2>{job.title}</h2>
-                  <p className="job-company">{job.company}</p>
+          {!loading &&
+            !error &&
+            filteredJobs.map((job) => (
+              <article key={job.id} className="job-card">
+                <div className="job-card-header">
+                  <img
+                    src={job.logo}
+                    alt={`${job.company} logo`}
+                    className="job-logo"
+                  />
+                  <div className="job-title-company">
+                    <h2>{job.title}</h2>
+                    <p className="job-company">{job.company}</p>
+                  </div>
+                  <div className="job-posted-status">
+                    <time dateTime={job.postedAgoISO}>{job.postedAgo}</time>
+                  </div>
                 </div>
-                <div className="job-posted-status">
-                  <time dateTime={job.postedAgoISO}>
-                    {job.postedAgo}
-                  </time>
-                </div>
-              </div>
 
-              <div className="job-tags">
-                {(job.tags || []).map((tag) => (
-                  <span
-                    key={tag}
-                    className={`job-tag ${
-                      filterTag !== "All" && filterTag.toLowerCase() !== tag.toLowerCase() ? "dimmed" : ""
-                    }`}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+                <div className="job-tags">
+                  {(job.tags || []).map((tag) => (
+                    <span
+                      key={tag}
+                      className={`job-tag ${
+                        filterTag !== "All" &&
+                        filterTag.toLowerCase() !== tag.toLowerCase()
+                          ? "dimmed"
+                          : ""
+                      }`}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
 
-              <div className="job-details">
-                <div>
-                  <strong>Job type</strong>
-                  <p>{job.jobType}</p>
+                <div className="job-details">
+                  <div>
+                    <strong>Job type</strong>
+                    <p>{job.jobType}</p>
+                  </div>
+                  <div>
+                    <strong>Industry</strong>
+                    <p>{job.industry}</p>
+                  </div>
+                  <div>
+                    <strong>CTC</strong>
+                    <p>{job.ctc}</p>
+                  </div>
+                  <div>
+                    <strong>Location</strong>
+                    <p>{job.location}</p>
+                  </div>
                 </div>
-                <div>
-                  <strong>Industry</strong>
-                  <p>{job.industry}</p>
-                </div>
-                <div>
-                  <strong>CTC</strong>
-                  <p>{job.ctc}</p>
-                </div>
-                <div>
-                  <strong>Location</strong>
-                  <p>{job.location}</p>
-                </div>
-              </div>
 
-              <div className="view-details">
-                <Link to={`/jobs/${job.id}`} className="view-details-link">
-                  ...View Details
-                </Link>
-              </div>
-            </article>
-          ))}
+                <div className="view-details">
+                  <Link to={`/jobs/${job.id}`} className="view-details-link">
+                    ...View Details
+                  </Link>
+                </div>
+              </article>
+            ))}
         </section>
 
         <aside className="sidebar">
           <div className="offer-note">
             <div className="illustration" />
             <h4>Have you received any offer directly?</h4>
-            <p>Please provide the offer details for the TPO's records and approval.</p>
+            <p>
+              Please provide the offer details for the TPO's records and
+              approval.
+            </p>
             <button className="create-offer" onClick={handleCreateJob}>
               + Create Job
             </button>

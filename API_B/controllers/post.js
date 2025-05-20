@@ -60,6 +60,7 @@ export const addPost = (req, res) => {
 
     if (userRole === "Admin") {
       // ✅ Admin: Insert directly into posts with status "approved"
+      console.log("🟢 ADMIN branch entered");
       const directPostQuery =
         "INSERT INTO posts (userId, `desc`, createdAt, status) VALUES (?, ?, NOW(), 'approved')";
       db.query(directPostQuery, [userId, desc], (err, result) => {
@@ -78,6 +79,7 @@ export const addPost = (req, res) => {
       });
     } else {
       // ✅ Alumni: Send to pending_posts for approval
+      console.log("🟡 ALUMNI branch entered");
       const adminApprovalQuery =
         "INSERT INTO pending_posts (userId, `desc`, createdAt) VALUES (?, ?, NOW())";
       db.query(adminApprovalQuery, [userId, desc], (err, result) => {
