@@ -14,6 +14,7 @@ export const getPosts = async (req, res) => {
       const postObj = post.toObject(); // convert mongoose doc to plain JS object
       return {
         ...postObj,
+        id: postObj._id,
         name: postObj.userId?.name || "User",
         profilePic: postObj.userId?.profilePic || "/default-avatar.png",
         userId: postObj.userId?._id || null, // keep userId for link routing

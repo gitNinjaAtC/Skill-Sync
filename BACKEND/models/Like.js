@@ -1,3 +1,4 @@
+// models/Like.js
 import mongoose from "mongoose";
 
 const likeSchema = new mongoose.Schema({
@@ -8,7 +9,7 @@ const likeSchema = new mongoose.Schema({
   },
   postId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Posts",
+    ref: "Post", // Changed from "Posts" to "Post"
     required: true,
   },
   createdAt: {
@@ -17,9 +18,4 @@ const likeSchema = new mongoose.Schema({
   },
 });
 
-// Compound unique index to prevent a user liking the same post multiple times
-likeSchema.index({ userId: 1, postId: 1 }, { unique: true });
-
-const Like = mongoose.model("Like", likeSchema);
-
-export default Like;
+export default mongoose.model("Like", likeSchema);

@@ -21,23 +21,26 @@ export const addLike = async (req, res) => {
 };
 
 // Remove a like
-export const removeLike = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const postId = req.params.postId;
+export const removeLike = (req, res) => {
+  const userId = req.user.id;
+  const postId = req.params.postId;
+  console.log("removeLike: userId=", userId, "postId=", postId); // Debug
 
-    const result = await Like.findOneAndDelete({ userId, postId });
-
-    if (!result) {
-      return res.status(404).json("Like not found.");
+  Like.findOneAndDelete(
+    {
+      userId: new mongoose.Types.ObjectId(userId),
+      postId: new mongoose.Types.ObjectId(postId),
+    },
+    (err, result) => {
+      if (err) {
+        console.error("removeLike: Error:", err); // Debug
+        return res.status(500).json({ error: err.message });
+      }
+      console.log("removeLike: Result=", result); // Debug
+      return res.status(200).json("Post unliked.");
     }
-
-    res.status(200).json("Post unliked.");
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  );
 };
-
 // Get all users who liked a post
 export const getLikes = async (req, res) => {
   try {
