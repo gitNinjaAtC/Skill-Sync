@@ -9,10 +9,10 @@ const Comments = ({ postId }) => {
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState(null);
 
-  // Fetch comments when component mounts
+  // Fetch comments when postId or currentUser changes
   useEffect(() => {
     const fetchComments = async () => {
-      if (!currentUser) return;
+      if (!currentUser || !postId) return;
 
       try {
         console.log(`Fetching comments for postId=${postId}`);
@@ -20,7 +20,14 @@ const Comments = ({ postId }) => {
           `http://localhost:8800/API_B/comments/${postId}`,
           { withCredentials: true }
         );
-        setComments(res.data);
+
+        // MongoDB _id to id mapping for frontend consistency
+        const normalizedComments = res.data.map((c) => ({
+          ...c,
+          id: c._id || c.id, // fallback if _id missing
+        }));
+
+        setComments(normalizedComments);
         setError(null);
       } catch (err) {
         console.error(
@@ -30,6 +37,7 @@ const Comments = ({ postId }) => {
         setError(err.response?.data?.message || "Failed to load comments.");
       }
     };
+
     fetchComments();
   }, [postId, currentUser]);
 
@@ -39,7 +47,6 @@ const Comments = ({ postId }) => {
       setError("Comment cannot be empty.");
       return;
     }
-
     if (!currentUser) {
       setError("Please log in to comment.");
       return;
@@ -53,7 +60,7 @@ const Comments = ({ postId }) => {
         { withCredentials: true }
       );
 
-      // Update comments list after successful post
+      // Add the new comment at the start with normalized id
       setComments((prev) => [
         {
           id: res.data.commentId,

@@ -1,135 +1,103 @@
-import { db } from "../connect.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import User from "../models/Users.js";
+// Adjust path if needed
 
-//REGISTER
-export const register = (req, res) => {
-  const q = "SELECT * FROM users WHERE username = ?";
-
-  db.query(q, [req.body.username], (err, data) => {
-    if (err) return res.status(500).json(err);
-    if (data.length > 0) return res.status(409).json("User already exists");
-
-    //HASH PASSWORD
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(req.body.password, salt);
-
-    const insertQuery =
-      "INSERT INTO users (username, email, password, name) VALUES (?)";
-    const values = [
-      req.body.username,
-      req.body.email,
-      hashedPassword,
-      req.body.name,
-    ];
-
-    db.query(insertQuery, [values], (err, data) => {
-      if (err) return res.status(500).json(err);
-      else console.log("User created successfully!");
-      return res.status(200).json("User created");
-    });
-  });
-};
-
-//login
-export const login = (req, res) => {
+// REGISTER
+export const register = async (req, res) => {
   try {
-    const q = "SELECT * FROM users WHERE username = ?";
+    const { username, email, password, name } = req.body;
 
-    db.query(q, [req.body.username], (err, data) => {
-      if (err) {
-        console.error("Database error:", err);
-        return res.status(500).json({ error: err.message });
-      }
-      if (data.length === 0) return res.status(404).json("User not found");
+    // Check if user already exists
+    const existingUser = await User.findOne({ username });
+    if (existingUser) return res.status(409).json("User already exists");
 
-      const validPassword = bcrypt.compareSync(
-        req.body.password,
-        data[0].password
-      );
-      if (!validPassword)
-        return res.status(400).json("Wrong password or username");
+    // Hash password
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
 
-      const token = jwt.sign(
-        { id: data[0].id, role: data[0].role },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "1h",
-        }
-      );
-      const decoded = jwt.decode(token);
-      console.log("Generated token:", token);
-      console.log("Token payload:", {
-        id: decoded.id,
-        iat: new Date(decoded.iat * 1000).toISOString(),
-        exp: new Date(decoded.exp * 1000).toISOString(),
-      });
-
-      // Clear old cookie
-      res.clearCookie("accessToken", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        path: "/",
-      });
-
-      // Set new cookie
-      res.cookie("accessToken", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        maxAge: 60 * 60 * 1000, // 1 hour
-        path: "/",
-      });
-
-      console.log("Set cookie: accessToken=", token.substring(0, 10) + "...");
-      const { password, ...others } = data[0];
-      return res.status(200).json(others);
+    // Create new user
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      name,
     });
-  } catch (error) {
-    console.error("Login error:", error);
-    return res.status(500).json({ error: error.message });
+
+    await newUser.save();
+    console.log("✅ User created successfully!");
+    return res.status(200).json("User created");
+  } catch (err) {
+    console.error("❌ Registration error:", err);
+    return res.status(500).json({ error: err.message });
   }
 };
 
-export const verifyToken = (req, res) => {
+// LOGIN
+export const login = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    const user = await User.findOne({ username });
+    if (!user) return res.status(404).json("User not found");
+
+    const validPassword = bcrypt.compareSync(password, user.password);
+    if (!validPassword)
+      return res.status(400).json("Wrong password or username");
+
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.cookie("accessToken", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 60 * 60 * 1000,
+      path: "/",
+    });
+
+    const { password: pwd, ...userData } = user._doc;
+    return res.status(200).json(userData);
+  } catch (err) {
+    console.error("❌ Login error:", err);
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// VERIFY TOKEN
+export const verifyToken = async (req, res) => {
   const token = req.cookies.accessToken;
 
-  if (!token) {
-    return res.status(401).json({ error: "Not authenticated" });
-  }
+  if (!token) return res.status(401).json({ error: "Not authenticated" });
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+  jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
     if (err) {
       console.error("JWT verification failed:", err);
       return res.status(403).json({ error: "Invalid token" });
     }
 
-    const q = "SELECT * FROM users WHERE id = ?";
-    db.query(q, [decoded.id], (err, data) => {
-      if (err) {
-        console.error("Database error during verify:", err);
-        return res.status(500).json({ error: "Database error" });
-      }
+    try {
+      const user = await User.findById(decoded.id).select("-password");
+      if (!user) return res.status(404).json({ error: "User not found" });
 
-      if (data.length === 0) {
-        return res.status(404).json({ error: "User not found" });
-      }
-
-      const { password, ...user } = data[0];
       return res.status(200).json({ user });
-    });
+    } catch (dbErr) {
+      console.error("❌ Error fetching user:", dbErr);
+      return res.status(500).json({ error: "Database error" });
+    }
   });
 };
 
-//LOGOUT
-
+// LOGOUT
 export const logout = (req, res) => {
   try {
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // Align with login
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     });
     return res.status(200).json({ message: "Successfully logged out." });
   } catch (err) {

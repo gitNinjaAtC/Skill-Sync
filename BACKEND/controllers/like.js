@@ -1,44 +1,57 @@
-import db from "../connect.js";
+import Like from "../models/Like.js";
+import User from "../models/Users.js";
 
 // Add a like
-export const addLike = (req, res) => {
-  const userId = req.user.id;
-  const postId = req.body.postId;
+export const addLike = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { postId } = req.body;
 
-  const q = "INSERT INTO likes (userId, postId) VALUES (?, ?)";
+    const like = new Like({ userId, postId });
+    await like.save();
 
-  db.query(q, [userId, postId], (err, result) => {
-    if (err) return res.status(500).json(err);
-    return res.status(200).json("Post liked.");
-  });
+    res.status(200).json("Post liked.");
+  } catch (err) {
+    if (err.code === 11000) {
+      // Duplicate key error (violates unique index)
+      return res.status(400).json("Post already liked.");
+    }
+    res.status(500).json({ error: err.message });
+  }
 };
 
 // Remove a like
-export const removeLike = (req, res) => {
-  const userId = req.user.id;
-  const postId = req.params.postId;
+export const removeLike = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const postId = req.params.postId;
 
-  const q = "DELETE FROM likes WHERE userId = ? AND postId = ?";
+    const result = await Like.findOneAndDelete({ userId, postId });
 
-  db.query(q, [userId, postId], (err, result) => {
-    if (err) return res.status(500).json(err);
-    return res.status(200).json("Post unliked.");
-  });
+    if (!result) {
+      return res.status(404).json("Like not found.");
+    }
+
+    res.status(200).json("Post unliked.");
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 // Get all users who liked a post
-export const getLikes = (req, res) => {
-  const postId = req.params.postId;
+export const getLikes = async (req, res) => {
+  try {
+    const postId = req.params.postId;
 
-  const q = `
-    SELECT users.id, users.name
-    FROM likes
-    JOIN users ON likes.userId = users.id
-    WHERE likes.postId = ?
-  `;
+    const likes = await Like.find({ postId }).populate("userId", "id name");
 
-  db.query(q, [postId], (err, data) => {
-    if (err) return res.status(500).json(err);
-    return res.status(200).json(data);
-  });
+    const users = likes.map((like) => ({
+      id: like.userId._id,
+      name: like.userId.name,
+    }));
+
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };

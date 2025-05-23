@@ -1,6 +1,7 @@
-import { db } from "../connect.js";
 import multer from "multer";
 import path from "path";
+import Job from "../models/Job.js";
+import User from "../models/Users.js";
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -19,36 +20,29 @@ const upload = multer({ storage }).fields([
 ]);
 
 // CREATE JOB
-export const createJob = (req, res) => {
-  console.log("🛑 Running createJob controller...");
+export const createJob = async (req, res) => {
+  console.log("🚩 Running createJob controller...");
   console.log("Request user:", req.user);
 
-  upload(req, res, (err) => {
+  upload(req, res, async (err) => {
     if (err) {
       console.error("File upload error:", err);
       return res.status(500).json({ message: "File upload failed" });
     }
 
     if (!req.user || !req.user.id) {
-      return res.status(400).json({ message: "User data missing from request" });
+      return res
+        .status(400)
+        .json({ message: "User data missing from request" });
     }
 
     const userId = req.user.id;
 
-    const roleQuery = "SELECT role FROM users WHERE id = ?";
-    db.query(roleQuery, [userId], (err, results) => {
-      if (err) {
-        return res.status(500).json({ message: "Internal Server Error" });
-      }
-
-      if (results.length === 0) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      const userRole = results[0].role;
-      if (userRole !== "Alumni") {
+    try {
+      const user = await User.findById(userId);
+      if (!user) return res.status(404).json({ message: "User not found" });
+      if (user.role !== "Alumni")
         return res.status(403).json({ message: "Access denied: Alumni only" });
-      }
 
       const {
         job_title,
@@ -81,63 +75,52 @@ export const createJob = (req, res) => {
         : null;
 
       if (!job_title || !organisation_name) {
-        return res.status(400).json({ message: "Job title and organisation name are required" });
+        return res
+          .status(400)
+          .json({ message: "Job title and organisation name are required" });
       }
 
-      const insertQuery = `
-        INSERT INTO jobs (
-          job_title, organisation_name, offer_type, joining_date, location,
-          remote_working, cost_to_company, fixed_gross, bonuses, offer_letter_path,
-          letter_of_intent_path, job_description, bond_details, other_benefits,
-          registration_start_date, registration_end_date, employment_type,
-          skills_required, selection_process, logo_path,
-          approval_status, user_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?)
-      `;
-
-      const values = [
+      const newJob = new Job({
         job_title,
         organisation_name,
-        offer_type || null,
-        joining_date || null,
-        location || null,
-        remote_working || null,
+        offer_type,
+        joining_date,
+        location,
+        remote_working,
         cost_to_company,
         fixed_gross,
-        bonuses || null,
+        bonuses,
+        job_description,
+        bond_details,
+        other_benefits,
+        registration_start_date,
+        registration_end_date,
+        employment_type,
+        skills_required,
+        selection_process,
         offer_letter_path,
         letter_of_intent_path,
-        job_description || null,
-        bond_details || null,
-        other_benefits || null,
-        registration_start_date || null,
-        registration_end_date || null,
-        employment_type || null,
-        skills_required || null,
-        selection_process || null,
         logo_path,
-        userId,
-      ];
-
-      db.query(insertQuery, values, (err, result) => {
-        if (err) {
-          console.error("Error creating job:", err);
-          return res.status(500).json({ message: "Internal Server Error" });
-        }
-
-        return res.status(201).json({
-          success: true,
-          message: "Job submitted for approval",
-          jobId: result.insertId,
-        });
+        user_id: userId,
       });
-    });
+
+      const savedJob = await newJob.save();
+
+      res.status(201).json({
+        success: true,
+        message: "Job submitted for approval",
+        jobId: savedJob._id,
+      });
+    } catch (error) {
+      console.error("Error creating job:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
   });
 };
 
 // APPROVE JOB
-export const approveJob = (req, res) => {
-  console.log("🛑 Running approveJob controller...");
+export const approveJob = async (req, res) => {
+  console.log("🚩 Running approveJob controller...");
   if (!req.user || !req.user.id) {
     return res.status(400).json({ message: "User data missing from request" });
   }
@@ -145,87 +128,96 @@ export const approveJob = (req, res) => {
   const userId = req.user.id;
   const jobId = req.params.jobId;
 
-  const roleQuery = "SELECT role FROM users WHERE id = ?";
-  db.query(roleQuery, [userId], (err, results) => {
-    if (err) return res.status(500).json({ message: "Internal Server Error" });
-    if (results.length === 0) return res.status(404).json({ message: "User not found" });
-
-    const userRole = results[0].role;
-    if (userRole !== "Admin") {
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    if (user.role !== "Admin")
       return res.status(403).json({ message: "Access denied: Admins only" });
+
+    const job = await Job.findById(jobId);
+    if (!job) return res.status(404).json({ message: "Job not found" });
+    if (job.approval_status === "Approved") {
+      return res.status(400).json({ message: "Job is already approved" });
     }
 
-    const checkQuery = "SELECT approval_status FROM jobs WHERE job_id = ?";
-    db.query(checkQuery, [jobId], (err, results) => {
-      if (err) return res.status(500).json({ message: "Internal Server Error" });
-      if (results.length === 0) return res.status(404).json({ message: "Job not found" });
-      if (results[0].approval_status === "Approved") {
-        return res.status(400).json({ message: "Job is already approved" });
-      }
+    job.approval_status = "Approved";
+    await job.save();
 
-      const updateQuery = "UPDATE jobs SET approval_status = 'Approved' WHERE job_id = ?";
-      db.query(updateQuery, [jobId], (err, result) => {
-        if (err) return res.status(500).json({ message: "Internal Server Error" });
-        if (result.affectedRows === 0) return res.status(404).json({ message: "Job not found" });
-
-        return res.status(200).json({ success: true, message: "Job approved successfully" });
-      });
-    });
-  });
+    res
+      .status(200)
+      .json({ success: true, message: "Job approved successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 // GET ALL APPROVED JOBS
-export const getJobs = (req, res) => {
-  console.log("🛑 Running getJobs controller...");
+export const getJobs = async (req, res) => {
+  try {
+    const jobs = await Job.find({ approval_status: "Approved" })
+      .populate("user_id", "name username")
+      .sort({ created_at: -1 });
 
-  const query = `
-    SELECT j.job_id, j.job_title, j.organisation_name, j.offer_type, j.joining_date, j.location,
-           j.remote_working, j.cost_to_company, j.fixed_gross, j.bonuses, j.offer_letter_path,
-           j.letter_of_intent_path, j.job_description, j.bond_details, j.other_benefits,
-           j.registration_start_date, j.registration_end_date, j.employment_type,
-           j.skills_required, j.selection_process, j.logo_path, j.created_at,
-           COALESCE(u.name, u.username) AS posted_by
-    FROM jobs j
-    JOIN users u ON j.user_id = u.id
-    WHERE j.approval_status = 'Approved'
-    ORDER BY j.created_at DESC
-  `;
+    const sanitizedJobs = jobs.map((job) => ({
+      job_id: job._id,
+      job_title: job.job_title,
+      organisation_name: job.organisation_name,
+      offer_type: job.offer_type,
+      joining_date: job.joining_date,
+      location: job.location,
+      remote_working: job.remote_working,
+      cost_to_company: job.cost_to_company?.toString(),
+      fixed_gross: job.fixed_gross?.toString(),
+      bonuses: job.bonuses,
+      offer_letter_path: job.offer_letter_path,
+      letter_of_intent_path: job.letter_of_intent_path,
+      job_description: job.job_description,
+      bond_details: job.bond_details,
+      other_benefits: job.other_benefits,
+      registration_start_date: job.registration_start_date,
+      registration_end_date: job.registration_end_date,
+      employment_type: job.employment_type,
+      skills_required: job.skills_required,
+      selection_process: job.selection_process,
+      logo_path: job.logo_path,
+      created_at: job.created_at,
+      posted_by: job.user_id?.name || job.user_id?.username || "Unknown",
+    }));
 
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("Error fetching jobs:", err);
-      return res.status(500).json({ message: "Internal Server Error" });
-    }
-
-    return res.status(200).json(results);
-  });
+    res.status(200).json(sanitizedJobs);
+  } catch (err) {
+    console.error("Error fetching jobs:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
-// ✅ NEW: GET SINGLE JOB BY ID
-export const getJobById = (req, res) => {
+// GET SINGLE JOB BY ID
+export const getJobById = async (req, res) => {
   const jobId = req.params.id;
-  const query = `
-    SELECT j.job_id, j.job_title, j.organisation_name, j.offer_type, j.joining_date, j.location,
-           j.remote_working, j.cost_to_company, j.fixed_gross, j.bonuses, j.offer_letter_path,
-           j.letter_of_intent_path, j.job_description, j.bond_details, j.other_benefits,
-           j.registration_start_date, j.registration_end_date, j.employment_type,
-           j.skills_required, j.selection_process, j.logo_path, j.created_at,
-           COALESCE(u.name, u.username) AS posted_by
-    FROM jobs j
-    JOIN users u ON j.user_id = u.id
-    WHERE j.job_id = ? AND j.approval_status = 'Approved'
-  `;
 
-  db.query(query, [jobId], (err, results) => {
-    if (err) {
-      console.error("Error fetching job by ID:", err);
-      return res.status(500).json({ message: "Internal Server Error" });
-    }
+  try {
+    const job = await Job.findOne({
+      _id: jobId,
+      approval_status: "Approved",
+    }).populate("user_id", "name username");
 
-    if (results.length === 0) {
+    if (!job) {
       return res.status(404).json({ message: "Job not found" });
     }
 
-    return res.status(200).json(results[0]);
-  });
+    // Convert Decimal128 fields to strings
+    const jobObj = job.toObject();
+    jobObj.cost_to_company = job.cost_to_company?.toString();
+    jobObj.fixed_gross = job.fixed_gross?.toString();
+
+    const result = {
+      ...jobObj,
+      posted_by: job.user_id.name || job.user_id.username || "Unknown",
+    };
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error fetching job by ID:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };
