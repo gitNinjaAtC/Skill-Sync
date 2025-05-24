@@ -8,6 +8,11 @@ export const addLike = async (req, res) => {
     const userId = req.user.id;
     const { postId } = req.body;
 
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(400).json({ error: "Invalid post ID" });
+    }
+
     const like = new Like({ userId, postId });
     await like.save();
 
@@ -22,30 +27,41 @@ export const addLike = async (req, res) => {
 };
 
 // Remove a like
-export const removeLike = (req, res) => {
-  const userId = req.user.id;
-  const postId = req.params.postId;
-  console.log("removeLike: userId=", userId, "postId=", postId); // Debug
+export const removeLike = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { postId } = req.params;
 
-  Like.findOneAndDelete(
-    {
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(400).json({ error: "Invalid post ID" });
+    }
+
+    const result = await Like.findOneAndDelete({
       userId: new mongoose.Types.ObjectId(userId),
       postId: new mongoose.Types.ObjectId(postId),
-    },
-    (err, result) => {
-      if (err) {
-        console.error("removeLike: Error:", err); // Debug
-        return res.status(500).json({ error: err.message });
-      }
-      console.log("removeLike: Result=", result); // Debug
-      return res.status(200).json("Post unliked.");
+    });
+
+    if (!result) {
+      return res.status(404).json({ error: "Like not found" });
     }
-  );
+
+    res.status(200).json("Post unliked.");
+  } catch (err) {
+    console.error("removeLike: Error:", err);
+    res.status(500).json({ error: err.message });
+  }
 };
+
 // Get all users who liked a post
 export const getLikes = async (req, res) => {
   try {
-    const postId = req.params.postId;
+    const { postId } = req.params;
+
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(400).json({ error: "Invalid post ID" });
+    }
 
     const likes = await Like.find({ postId }).populate("userId", "id name");
 
@@ -55,6 +71,28 @@ export const getLikes = async (req, res) => {
     }));
 
     res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Get like status for a specific post and user
+export const getLikeStatus = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { postId } = req.params;
+
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(400).json({ error: "Invalid post ID" });
+    }
+
+    const like = await Like.findOne({
+      userId: new mongoose.Types.ObjectId(userId),
+      postId: new mongoose.Types.ObjectId(postId),
+    });
+
+    res.status(200).json({ liked: !!like });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

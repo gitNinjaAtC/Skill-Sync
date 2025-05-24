@@ -50,12 +50,18 @@ const Post = ({ post }) => {
     }
 
     try {
-      if (liked) {
+      // Check the current like status from the backend
+      const response = await axios.get(
+        `http://localhost:8800/API_B/likes/${post.id}/status`,
+        { withCredentials: true }
+      );
+      const isLiked = response.data.liked;
+
+      if (isLiked) {
         // Unlike the post
         await axios.delete(`http://localhost:8800/API_B/likes/${post.id}`, {
           withCredentials: true,
         });
-
         setLiked(false);
         setLikesCount((prev) => Math.max(prev - 1, 0));
         setLikedBy((prev) => prev.filter((user) => user.id !== currentUser.id));
@@ -66,7 +72,6 @@ const Post = ({ post }) => {
           { postId: post.id },
           { withCredentials: true }
         );
-
         setLiked(true);
         setLikesCount((prev) => prev + 1);
         setLikedBy((prev) => [
@@ -76,7 +81,23 @@ const Post = ({ post }) => {
       }
     } catch (err) {
       console.error("Error toggling like:", err.response?.data || err.message);
-      alert("Failed to toggle like.");
+      if (
+        err.response?.status === 400 &&
+        err.response?.data === "Post already liked."
+      ) {
+        // Handle case where frontend state was out of sync
+        setLiked(true);
+        alert("Post is already liked.");
+      } else if (
+        err.response?.status === 404 &&
+        err.response?.data === "Like not found"
+      ) {
+        // Handle case where user tries to unlike a post they haven't liked
+        setLiked(false);
+        alert("You haven't liked this post.");
+      } else {
+        alert("Failed to toggle like.");
+      }
     }
   };
 

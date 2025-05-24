@@ -9,7 +9,7 @@ const likeSchema = new mongoose.Schema({
   },
   postId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Post", // Changed from "Posts" to "Post"
+    ref: "Post",
     required: true,
   },
   createdAt: {
@@ -17,5 +17,8 @@ const likeSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
+// Add unique index to prevent duplicate likes
+likeSchema.index({ userId: 1, postId: 1 }, { unique: true });
 
 export default mongoose.model("Like", likeSchema);
