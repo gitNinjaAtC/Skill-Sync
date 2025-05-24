@@ -21,7 +21,7 @@ export const AuthContextProvider = ({ children }) => {
   const login = async (inputs) => {
     try {
       const res = await axios.post(
-        "http://localhost:8800/API_B/auth/login",
+        "https://skill-sync-backend-522o.onrender.com/auth/login",
         inputs,
         { withCredentials: true }
       );
@@ -38,7 +38,7 @@ export const AuthContextProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post("http://localhost:8800/API_B/auth/logout", null, {
+      await axios.post("https://skill-sync-backend-522o.onrender.com/auth/logout", null, {
         withCredentials: true,
       });
     } catch (err) {
@@ -53,7 +53,7 @@ export const AuthContextProvider = ({ children }) => {
   const verifyToken = async () => {
     try {
       console.log("Verifying token, checking cookies...");
-      const res = await axios.get("http://localhost:8800/API_B/auth/verify", {
+      const res = await axios.get("https://skill-sync-backend-522o.onrender.com/auth/verify", {
         withCredentials: true,
       });
 
