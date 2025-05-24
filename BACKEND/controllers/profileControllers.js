@@ -1,4 +1,4 @@
-import { db } from "../connect.js";
+import User from "../models/Users.js";
 import multer from "multer";
 import fs from "fs";
 import path from "path";
@@ -11,89 +11,88 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 // ========== GET PROFILE INFO ==========
-export const getProfileInfo = (req, res) => {
+export const getProfileInfo = async (req, res) => {
   const userId = req.params.id;
 
   if (!userId) {
     return res.status(400).json({ message: "User ID is required" });
   }
 
-  const query = `
-    SELECT 
-      name,
-      about AS description,
-      facebook,
-      instagram,
-      twitter,
-      linkedin,
-      skills,
-      education,
-      experience,
-      others
-    FROM users
-    WHERE id = ?
-  `;
+  try {
+    const user = await User.findById(userId).select(
+      "name about facebook instagram twitter linkedin skills education experience others"
+    );
 
-  db.query(query, [userId], (err, results) => {
-    if (err) {
-      console.error("Error fetching profile info:", err);
-      return res.status(500).json({ message: "Internal Server Error" });
-    }
-
-    if (results.length === 0) {
+    if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    return res.status(200).json(results[0]);
-  });
+    const profileData = {
+      name: user.name,
+      description: user.about,
+      facebook: user.facebook,
+      instagram: user.instagram,
+      twitter: user.twitter,
+      linkedin: user.linkedin,
+      skills: user.skills,
+      education: user.education,
+      experience: user.experience,
+      others: user.others,
+    };
+
+    res.status(200).json(profileData);
+  } catch (error) {
+    console.error("Error fetching profile info:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 // ========== UPDATE PROFILE ==========
-export const updateProfile = (req, res) => {
+export const updateProfile = async (req, res) => {
   const userId = req.params.id;
-  const { name, description, socialLinks, skills, education, experience, others } = req.body;
+  const {
+    name,
+    description,
+    socialLinks,
+    skills,
+    education,
+    experience,
+    others,
+  } = req.body;
 
   if (!userId) {
     return res.status(400).json({ message: "User ID is required" });
   }
 
-  const query = `
-    UPDATE users SET 
-      name = ?, 
-      about = ?, 
-      facebook = ?, 
-      instagram = ?, 
-      twitter = ?, 
-      linkedin = ?,
-      skills = ?,
-      education = ?,
-      experience = ?,
-      others = ?
-    WHERE id = ?
-  `;
+  try {
+    const updateFields = {
+      ...(name && { name }),
+      ...(description && { about: description }),
+      ...(skills && { skills }),
+      ...(education && { education }),
+      ...(experience && { experience }),
+      ...(others && { others }),
+      ...(socialLinks?.facebook && { facebook: socialLinks.facebook }),
+      ...(socialLinks?.instagram && { instagram: socialLinks.instagram }),
+      ...(socialLinks?.twitter && { twitter: socialLinks.twitter }),
+      ...(socialLinks?.linkedin && { linkedin: socialLinks.linkedin }),
+    };
 
-  const values = [
-    name || null,
-    description || null,
-    socialLinks?.facebook || null,
-    socialLinks?.instagram || null,
-    socialLinks?.twitter || null,
-    socialLinks?.linkedin || null,
-    skills || null,
-    education || null,
-    experience || null,
-    others || null,
-    userId,
-  ];
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updateFields },
+      { new: true }
+    );
 
-  db.query(query, values, (err, result) => {
-    if (err) {
-      console.error("Error updating profile:", err);
-      return res.status(500).json({ message: "Internal Server Error" });
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    return res.status(200).json({ message: "Profile updated successfully" });
-  });
+    res.status(200).json({ message: "Profile updated successfully" });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 // ========== MULTER STORAGE CONFIGURATION ==========
@@ -124,7 +123,7 @@ export const uploadCoverPhotoMiddleware = multer({
 }).single("cover");
 
 // ========== UPDATE COVER PHOTO ==========
-export const updateCoverPhoto = (req, res) => {
+export const updateCoverPhoto = async (req, res) => {
   const userId = req.params.id;
 
   if (!req.file || !userId) {
@@ -133,14 +132,22 @@ export const updateCoverPhoto = (req, res) => {
 
   const filePath = `/uploads/coverPhotos/${req.file.filename}`;
 
-  const query = `UPDATE users SET coverPhoto = ? WHERE id = ?`;
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { coverPhoto: filePath },
+      { new: true }
+    );
 
-  db.query(query, [filePath, userId], (err) => {
-    if (err) {
-      console.error("Error updating cover photo:", err);
-      return res.status(500).json({ message: "Internal Server Error" });
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    return res.status(200).json({ message: "Cover photo updated", path: filePath });
-  });
+    return res
+      .status(200)
+      .json({ message: "Cover photo updated", path: filePath });
+  } catch (error) {
+    console.error("Error updating cover photo:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };

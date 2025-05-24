@@ -1,18 +1,18 @@
-import mysql from "mysql2";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-export const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root123",
-  database: "social_db",
-});
+dotenv.config();
 
-db.connect((err) => {
-  if (err) {
-    console.error("Error connecting to the database: ", err.stack);
-    return;
+const MONGODB_URI =
+  process.env.MONGODB_URI || "mongodb://localhost:27017/social_db";
+
+const db = async () => {
+  try {
+    await mongoose.connect(MONGODB_URI);
+    console.log("✅ Connected to MongoDB.");
+  } catch (err) {
+    console.error("❌ MongoDB connection error:", err);
   }
-  console.log("Connected to MySQL database.");
-});
+};
 
 export default db;

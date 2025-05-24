@@ -11,6 +11,7 @@
     height: 35px;
     object-fit: contain;
   }
+
   span {
     font-size: 1.75rem;
     font-weight: bold;
@@ -22,12 +23,18 @@
     color: themed("textColor");
   }
 }
+
 .item {
   margin-bottom: 40px;
 }
+
 .forum-card {
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
+  @include themify($themes) {
+    background-color: themed("bg");
+    border: 1px solid themed("border");
+    color: themed("textColor");
+  }
+
   padding: 1rem;
   border-radius: 0.5rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -42,7 +49,10 @@
 
   .timestamp {
     font-size: 0.875rem;
-    color: #6b7280;
+
+    @include themify($themes) {
+      color: themed("textSoft");
+    }
   }
 
   .delete-btn {
@@ -68,7 +78,10 @@
 
   .description {
     margin-top: 0.5rem;
-    color: #374151;
+
+    @include themify($themes) {
+      color: themed("textSoft");
+    }
   }
 
   .tags {
@@ -78,8 +91,11 @@
     gap: 0.5rem;
 
     span {
-      background-color: #e5e7eb;
-      color: #374151;
+      @include themify($themes) {
+        background-color: themed("bgSoft");
+        color: themed("textColor");
+      }
+
       font-size: 0.75rem;
       padding: 0.25rem 0.5rem;
       border-radius: 0.25rem;
@@ -93,7 +109,10 @@
     .interview-name {
       font-weight: 500;
       font-size: 0.875rem;
-      color: #1f2937;
+
+      @include themify($themes) {
+        color: themed("textColor");
+      }
     }
 
     .qa-pair {
@@ -106,7 +125,10 @@
 
       .answer {
         font-size: 0.875rem;
-        color: #374151;
+
+        @include themify($themes) {
+          color: themed("textSoft");
+        }
       }
     }
   }

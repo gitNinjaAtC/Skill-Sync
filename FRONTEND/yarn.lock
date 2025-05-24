@@ -1792,6 +1792,7 @@
     "@svgr/plugin-svgo" "^5.5.0"
     loader-utils "^2.0.0"
 
+<<<<<<< HEAD
 "@tanstack/query-core@5.76.0":
   version "5.76.0"
   resolved "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.76.0.tgz"
@@ -1803,6 +1804,19 @@
   integrity sha512-YxdLZVGN4QkT5YT1HKZQWiIlcgauIXEIsMOTSjvyD5wLYK8YVvKZUPAysMqossFJJfDpJW3pFn7WNZuPOqq+fw==
   dependencies:
     "@tanstack/query-core" "5.76.0"
+=======
+"@tanstack/query-core@5.76.2":
+  version "5.76.2"
+  resolved "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.76.2.tgz"
+  integrity sha512-PFGwWh5ss9cJQ67l6bZ7hqXbisX2gy13G2jP+VGY1bgdbCfOMWh6UBVnN62QbFXro6CCoX9hYzTnZHr6Rz00YQ==
+
+"@tanstack/react-query@^5.69.0":
+  version "5.76.2"
+  resolved "https://registry.npmjs.org/@tanstack/react-query/-/react-query-5.76.2.tgz"
+  integrity sha512-rGkWberCrFdIxMdvSAJM/UOKeu0O/JVTbMmfhQoJpiU9Uq0EDx2EMCadnNuJWbXR4smDA2t7DY3NKkYFmDVS5A==
+  dependencies:
+    "@tanstack/query-core" "5.76.2"
+>>>>>>> origin/Purushottam
 
 "@testing-library/dom@^8.5.0", "@testing-library/dom@>=7.21.4":
   version "8.13.0"

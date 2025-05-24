@@ -2,6 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
+import db from "./connect.js";
 import path from "path";
 
 // Routes
@@ -19,6 +20,7 @@ dotenv.config();
 
 const app = express();
 
+db();
 // CORS configuration
 app.use(
   cors({

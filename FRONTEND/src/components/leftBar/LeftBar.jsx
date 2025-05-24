@@ -16,6 +16,7 @@ const LeftBar = () => {
   const navigate = useNavigate();
 
   const handleProfile = () => {
+    console.log(currentUser); // Debug log
     if (currentUser?.id) {
       navigate(`/profile/${currentUser.id}`);
     }
