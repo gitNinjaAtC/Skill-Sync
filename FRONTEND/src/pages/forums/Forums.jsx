@@ -17,7 +17,7 @@ const Forums = () => {
       setLoading(true);
       try {
         console.log("Fetching forums...");
-        const res = await axios.get("http://localhost:8800/API_B/forums", {
+        const res = await axios.get("https://skill-sync-backend-522o.onrender.com/forums", {
           withCredentials: true,
         });
         console.log("Fetched forums:", res.data);
