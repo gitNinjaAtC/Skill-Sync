@@ -17,7 +17,7 @@ const Forums = () => {
       setLoading(true);
       try {
         console.log("Fetching forums...");
-        const res = await axios.get("https://skill-sync-backend-522o.onrender.com/forums", {
+        const res = await axios.get("https://skill-sync-backend-522o.onrender.com/API_B/forums", {
           withCredentials: true,
         });
         console.log("Fetched forums:", res.data);
@@ -45,7 +45,7 @@ const Forums = () => {
 
     try {
       console.log("Deleting forum, id:", forumId);
-      await axios.delete(`https://skill-sync-backend-522o.onrender.com/forums/${forumId}`, {
+      await axios.delete(`https://skill-sync-backend-522o.onrender.com/API_B/forums/${forumId}`, {
         withCredentials: true,
       });
       console.log("Forum deleted, id:", forumId);
