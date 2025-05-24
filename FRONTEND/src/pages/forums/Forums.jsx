@@ -45,7 +45,7 @@ const Forums = () => {
 
     try {
       console.log("Deleting forum, id:", forumId);
-      await axios.delete(`http://localhost:8800/API_B/forums/${forumId}`, {
+      await axios.delete(`https://skill-sync-backend-522o.onrender.com/forums/${forumId}`, {
         withCredentials: true,
       });
       console.log("Forum deleted, id:", forumId);
