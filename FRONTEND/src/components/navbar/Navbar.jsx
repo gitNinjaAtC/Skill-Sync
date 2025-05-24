@@ -8,6 +8,14 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import Friends from "../../assets/peoples.png";
+import Forums from "../../assets/forums.png";
+import Jobs from "../../assets/Job.png";
+import Events from "../../assets/Events.png";
+import Gallery from "../../assets/gallery.png";
+import Messages from "../../assets/message.png";
+import Resume from "../../assets/11.png";
+import Fund from "../../assets/13.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { DarkModeContext } from "../../context/darkModeContext";
@@ -106,8 +114,58 @@ const Navbar = () => {
       {/* Mobile Sidebar Placeholder (Replace with actual sidebar if needed) */}
       {mobileMenuOpen && (
         <div className="mobileSidebar">
-          <p>Sidebar content here...</p>
+        <div className="container">
+        <div className="menu">
+          <div className="user">
+            <button className="profile-button" onClick={handleProfile}>
+              <img
+                src={currentUser?.profilePic || "/defaultProfilePic.png"}
+                alt="User"
+              />
+              <span>{currentUser?.name}</span>
+            </button>
+          </div>
+          <div className="item">
+            <img src={Friends} alt="Friends" />
+            <span>Friends</span>
+          </div>
+          <div className="item" onClick={() => navigate("/forums")}>
+            <img src={Forums} alt="Forums" />
+            <span>Forums</span>
+          </div>
+          <div className="item" onClick={() => navigate("/job")}>
+            <img src={Jobs} alt="Jobs" />
+            <span>Jobs</span>
+          </div>
+          <div className="item" onClick={() => navigate("/events")}>
+            <img src={Events} alt="Events" />
+            <span>Events</span>
+          </div>
+          <div className="item">
+            <img src={Gallery} alt="Gallery" />
+            <span>Gallery</span>
+          </div>
+          <div className="item">
+            <img src={Messages} alt="Messages" />
+            <span>Messages</span>
+          </div>
         </div>
+
+        <hr />
+
+        <div className="menu">
+          <span>Others</span>
+          <div className="item">
+            <img src={Fund} alt="Fundraiser" />
+            <span>Fundraiser</span>
+          </div>
+          <div className="item">
+            <img src={Resume} alt="Resume Builder" />
+            <span>Resume Builder</span>
+          </div>
+        </div>
+      </div>
+    </div>
       )}
     </>
   );

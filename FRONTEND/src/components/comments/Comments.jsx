@@ -101,9 +101,9 @@ const Comments = ({ postId }) => {
       ) : (
         comments.map((comment) => (
           <div className="comment" key={comment.id}>
-            <img src={comment.profilePic || "/default-avatar.png"} alt="" />
+            <img src={comment.userId?.profilePic || "/default-avatar.png"} alt="" />
             <div className="info">
-              <span>{comment.name}</span>
+              <span>{comment.userId?.name}</span>
               <p>{comment.comment}</p>
             </div>
             <span className="date">

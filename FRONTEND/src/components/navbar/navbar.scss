@@ -32,6 +32,11 @@
       svg {
         font-size: 24px;
         color: #555;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #007bff;
+        }
       }
     }
   }
@@ -85,6 +90,7 @@
         font-size: 24px;
         color: #555;
         cursor: pointer;
+        transition: color 0.3s ease;
 
         &:hover {
           color: #007bff;
@@ -96,6 +102,7 @@
       font-size: 24px;
       color: #555;
       cursor: pointer;
+      transition: color 0.3s ease;
 
       &:hover {
         color: #007bff;
@@ -106,9 +113,18 @@
       background-color: white;
       border: none;
       display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 0;
 
       svg {
         font-size: 25px;
+        color: #555;
+        transition: color 0.3s ease;
+      }
+
+      &:hover svg {
+        color: #007bff;
       }
     }
 
@@ -132,6 +148,8 @@
         height: 32px;
         border-radius: 50%;
         object-fit: cover;
+        border: 2px solid transparent;
+        transition: border-color 0.3s ease;
       }
 
       span {
@@ -153,10 +171,15 @@
         border-radius: 4px;
         font-size: 12px;
         cursor: pointer;
+        transition: background-color 0.3s ease;
 
         &:hover {
           background-color: #0056b3;
         }
+      }
+
+      &:hover img {
+        border-color: #007bff;
       }
     }
   }
@@ -175,6 +198,7 @@
   }
 }
 
+/* Mobile Search Overlay */
 .mobileSearchOverlay {
   position: fixed;
   top: 60px;
@@ -184,6 +208,7 @@
   padding: 10px 20px;
   border-bottom: 1px solid #e0e0e0;
   z-index: 1100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
   .mobileSearchContainer {
     display: flex;
@@ -212,14 +237,124 @@
   }
 }
 
+/* Sidebar for Mobile and Tablet */
 .mobileSidebar {
   position: fixed;
   top: 60px;
   left: 0;
-  width: 250px;
+  width: 280px;
   height: calc(100% - 60px);
-  background-color: #fff;
+  background-color: #ffffff;
   border-right: 1px solid #e0e0e0;
   z-index: 1100;
   padding: 20px;
+  overflow-y: auto;
+  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(0);
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .menu {
+    flex-grow: 1;
+
+    .user {
+      margin-bottom: 25px;
+
+      .profile-button {
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        padding: 8px 0;
+        transition: background-color 0.2s ease;
+
+        img {
+          width: 42px;
+          height: 42px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 2px solid #007bff;
+          transition: border-color 0.3s ease;
+        }
+
+        span {
+          font-weight: 600;
+          color: #333;
+          font-size: 16px;
+          white-space: nowrap;
+        }
+
+        &:hover {
+          background-color: #f0f4ff;
+
+          img {
+            border-color: #0056b3;
+          }
+        }
+      }
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 15px;
+      color: #444;
+      transition: background-color 0.25s ease, color 0.25s ease;
+
+      img {
+        width: 24px;
+        height: 24px;
+      }
+
+      &:hover {
+        background-color: #e6f0ff;
+        color: #007bff;
+
+        img {
+          filter: brightness(0) saturate(100%) invert(35%) sepia(98%) saturate(2955%) hue-rotate(202deg) brightness(94%) contrast(101%);
+        }
+      }
+    }
+
+    hr {
+      margin: 20px 0;
+      border: none;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    span {
+      font-weight: 600;
+      color: #777;
+      font-size: 13px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: block;
+      letter-spacing: 1px;
+    }
+  }
+
+  @include tablet {
+    width: 240px;
+    padding: 15px;
+  }
+
+  @include mobile {
+    width: 100%;
+    max-width: 280px;
+    padding: 15px;
+  }
 }

@@ -15,7 +15,7 @@ import { AuthContext } from "./context/authContext";
 // Layout Components
 import Navbar from "./components/navbar/Navbar";
 import LeftBar from "./components/leftBar/LeftBar";
-import Footer from "./components/footer/Footer"; // ✅ Import Footer
+import Footer from "./components/footer/Footer";
 
 // Pages
 import Login from "./pages/login/Login";
@@ -29,6 +29,7 @@ import Jobs from "./pages/job/job";
 import JobDescription from "./pages/job/JobDescription";
 import CreateOffer from "./pages/jobs/CreateOffer";
 import Events from "./pages/events/Events";
+import Gallery from "./pages/gallery/Gallery";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -42,10 +43,10 @@ function App() {
         <div style={{ display: "flex" }}>
           <LeftBar />
           <div style={{ flex: 6 }}>
-            <Outlet />            
+            <Outlet />
           </div>
         </div>
-        <Footer /> {/* ✅ Footer placed at the bottom */}
+        <Footer />
       </div>
     </QueryClientProvider>
   );
@@ -72,7 +73,7 @@ function App() {
         { path: "/jobs/:id", element: <JobDescription /> },
         { path: "/jobs/CreateOffer", element: <CreateOffer /> },
         { path: "/events", element: <Events /> },
-
+        { path: "/gallery", element: <Gallery /> },
       ],
     },
     { path: "/login", element: <Login /> },

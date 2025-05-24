@@ -3,7 +3,7 @@ import Friends from "../../assets/peoples.png";
 import Forums from "../../assets/forums.png";
 import Jobs from "../../assets/Job.png";
 import Events from "../../assets/Events.png";
-import Gallery from "../../assets/gallery.png";
+import GalleryIcon from "../../assets/gallery.png";
 import Messages from "../../assets/message.png";
 import Resume from "../../assets/11.png";
 import Fund from "../../assets/13.png";
@@ -16,7 +16,6 @@ const LeftBar = () => {
   const navigate = useNavigate();
 
   const handleProfile = () => {
-    console.log(currentUser); // Debug log
     if (currentUser?.id) {
       navigate(`/profile/${currentUser.id}`);
     }
@@ -51,8 +50,8 @@ const LeftBar = () => {
             <img src={Events} alt="Events" />
             <span>Events</span>
           </div>
-          <div className="item">
-            <img src={Gallery} alt="Gallery" />
+          <div className="item" onClick={() => navigate("/gallery")}>
+            <img src={GalleryIcon} alt="Gallery" />
             <span>Gallery</span>
           </div>
           <div className="item">

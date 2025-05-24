@@ -1,93 +1,211 @@
 .register {
   height: 100vh;
-  background-color: rgb(193, 190, 255);
+  background-color: #c1beff;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
 
   .card {
-    width: 50%;
+    width: 100%;
+    max-width: 900px;
+    min-height: 600px;
     display: flex;
     flex-direction: row-reverse;
-    background-color: white;
-    border-radius: 10px;
-    min-height: 600px;
+    background-color: #fff;
+    border-radius: 12px;
     overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 
-    .left {
-      flex: 1;
-      background: linear-gradient(rgba(39, 11, 96, 0.5), rgba(39, 11, 96, 0.5)),
-        url("https://images.pexels.com/photos/7944128/pexels-photo-7944128.jpeg?auto=compress&cs=tinysrgb&w=600")
-          center;
-      background-size: cover;
-      padding: 50px;
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
-      color: white;
-
-      h1 {
-        font-size: 50px;
-        line-height: 70px;
-      }
-
-      p {
-        margin-top: 50px;
-        font-size: 20px;
-        font-weight: 300;
-        display: flex;
-        gap: 10px;
-        align-items: center;
-      }
-
-      span {
-        margin-top: 50px;
-        font-size: 20px;
-        font-size: 14px;
-      }
-
-      button {
-        width: 50%;
-        padding: 10px;
-        border: none;
-        background-color: white;
-        color: rebeccapurple;
-        font-weight: bold;
-        cursor: pointer;
-      }
-    }
-
+    .left,
     .right {
       flex: 1;
       padding: 50px;
       display: flex;
       flex-direction: column;
-      gap: 50px;
-      justify-content: center;
+      box-sizing: border-box;
+    }
+
+    .left {
+      gap: 1.8rem;
+      color: white;
+      background: linear-gradient(rgba(39, 11, 96, 0.65), rgba(39, 11, 96, 0.65)),
+        url("https://images.pexels.com/photos/7944128/pexels-photo-7944128.jpeg?auto=compress&cs=tinysrgb&w=600") center/cover no-repeat;
 
       h1 {
-        color: #555;
+        font-size: 3.2rem;
+        margin: 0;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      p {
+        font-size: 1.1rem;
+        font-weight: 300;
+        line-height: 1.5;
+        margin: 1.5rem 0 0 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      span {
+        margin-top: auto;
+        font-size: 0.9rem;
+        opacity: 0.85;
+      }
+
+      button {
+        margin-top: 10px;
+        width: 60%;
+        padding: 12px 0;
+        background: #fff;
+        color: #4b3dbb;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background: #ececff;
+        }
+      }
+    }
+
+    .right {
+      justify-content: center;
+      gap: 2rem;
+
+      h1 {
+        color: #444;
+        font-weight: 600;
+        font-size: 2.4rem;
+        margin-bottom: 0;
       }
 
       form {
         display: flex;
         flex-direction: column;
-        gap: 30px;
+        gap: 1.8rem;
 
         input {
+          font-size: 1rem;
+          padding: 14px 12px;
           border: none;
-          border-bottom: 1px solid lightgray;
-          padding: 20px 10px;
+          border-bottom: 2px solid #ccc;
+          transition: border-color 0.3s ease;
+
+          &:focus {
+            outline: none;
+            border-color: #6a57e2;
+          }
         }
 
         button {
-          width: 50%;
-          padding: 10px;
+          width: 60%;
+          padding: 14px 0;
           border: none;
-          background-color: #938eef;
-          color: white;
-          font-weight: bold;
+          border-radius: 6px;
+          background-color: #6a57e2;
+          color: #fff;
+          font-weight: 700;
           cursor: pointer;
+          align-self: flex-start;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background-color: #5745c9;
+          }
+        }
+      }
+    }
+  }
+
+  // Tablet responsiveness
+  @media (max-width: 1024px) {
+    .card {
+      flex-direction: column;
+      min-height: auto;
+
+      .left,
+      .right {
+        width: 100%;
+        padding: 40px 30px;
+        flex: none;
+      }
+
+      .left {
+        h1 {
+          font-size: 2.6rem;
+        }
+
+        p,
+        span {
+          font-size: 1rem;
+        }
+
+        button {
+          width: 80%;
+          padding: 14px 0;
+        }
+      }
+
+      .right {
+        h1 {
+          font-size: 2rem;
+        }
+
+        form {
+          button {
+            width: 80%;
+            padding: 14px 0;
+          }
+        }
+      }
+    }
+  }
+
+  // Mobile responsiveness
+  @media (max-width: 480px) {
+    .card {
+      .left,
+      .right {
+        padding: 30px 20px;
+      }
+
+      .left {
+        h1 {
+          font-size: 1.8rem;
+        }
+
+        p,
+        span {
+          font-size: 0.9rem;
+        }
+
+        button {
+          width: 100%;
+        }
+      }
+
+      .right {
+        h1 {
+          font-size: 1.6rem;
+        }
+
+        form {
+          gap: 1.2rem;
+
+          input {
+            padding: 12px 10px;
+            font-size: 0.95rem;
+          }
+
+          button {
+            width: 100%;
+            padding: 14px 0;
+          }
         }
       }
     }

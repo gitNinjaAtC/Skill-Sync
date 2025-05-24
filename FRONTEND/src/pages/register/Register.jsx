@@ -16,38 +16,28 @@ const Register = () => {
 
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    setErr(null); // Clear error on input change
-    setSuccess(null); // Clear success message on input change
+    setErr(null);
+    setSuccess(null);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("Registering with inputs:", inputs);
       const res = await axios.post(
         "http://localhost:8800/API_B/auth/register",
         inputs
       );
-      console.log("Registration response:", res.data);
-      setErr(null); // Clear any previous error
-      setSuccess("User successfully created!"); // Set success message
-      setInputs({ username: "", email: "", password: "", name: "" }); // Reset form
-      setTimeout(() => {
-        navigate("/login"); // Redirect to login after 2 seconds
-      }, 2000);
+      setSuccess("User successfully created!");
+      setInputs({ username: "", email: "", password: "", name: "" });
+      setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
-      console.error("Registration error:", {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status,
-      });
       const errorMessage =
         typeof err.response?.data === "string"
           ? err.response.data
           : err.response?.data?.message ||
             "Registration failed. Please try again.";
       setErr(errorMessage);
-      setSuccess(null); // Clear success message on error
+      setSuccess(null);
     }
   };
 

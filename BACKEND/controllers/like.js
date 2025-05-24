@@ -1,5 +1,6 @@
 import Like from "../models/Like.js";
 import User from "../models/Users.js";
+import mongoose from "mongoose";
 
 // Add a like
 export const addLike = async (req, res) => {
