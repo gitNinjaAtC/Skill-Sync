@@ -52,14 +52,14 @@ const Post = ({ post }) => {
     try {
       // Check the current like status from the backend
       const response = await axios.get(
-        `http://localhost:8800/API_B/likes/${post.id}/status`,
+        `https://skill-sync-backend-522o.onrender.com/API_B/likes/${post.id}/status`,
         { withCredentials: true }
       );
       const isLiked = response.data.liked;
 
       if (isLiked) {
         // Unlike the post
-        await axios.delete(`http://localhost:8800/API_B/likes/${post.id}`, {
+        await axios.delete(`https://skill-sync-backend-522o.onrender.com/API_B/likes/${post.id}`, {
           withCredentials: true,
         });
         setLiked(false);
@@ -68,7 +68,7 @@ const Post = ({ post }) => {
       } else {
         // Like the post
         await axios.post(
-          "http://localhost:8800/API_B/likes",
+          "https://skill-sync-backend-522o.onrender.com/API_B/likes",
           { postId: post.id },
           { withCredentials: true }
         );
@@ -104,7 +104,7 @@ const Post = ({ post }) => {
   const fetchCommentsCount = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8800/API_B/comments/${post.id}`,
+        `https://skill-sync-backend-522o.onrender.com/API_B/comments/${post.id}`,
         {
           withCredentials: true,
         }
@@ -125,7 +125,7 @@ const Post = ({ post }) => {
     }
 
     // The link to the post (you may want to replace with actual post URL if available)
-    const postUrl = `http://localhost:3000/post/${post.id}`; // replace with real frontend route if different
+    const postUrl = `https://skill-sync-frontend.onrender.com/post/${post.id}`; // replace with real frontend route if different
     const shareText = encodeURIComponent(`Check out this post: ${post.desc}`);
     const shareLink = encodeURIComponent(postUrl);
 

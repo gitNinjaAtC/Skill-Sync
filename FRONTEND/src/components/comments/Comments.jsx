@@ -17,7 +17,7 @@ const Comments = ({ postId }) => {
       try {
         console.log(`Fetching comments for postId=${postId}`);
         const res = await axios.get(
-          `http://localhost:8800/API_B/comments/${postId}`,
+          `https://skill-sync-backend-522o.onrender.com/API_B/comments/${postId}`,
           { withCredentials: true }
         );
         setComments(res.data);
@@ -48,7 +48,7 @@ const Comments = ({ postId }) => {
     try {
       console.log(`Posting comment for postId=${postId}`);
       const res = await axios.post(
-        "http://localhost:8800/API_B/comments",
+        "https://skill-sync-backend-522o.onrender.com/API_B/comments",
         { postId, comment: newComment },
         { withCredentials: true }
       );

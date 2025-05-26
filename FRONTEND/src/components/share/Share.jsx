@@ -33,7 +33,7 @@ const Share = () => {
       console.log("Sending POST /API_B/posts with desc:", desc);
       console.log("Current user:", currentUser);
       const res = await axios.post(
-        "http://localhost:8800/API_B/posts",
+        "https://skill-sync-backend-522o.onrender.com/API_B/posts",
         { desc },
         { withCredentials: true }
       );
