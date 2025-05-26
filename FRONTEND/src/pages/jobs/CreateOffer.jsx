@@ -66,7 +66,7 @@ const CreateOffer = () => {
         if (value) data.append(key, value);
       });
 
-      await axios.post("http://localhost:8800/API_B/jobs", data, {
+      await axios.post("https://skill-sync-backend-522o.onrender.com/API_B/jobs", data, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",

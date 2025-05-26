@@ -12,7 +12,7 @@ const JobDescription = () => {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const response = await axios.get(`http://localhost:8800/API_B/jobs/${id}`);
+        const response = await axios.get(`https://skill-sync-backend-522o.onrender.com/API_B/jobs/${id}`);
         setJob(response.data);
       } catch (error) {
         console.error("Error fetching job details:", error);

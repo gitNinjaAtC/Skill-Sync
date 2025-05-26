@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export const makeRequest = axios.create({
-    baseURL: "http://localhost:8800/API_B",
+    baseURL: "https://skill-sync-backend-522o.onrender.com",
     withCredentials: true,
     });

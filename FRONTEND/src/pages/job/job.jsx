@@ -26,7 +26,7 @@ const Job = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8800/API_B/jobs")
+      .get("https://skill-sync-backend-522o.onrender.com/API_B/jobs")
       .then((response) => {
         const transformedJobs = (response.data || []).map((job) => ({
           id: job.job_id || job.id,

@@ -26,7 +26,7 @@ const EditProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await axios.get(`http://localhost:8800/API_B/profile/${id}`, {
+        const res = await axios.get(`https://skill-sync-backend-522o.onrender.com/API_B/profile/${id}`, {
           withCredentials: true,
         });
 
@@ -64,7 +64,7 @@ const EditProfile = () => {
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:8800/API_B/profile/update/${id}`,
+        `https://skill-sync-backend-522o.onrender.com/API_B/profile/update/${id}`,
         {
           name: formData.name,
           description: formData.description,

@@ -24,7 +24,7 @@ const Register = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:8800/API_B/auth/register",
+        "https://skill-sync-backend-522o.onrender.com/API_B/auth/register",
         inputs
       );
       setSuccess("User successfully created!");

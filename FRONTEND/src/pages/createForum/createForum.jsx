@@ -42,7 +42,7 @@ const CreateForum = () => {
     try {
       console.log("Creating forum:", { title, description, tags });
       const res = await axios.post(
-        "http://localhost:8800/API_B/forums",
+        "https://skill-sync-backend-522o.onrender.com/API_B/forums",
         { title, description, tags },
         { withCredentials: true }
       );
