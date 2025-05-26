@@ -23,7 +23,7 @@ const Post = ({ post }) => {
     const fetchLikes = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8800/API_B/likes/${post.id}`,
+          `https://skill-sync-backend-522o.onrender.com/API_B/likes/${post.id}`,
           { withCredentials: true }
         );
         //setLikedBy(res.data);
