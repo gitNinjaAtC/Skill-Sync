@@ -99,7 +99,7 @@ const Forums = () => {
 
             <div className="interview-section">
               <p className="interview-name">
-                Created by {post.created_by_name}
+                Created by {post.created_by?.name}
               </p>
               {/* Placeholder for future interview experience */}
             </div>
