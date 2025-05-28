@@ -7,7 +7,7 @@ const Posts = () => {
   const { isLoading, error, data } = useQuery({
     queryKey: ["posts"], // ✅ Corrected syntax
     queryFn: async () => {
-      const res = await makeRequest.get("/posts");
+      const res = await makeRequest.get("/API_B/posts");
       return res.data;
     },
   });
