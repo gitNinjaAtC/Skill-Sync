@@ -20,7 +20,7 @@ const Share = () => {
     if (!currentUser) {
       setError("You must be logged in to share a post.");
       console.log("No currentUser, redirecting to login");
-      setTimeout(() => navigate("/API_B/login"), 2000);
+      setTimeout(() => navigate("/login"), 2000);
       return;
     }
 
@@ -57,7 +57,7 @@ const Share = () => {
       setSuccess(null);
       if (err.response?.status === 401) {
         console.log("401 error, redirecting to login");
-        setTimeout(() => navigate("/API_B/login"), 2000);
+        setTimeout(() => navigate("/login"), 2000);
       }
     }
   };
