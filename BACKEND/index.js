@@ -15,30 +15,42 @@ import likeRoutes from "./routes/likes.js";
 import forumRoutes from "./routes/forums.js";
 import jobRoutes from "./routes/job.js";
 
-// Initialize environment variables
 dotenv.config();
 
 const app = express();
 
 db();
-// CORS configuration
-app.use(
-  cors({
-    origin: "https://skill-sync-frontend.onrender.com",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
-  })
-);
 
-// Handle preflight requests
-app.options("*", cors());
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://skill-sync-frontend.onrender.com",
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // allow requests with no origin (like Postman, curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+// Use CORS for all routes
+app.use(cors(corsOptions));
+
+// Handle preflight OPTIONS requests for all routes
+app.options("*", cors(corsOptions));
 
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
 
-// Serve uploaded files (cover photos, etc.)
 app.use("/uploads", express.static("uploads"));
 
 // Logging middleware
@@ -59,7 +71,6 @@ app.use("/API_B/forums", forumRoutes);
 app.use("/API_B/jobs", jobRoutes);
 app.use("/API_B/profile", profileRoutes);
 
-// Start server
 const PORT = process.env.PORT || 8800;
 app.listen(PORT, () => {
   console.log(`API_B is running on http://localhost:${PORT}`);
