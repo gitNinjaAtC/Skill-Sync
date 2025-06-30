@@ -1,0 +1,62 @@
+/* src/components/profileSkeleton.scss */
+.skeleton {
+  animation: pulse 1.5s infinite ease-in-out;
+  background-color: #f0f0f0;
+}
+
+.skeleton-line {
+  height: 16px;
+  margin: 10px 0;
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+.skeleton-line.title {
+  width: 200px;
+  height: 24px;
+}
+
+.skeleton-line.description {
+  width: 80%;
+}
+.skeleton-line.description.short {
+  width: 60%;
+}
+
+.skeleton-btn {
+  width: 100px;
+  height: 32px;
+  background: #ddd;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.skeleton-icon {
+  width: 32px;
+  height: 32px;
+  background: #ddd;
+  border-radius: 50%;
+  margin: 10px 8px 0 0;
+  display: inline-block;
+}
+
+.skeleton-tab {
+  width: 120px;
+  height: 32px;
+  background: #ddd;
+  border-radius: 20px;
+  margin: 10px 10px 0 0;
+  display: inline-block;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #f0f0f0;
+  }
+  50% {
+    background-color: #e4e4e4;
+  }
+  100% {
+    background-color: #f0f0f0;
+  }
+}

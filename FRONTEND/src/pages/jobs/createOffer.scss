@@ -2,7 +2,7 @@
 
 .create-offer-container {
   padding: 1.5rem;
-  max-width: 64rem;
+  max-width: 100%;
   margin: 0 auto;
   font-family: sans-serif;
   border-radius: 0.5rem;
@@ -147,4 +147,31 @@
       }
     }
   }
+}
+
+/* createOffer.scss */
+.spinner {
+  display: inline-block; // <-- Add this line
+  width: 25px;
+  height: 25px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.error{
+  color: red;
+  text-align: center;
+}
+.success{
+  color:  #10b981;
+  text-align: center;
 }

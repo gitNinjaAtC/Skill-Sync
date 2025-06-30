@@ -10,6 +10,7 @@ const Login = () => {
   });
 
   const [err, setErr] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login, currentUser } = useContext(AuthContext);
 
@@ -20,19 +21,21 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setErr(null);
+    setLoading(true);
     try {
       await login(inputs);
-      // Do not navigate here
+      // navigation is handled by useEffect
     } catch (err) {
       const errorMessage =
         err.response?.data?.error ||
         err.message ||
         "Login failed. Please try again.";
       setErr(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // ✅ Navigate only when currentUser is set
   useEffect(() => {
     if (currentUser) {
       navigate("/");
@@ -41,7 +44,15 @@ const Login = () => {
 
   return (
     <div className="login">
-      <div className="card">
+      {/* ✅ Overlay the entire .login area */}
+      {loading && (
+        <div className="loading-container">
+          <div className="spinner"></div>
+          <p>Logging in, please wait...</p>
+        </div>
+      )}
+
+      <div className={`card ${loading ? "faded" : ""}`}>
         <div className="left">
           <h1>SISTEC</h1>
           <p>

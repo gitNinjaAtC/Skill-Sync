@@ -12,6 +12,7 @@ const Register = () => {
   });
   const [err, setErr] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -22,6 +23,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await axios.post(
         "https://skill-sync-backend-522o.onrender.com/API_B/auth/register",
@@ -38,12 +40,22 @@ const Register = () => {
             "Registration failed. Please try again.";
       setErr(errorMessage);
       setSuccess(null);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="register">
-      <div className="card">
+      {/* ✅ Overlay spinner when loading */}
+      {loading && (
+        <div className="loading-container">
+          <div className="spinner"></div>
+          <p>Registering, please wait...</p>
+        </div>
+      )}
+
+      <div className={`card ${loading ? "faded" : ""}`}>
         <div className="left">
           <h1>SISTEC</h1>
           <p>

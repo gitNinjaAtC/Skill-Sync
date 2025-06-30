@@ -1,273 +1,283 @@
+@import "../../style.scss";
+
 .profile-page {
-  max-width: 100%;
-  margin: 0 auto;
-  font-family: "Segoe UI", sans-serif;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  @include themify($themes) {
+    max-width: 100%;
+    margin: 0 auto;
+    font-family: "Segoe UI", sans-serif;
+    background: themed(bgsoft);
+    color: themed(textColor);
+    overflow: hidden;
+    border: 1.5rem solid themed(bgSoft);
+    border-bottom: 9rem solid themed(bgSoft);
 
-  .cover-photo {
-    position: relative;
-    width: 100%;
-    height: 200px;
-    background: #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .edit-cover {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: rgba(255, 255, 255, 0.9);
-      border: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: background 0.2s ease;
-
-      &:hover {
-        background: #fff;
-      }
-    }
-  }
-
-  .avatar-section {
-    margin-top: -50px;
-    display: flex;
-    justify-content: center;
-
-    .avatar-wrapper {
+    .cover-photo {
       position: relative;
-      width: 100px;
-      height: 100px;
+      width: 100%;
+      height: 200px;
+      background: themed(bgSoft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 10px;
+      
 
-      .avatar,
-      .placeholder {
+      img {
         width: 100%;
         height: 100%;
-        border-radius: 50%;
-        border: 4px solid white;
-        background-color: #eee;
         object-fit: cover;
       }
 
-      .edit-avatar {
+      .edit-cover {
         position: absolute;
-        bottom: 0;
-        right: 0;
-        background-color: white;
+        top: 16px;
+        right: 16px;
+        background: themed(bgSoft);
         border: none;
-        border-radius: 30%;
-        width: 23px;
-        height: 23px;
-        padding: 2px;
+        padding: 8px 12px;
+        border-radius: 8px;
         cursor: pointer;
-
-        .edit-icon {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-        }
+        font-weight: 500;
+        transition: background 0.2s ease;
 
         &:hover {
-          background-color: #f0f0f0;
-        }
-
-        &::after {
-          content: "Edit Profile Photo";
-          position: absolute;
-          top: 130%;
-          left: 50%;
-          transform: translateX(-50%);
-          background-color: #92b4e8;
-          color: #fff;
-          padding: 4px 8px;
-          border-radius: 4px;
-          font-size: 12px;
-          white-space: nowrap;
-          opacity: 0;
-          pointer-events: none;
-          transition: opacity 0.2s ease;
-          z-index: 5;
-        }
-
-        &:hover::after {
-          opacity: 1;
+          background:themed(bgSoft);
         }
       }
     }
-  }
 
-  .profile-main {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 16px;
+    .avatar-section {
+      margin-top: -50px;
+      display: flex;
+      justify-content: center;
 
-    .profile-info {
-      width: 100%;
+      .avatar-wrapper {
+        position: relative;
+        width: 100px;
+        height: 100px;
 
-      .profile-info-header {
-        .profile-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          flex-wrap: wrap;
-          margin-top: -60px;
+        .avatar,
+        .placeholder {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          border: 4px solid white;
+          background-color:themed(bgSoft);
+          object-fit: cover;
+        }
 
-          h2 {
-            margin: 0;
-            font-size: 24px;
+        .edit-avatar {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          background-color: themed(bgSoft);
+          border: none;
+          border-radius: 30%;
+          width: 23px;
+          height: 23px;
+          padding: 2px;
+          cursor: pointer;
+
+          .edit-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
           }
 
-          .edit-btn {
-            background-color: #ddd;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 10px;
+          &:hover {
+            background-color:themed(bgSoft);
+          }
+
+          &::after {
+            content: "Edit Profile Photo";
+            position: absolute;
+            top: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #92b4e8;
+            color: themed(textColor);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 5;
+          }
+
+          &:hover::after {
+            opacity: 1;
           }
         }
       }
+    }
 
-      .profile-info-body {
-        margin-top: 16px;
+    .profile-main {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 16px;
 
-        .description {
-          margin: 15px 0;
-          padding: 12px 16px;
-          background-color: #f7f7f7;
-          border-radius: 8px;
-          font-size: 15px;
-          line-height: 1.6;
-          color: #444;
-          text-align: justify;
-          max-width: 100%;
+      .profile-info {
+        width: 100%;
+
+        .profile-info-header {
+          .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: -60px;
+
+            h2 {
+              margin: 0;
+              font-size: 24px;
+              color: themed(textColor);
+            }
+
+            .edit-btn {
+              background-color:themed(bgSoft);
+              border: none;
+              padding: 8px 16px;
+              border-radius: 8px;
+              cursor: pointer;
+              margin-top: 10px;
+            }
+          }
         }
 
-        .profile-actions {
-          margin-top: 10px;
-          display: flex;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 20px;
+        .profile-info-body {
+          margin-top: 16px;
 
-          .social-links {
+          .description {
+            margin: 15px 0;
+            padding: 12px 16px;
+            background-color: themed(bgSoft);
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: themed(textColorSoft);
+            text-align: justify;
+            max-width: 100%;
+          }
+
+          .profile-actions {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+
+            .social-links {
+              display: flex;
+              gap: 10px;
+
+              a {
+                color: inherit;
+                display: flex;
+                align-items: center;
+              }
+            }
+
+            .message-btn {
+              background-color: #3593e5;
+              color: themed(bgSoft);
+              border: none;
+              padding: 8px 16px;
+              border-radius: 8px;
+              cursor: pointer;
+              white-space: nowrap;
+            }
+          }
+
+          .profile-tabs {
+            margin-top: 10px;
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
 
-            a {
-              color: inherit;
-              display: flex;
-              align-items: center;
+            button {
+              background: none;
+              border: none;
+              padding: 8px 16px;
+              font-weight: 500;
+              cursor: pointer;
+              color: themed(textColorSoft);
+              border-bottom: 2px solid transparent;
+
+              &.active {
+                border-bottom: 2px solid #1976d2;
+                color: #0065cb;
+              }
             }
           }
 
-          .message-btn {
-            background-color: #3593e5;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            white-space: nowrap;
+          .tab-content {
+            margin-top: 16px;
           }
         }
-
-        .profile-tabs {
-          margin-top: 10px;
-          display: flex;
-          gap: 10px;
-          flex-wrap: wrap;
-
-          button {
-            background: none;
-            border: none;
-            padding: 8px 16px;
-            font-weight: 500;
-            cursor: pointer;
-            color: #777;
-            border-bottom: 2px solid transparent;
-
-            &.active {
-              border-bottom: 2px solid #1976d2;
-              color: #0065cb;
-            }
-          }
-        }
-
-        .tab-content {
-          margin-top: 16px;
-        }
       }
-    }
-  }
-
-  .skills-section,
-  .education-section,
-  .experience-section,
-  .others-section {
-    padding: 16px;
-    border-top: 1px solid #eee;
-
-    h3 {
-      margin-bottom: 8px;
-      font-size: 20px;
-    }
-
-    p,
-    ul {
-      text-align: justify;
-      color: #444;
-      font-size: 15px;
-      line-height: 1.6;
-    }
-
-    ul {
-      padding-left: 18px;
-
-      li {
-        margin-bottom: 6px;
-      }
-    }
-  }
-
-  @media (max-width: 768px) {
-    .profile-main {
-      padding: 12px;
-    }
-    .profile-info-header{
-      margin-top: 60px;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .profile-info  .profile-header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .profile-info .profile-info-body .description,
-    .profile-actions,
-    .profile-tabs {
-      margin: 10px 0;
     }
 
     .skills-section,
     .education-section,
     .experience-section,
     .others-section {
-      margin: 0;
+      padding: 16px;
+      border-top: 1px solid themed(border);
+
+      h3 {
+        margin-bottom: 8px;
+        font-size: 20px;
+      }
+
+      p,
+      ul {
+        text-align: justify;
+        color: themed(textColorSoft);
+        font-size: 15px;
+        line-height: 1.6;
+      }
+
+      ul {
+        padding-left: 18px;
+
+        li {
+          margin-bottom: 6px;
+        }
+      }
+    }
+
+    @include tablet {
+      .profile-main {
+        padding: 12px;
+      }
+
+      .profile-info-header {
+        margin-top: 60px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .profile-info .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .profile-info .profile-info-body .description,
+      .profile-actions,
+      .profile-tabs {
+        margin: 10px 0;
+      }
+
+      .skills-section,
+      .education-section,
+      .experience-section,
+      .others-section {
+        margin: 0;
+      }
     }
   }
 }

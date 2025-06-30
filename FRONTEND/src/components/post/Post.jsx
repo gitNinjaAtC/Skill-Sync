@@ -6,18 +6,35 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
 import { AuthContext } from "../../context/authContext";
-
+import PostSkeleton from "./PostSkeleton";
+import profilePic from "../../assets/profile.jpg";
 const Post = ({ post }) => {
   const { currentUser, loading } = useContext(AuthContext);
+
   const [commentOpen, setCommentOpen] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [commentsCount, setCommentsCount] = useState(0);
   const [likedBy, setLikedBy] = useState([]);
   const [showLikedBy, setShowLikedBy] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
+
+  const optionsRef = useRef();
+
+  // Close delete button when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (optionsRef.current && !optionsRef.current.contains(e.target)) {
+        setShowOptions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const fetchLikes = async () => {
@@ -26,9 +43,9 @@ const Post = ({ post }) => {
           `https://skill-sync-backend-522o.onrender.com/API_B/likes/${post.id}`,
           { withCredentials: true }
         );
-        //setLikedBy(res.data);
         setLikesCount(res.data.length);
         setLiked(res.data.some((user) => user.id === currentUser?.id));
+        setLikedBy(res.data);
       } catch (err) {
         console.error("Failed to fetch likes:", err);
       }
@@ -43,6 +60,18 @@ const Post = ({ post }) => {
     }
   }, [post.id]);
 
+  const fetchCommentsCount = async () => {
+    try {
+      const res = await axios.get(
+        `https://skill-sync-backend-522o.onrender.com/API_B/comments/${post.id}`,
+        { withCredentials: true }
+      );
+      setCommentsCount(res.data.length);
+    } catch (err) {
+      console.error("Error fetching comments:", err);
+    }
+  };
+
   const handleLike = async () => {
     if (!currentUser) {
       alert("Please log in to like posts.");
@@ -50,7 +79,6 @@ const Post = ({ post }) => {
     }
 
     try {
-      // Check the current like status from the backend
       const response = await axios.get(
         `https://skill-sync-backend-522o.onrender.com/API_B/likes/${post.id}/status`,
         { withCredentials: true }
@@ -58,15 +86,14 @@ const Post = ({ post }) => {
       const isLiked = response.data.liked;
 
       if (isLiked) {
-        // Unlike the post
-        await axios.delete(`https://skill-sync-backend-522o.onrender.com/API_B/likes/${post.id}`, {
-          withCredentials: true,
-        });
+        await axios.delete(
+          `https://skill-sync-backend-522o.onrender.com/API_B/likes/${post.id}`,
+          { withCredentials: true }
+        );
         setLiked(false);
         setLikesCount((prev) => Math.max(prev - 1, 0));
         setLikedBy((prev) => prev.filter((user) => user.id !== currentUser.id));
       } else {
-        // Like the post
         await axios.post(
           "https://skill-sync-backend-522o.onrender.com/API_B/likes",
           { postId: post.id },
@@ -81,40 +108,7 @@ const Post = ({ post }) => {
       }
     } catch (err) {
       console.error("Error toggling like:", err.response?.data || err.message);
-      if (
-        err.response?.status === 400 &&
-        err.response?.data === "Post already liked."
-      ) {
-        // Handle case where frontend state was out of sync
-        setLiked(true);
-        alert("Post is already liked.");
-      } else if (
-        err.response?.status === 404 &&
-        err.response?.data === "Like not found"
-      ) {
-        // Handle case where user tries to unlike a post they haven't liked
-        setLiked(false);
-        alert("You haven't liked this post.");
-      } else {
-        alert("Failed to toggle like.");
-      }
-    }
-  };
-
-  const fetchCommentsCount = async () => {
-    try {
-      const res = await axios.get(
-        `https://skill-sync-backend-522o.onrender.com/API_B/comments/${post.id}`,
-        {
-          withCredentials: true,
-        }
-      );
-      setCommentsCount(res.data.length); // Update count based on number of comments
-    } catch (err) {
-      console.error(
-        "Error fetching comments:",
-        err.response?.data || err.message
-      );
+      alert("Failed to toggle like.");
     }
   };
 
@@ -124,30 +118,41 @@ const Post = ({ post }) => {
       return;
     }
 
-    // The link to the post (you may want to replace with actual post URL if available)
-    const postUrl = `https://skill-sync-frontend.onrender.com/post/${post.id}`; // replace with real frontend route if different
+    const postUrl = `https://skill-sync-frontend.onrender.com/post/${post.id}`;
     const shareText = encodeURIComponent(`Check out this post: ${post.desc}`);
     const shareLink = encodeURIComponent(postUrl);
-
-    // You can modify this to open different platforms — here's an example with WhatsApp:
     const whatsappUrl = `https://wa.me/?text=${shareText}%20${shareLink}`;
-    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${shareLink}`;
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${shareText}&url=${shareLink}`;
 
-    // You can choose one platform to open, or show a UI with options
     window.open(whatsappUrl, "_blank");
   };
 
-  if (loading) {
-    return <div className="post">Loading...</div>;
-  }
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this post?");
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(
+        `https://skill-sync-backend-522o.onrender.com/API_B/posts/${post.id}`,
+        { withCredentials: true }
+      );
+      alert("Post deleted successfully.");
+      window.location.reload();
+    } catch (err) {
+      console.error("Failed to delete post:", err);
+      alert("Error deleting post.");
+    }
+  };
+
+if (loading) {
+  return <PostSkeleton />;
+}
 
   return (
     <div className="post">
       <div className="container">
         <div className="user">
           <div className="userInfo">
-            <img src={post.profilePic || "/default-avatar.png"} alt="" />
+            <img src={currentUser?.profilePic || profilePic} alt="" />
             <div className="details">
               <Link
                 to={`/profile/${post.userId}`}
@@ -155,12 +160,21 @@ const Post = ({ post }) => {
               >
                 <span className="name">{post.name || "User"}</span>
               </Link>
-              <span className="date">
-                {new Date(post.createdAt).toLocaleString()}
-              </span>
+              <span className="date">{new Date(post.createdAt).toLocaleString()}</span>
             </div>
           </div>
-          <MoreHorizIcon />
+
+          <div className="options" ref={optionsRef}>
+            <MoreHorizIcon
+              style={{ cursor: "pointer" }}
+              onClick={() => setShowOptions((prev) => !prev)}
+            />
+            {showOptions && currentUser?.id === post.userId && (
+              <button className="deleteBtn" onClick={handleDelete}>
+                Delete
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="content">

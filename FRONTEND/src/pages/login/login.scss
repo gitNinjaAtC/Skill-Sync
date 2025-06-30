@@ -1,10 +1,11 @@
 .login {
   height: 100vh;
-  background-color: #c1beff; // softer color
+  background-color: #c1beff;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  position: relative; // ✅ Added to anchor loading overlay
 
   .card {
     width: 100%;
@@ -122,6 +123,43 @@
     }
   }
 
+  // ✅ Moved loading container here to overlay everything
+  .loading-container {
+    position: absolute; // overlay mode
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7); // semi-transparent
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 10;
+
+    p {
+      font-size: 1rem;
+      color: #555;
+      font-weight: 500;
+      margin-top: 12px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-left-color: #6a57e2;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  }
+
   .error {
     color: #e74c3c;
     font-size: 0.9rem;
@@ -129,7 +167,7 @@
     text-align: center;
   }
 
-  // Responsive - Tablet and below
+  // Responsive styles remain unchanged
   @media (max-width: 1024px) {
     .card {
       flex-direction: column;
@@ -172,7 +210,6 @@
     }
   }
 
-  // Responsive - Mobile (smaller phones)
   @media (max-width: 480px) {
     .card {
       .left,
@@ -213,6 +250,17 @@
             padding: 14px 0;
           }
         }
+      }
+    }
+
+    .loading-container {
+      .spinner {
+        width: 32px;
+        height: 32px;
+      }
+
+      p {
+        font-size: 0.95rem;
       }
     }
   }

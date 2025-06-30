@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
 import cameraIcon from "../../assets/camera-icon.png"; // Adjust path if needed
+import profilePic from "../../assets/profile.jpg";       // Import your local profile.jpg
 
 const AvatarSection = () => {
-  const [avatarSrc, setAvatarSrc] = useState("https://randomuser.me/api/portraits/men/75.jpg");
+  const [avatarSrc, setAvatarSrc] = useState(profilePic); // Use imported image here
   const fileInputRef = useRef(null);
 
   const handleEditClick = () => {

@@ -96,8 +96,6 @@ const CreateForum = () => {
         </button>
       </div>
       <h1>Create a New Forum</h1>
-      {success && <p className="success">{success}</p>}
-      {error && <p className="error">{error}</p>}
       <form onSubmit={handleSubmit} className="forum-form">
         <label>
           <span className="label-with-required">
@@ -169,9 +167,19 @@ const CreateForum = () => {
             Cancel
           </button>
           <button type="submit" className="submit-btn" disabled={loading}>
-            {loading ? "Creating..." : "Create Forum"}
-          </button>
+  {loading ? (
+    <>
+      Submitting...
+      <span className="spinner" />
+    </>
+  ) : (
+    "Create Forum"
+  )}
+</button>
+
         </div>
+      {success && <p className="success">{success}</p>}
+      {error && <p className="error">{error}</p>}
       </form>
     </div>
   );

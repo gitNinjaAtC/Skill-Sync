@@ -7,13 +7,18 @@ import GalleryIcon from "../../assets/gallery.png";
 import Messages from "../../assets/message.png";
 import Resume from "../../assets/11.png";
 import Fund from "../../assets/13.png";
+import profilePic from "../../assets/profile.jpg";
+import home from "../../assets/home.png";
 import { AuthContext } from "../../context/authContext";
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const LeftBar = () => {
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (path) => location.pathname === path;
 
   const handleProfile = () => {
     if (currentUser?.id) {
@@ -26,35 +31,39 @@ const LeftBar = () => {
       <div className="container">
         <div className="menu">
           <div className="user">
-            <button className="profile-button" onClick={handleProfile}>
-              <img
-                src={currentUser?.profilePic || "/defaultProfilePic.png"}
-                alt="User"
-              />
+            <button
+              className={`profile-button ${isActive(`/profile/${currentUser?.id}`) ? "active" : ""}`}
+              onClick={handleProfile}
+            >
+              <img src={currentUser?.profilePic || profilePic} alt="User" />
               <span>{currentUser?.name}</span>
             </button>
           </div>
-          <div className="item">
+          <div className={`item ${isActive("/") ? "active" : ""}`} onClick={() => navigate("/")}>
+            <img src={home} alt="Home" />
+            <span>Home</span>
+          </div>
+          <div className={`item ${isActive("#") ? "active" : ""}`} onClick={() => navigate("#")}>
             <img src={Friends} alt="Friends" />
             <span>Friends</span>
           </div>
-          <div className="item" onClick={() => navigate("/forums")}>
+          <div className={`item ${isActive("/forums") ? "active" : ""}`} onClick={() => navigate("/forums")}>
             <img src={Forums} alt="Forums" />
             <span>Forums</span>
           </div>
-          <div className="item" onClick={() => navigate("/job")}>
+          <div className={`item ${isActive("/job") ? "active" : ""}`} onClick={() => navigate("/job")}>
             <img src={Jobs} alt="Jobs" />
             <span>Jobs</span>
           </div>
-          <div className="item" onClick={() => navigate("/events")}>
+          <div className={`item ${isActive("/events") ? "active" : ""}`} onClick={() => navigate("/events")}>
             <img src={Events} alt="Events" />
             <span>Events</span>
           </div>
-          <div className="item" onClick={() => navigate("/gallery")}>
+          <div className={`item ${isActive("#") ? "active" : ""}`} onClick={() => navigate("#")}>
             <img src={GalleryIcon} alt="Gallery" />
             <span>Gallery</span>
           </div>
-          <div className="item">
+          <div className={`item ${isActive("#") ? "active" : ""}`} onClick={() => navigate("#")}>
             <img src={Messages} alt="Messages" />
             <span>Messages</span>
           </div>
@@ -64,11 +73,11 @@ const LeftBar = () => {
 
         <div className="menu">
           <span>Others</span>
-          <div className="item">
+          <div className={`item ${isActive("#") ? "active" : ""}`} onClick={() => navigate("#")}>
             <img src={Fund} alt="Fundraiser" />
             <span>Fundraiser</span>
           </div>
-          <div className="item">
+          <div className={`item ${isActive("#") ? "active" : ""}`} onClick={() => navigate("#")}>
             <img src={Resume} alt="Resume Builder" />
             <span>Resume Builder</span>
           </div>

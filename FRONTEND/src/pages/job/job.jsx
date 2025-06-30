@@ -3,11 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Job.scss";
 import Jobs from "../../assets/Job.png";
+import JobSkeleton from "./JobSkeleton.jsx";
+
 
 const popularTags = [
   "CSS",
   "Express.Js",
   "Html",
+  "Python",
   "Javascript",
   "Mongodb",
   "Node.js",
@@ -64,17 +67,12 @@ const Job = () => {
           (tag) => tag.toLowerCase() === filterTag.toLowerCase()
         )
   );
-
   return (
-    <div className="job-page">
-      <header className="job-header">
-        <div className="job-header-icon" aria-hidden="true">
-          <img src={Jobs} alt="Jobs" />
-        </div>
-        <h1>Jobs</h1>
-      </header>
-
-      <main className="job-layout">
+    <div className="forum-container">
+      <div className="item">
+        <img src={Jobs} alt="Jobs" />
+        <span>Jobs</span>
+      </div>
         <section className="job-main">
           <div className="filter-container">
             <label htmlFor="filter-select" className="filter-label">
@@ -95,7 +93,14 @@ const Job = () => {
             </select>
           </div>
 
-          {loading && <p className="end-message">Loading jobs...</p>}
+          {loading && (
+            <>
+             {[...Array(3)].map((_, index) => (
+                <JobSkeleton key={index} />
+              ))}
+            </>
+          )}
+
           {error && <p className="end-message">{error}</p>}
           {!loading && !error && filteredJobs.length === 0 && (
             <p className="end-message">No jobs found for selected filter.</p>
@@ -164,20 +169,9 @@ const Job = () => {
             ))}
         </section>
 
-        <aside className="sidebar">
-          <div className="offer-note">
-            <div className="illustration" />
-            <h4>Have you received any offer directly?</h4>
-            <p>
-              Please provide the offer details for the TPO's records and
-              approval.
-            </p>
-            <button className="create-offer" onClick={handleCreateJob}>
-              + Create Job
-            </button>
-          </div>
-        </aside>
-      </main>
+      <button className="create-forum-btn" onClick={handleCreateJob}>
+        Create Job
+      </button>
     </div>
   );
 };

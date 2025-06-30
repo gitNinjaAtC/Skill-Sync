@@ -16,6 +16,12 @@
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    position: relative; /* For overlay positioning */
+
+    &.faded {
+      opacity: 0.5;
+      pointer-events: none; /* Disable interaction when loading */
+    }
 
     .left,
     .right {
@@ -29,8 +35,12 @@
     .left {
       gap: 1.8rem;
       color: white;
-      background: linear-gradient(rgba(39, 11, 96, 0.65), rgba(39, 11, 96, 0.65)),
-        url("https://images.pexels.com/photos/7944128/pexels-photo-7944128.jpeg?auto=compress&cs=tinysrgb&w=600") center/cover no-repeat;
+      background: linear-gradient(
+          rgba(39, 11, 96, 0.65),
+          rgba(39, 11, 96, 0.65)
+        ),
+        url("https://images.pexels.com/photos/7944128/pexels-photo-7944128.jpeg?auto=compress&cs=tinysrgb&w=600")
+          center/cover no-repeat;
 
       h1 {
         font-size: 3.2rem;
@@ -119,6 +129,44 @@
           }
         }
       }
+    }
+  }
+
+  // Loading overlay container
+  .loading-container {
+    position: fixed; // or absolute depending on your preference
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  // Spinner styles
+  .spinner {
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top: 5px solid #fff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
     }
   }
 
