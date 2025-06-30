@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import ProfileSkeleton from "./ProfileSkeleton";
 import {
   FacebookTwoTone as FacebookTwoToneIcon,
   LinkedIn as LinkedInIcon,
@@ -40,7 +41,7 @@ const ProfileInfo = ({ userId }) => {
 
   const handleEditClick = () => navigate(`/edit-profile/${userId}`);
 
-  if (loading) return <div>Loading profile...</div>;
+  if (loading) return <ProfileSkeleton />;
   if (error) return <div className="error">{error}</div>;
 
   const {

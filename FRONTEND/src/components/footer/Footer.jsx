@@ -21,19 +21,19 @@ const Footer = () => {
           </div>
           <div className="contact-item">
             <MailIcon />
-            <span>Sagaralumni@sistec.ac.in</span>
+            <span><a href="mailto:sagaralumni@sistec.ac.in">sagaralumni@sistec.ac.in</a></span>
           </div>
           <div className="contact-item">
             <PhoneIcon />
-            <span>99101 28025</span>
+            <span><a href="tel:+919910128025">+919910128025</a></span>
           </div>
         </div>
 
         <div className="footer-section">
           <h3>Quick Links</h3>
-          <Link to="/">About Us</Link>
-          <Link to="/">Careers</Link>
-          <Link to="/">Contact</Link>
+          <Link to="/" className="quick-link">About Us</Link>
+          <Link to="/"className="quick-link">Careers</Link>
+          <Link to="https://www.sistec.ac.in/contact" target="_blank"className="quick-link">Contact</Link>
         </div>
 
         <div className="footer-section">
@@ -48,7 +48,7 @@ const Footer = () => {
       </div>
 
       <div className="footer-bottom">
-        <p>© 2025 Designed & Developed by <span>Shivam</span>, <span>Sahil</span>, <span>Purushottam</span> and <span>Zahra</span>.</p>
+        <p>© 2025 Designed & Developed by <span>Shivam</span>, <span>Sahil</span> and <span>Purushottam</span>.</p>
       </div>
     </footer>
   );

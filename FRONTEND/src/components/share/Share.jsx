@@ -6,6 +6,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import profilePic from "../../assets/profile.jpg";
 
 const Share = () => {
   const { currentUser } = useContext(AuthContext);
@@ -66,7 +67,7 @@ const Share = () => {
     <div className="share">
       <div className="container">
         <div className="top">
-          <img src={currentUser?.profilePic || "/default-avatar.png"} alt="" />
+          <img src={currentUser?.profilePic || profilePic} alt="" />
           <input
             type="text"
             placeholder={`What's on your mind ${currentUser?.name || "User"}?`}

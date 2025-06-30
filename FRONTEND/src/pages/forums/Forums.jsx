@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import axios from "axios";
 import Forum from "../../assets/forums.png";
+import ForumSkeleton from "./ForumSkeleton";
 import "./forums.scss";
 
 const Forums = () => {
@@ -57,22 +58,26 @@ const Forums = () => {
     }
   };
 
-  if (authLoading || loading) {
-    return <div className="forum-container">Loading...</div>;
-  }
-
   if (error) {
     return <div className="forum-container error">{error}</div>;
   }
 
   return (
     <div className="forum-container">
+      {/* Always show this item */}
       <div className="item">
         <img src={Forum} alt="Forums" />
         <span>Forums</span>
       </div>
 
-      {forums.length === 0 ? (
+      {/* Show skeletons only during loading */}
+      {authLoading || loading ? (
+        <>
+          {[...Array(3)].map((_, index) => (
+            <ForumSkeleton key={index} />
+          ))}
+        </>
+      ) : forums.length === 0 ? (
         <p>No forums available.</p>
       ) : (
         forums.map((post) => (
@@ -101,7 +106,6 @@ const Forums = () => {
               <p className="interview-name">
                 Created by {post.created_by?.name}
               </p>
-              {/* Placeholder for future interview experience */}
             </div>
 
             <div className="comment-count">💬 0 Comments so far</div>
@@ -109,8 +113,13 @@ const Forums = () => {
         ))
       )}
 
+      {/* Always show Create Forum button if user is Admin or Alumni */}
       {currentUser && ["Admin", "Alumni"].includes(currentUser.role) && (
-        <button className="create-forum-btn" onClick={handleCreateForum}>
+        <button
+          className="create-forum-btn"
+          onClick={handleCreateForum}
+          disabled={authLoading || loading}
+        >
           Create Forum
         </button>
       )}

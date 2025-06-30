@@ -1,16 +1,43 @@
 @import "../../style.scss";
 
-.home{
+.home-container {
   @include themify($themes) {
-    padding: 20px 70px;
+    padding: 1.5rem;
+    max-width: 100%;
+    position: relative;
+    background-color: themed("bgSoft");
+    color: themed("textColor");
+
+    .home-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      img {
+        width: 35px;
+        height: 35px;
+        object-fit: contain;
+      }
+
+      span {
+        font-size: 1.75rem;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.home {
+  @include themify($themes) {
+    padding: 1.5rem;
     background-color: themed("bgSoft");
 
     @include mobile {
       padding: 10px;
     }
 
-    @include tablet{
+    @include tablet {
       padding: 20px;
     }
   }
- }
+}

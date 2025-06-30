@@ -1,9 +1,8 @@
 import { useRef, useState } from "react";
+import defaultCover from "../../assets/cover.png"; 
 
 const CoverPhoto = ({ userId }) => {
-  const [coverImage, setCoverImage] = useState(
-    "https://images.unsplash.com/photo-1506744038136-46273834b3fb"
-  );
+  const [coverImage, setCoverImage] = useState(defaultCover);
   const fileInputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
 
@@ -17,7 +16,7 @@ const CoverPhoto = ({ userId }) => {
       setUploading(true);
 
       const formData = new FormData();
-      formData.append("cover", file); // Must match multer single('cover')
+      formData.append("cover", file);
 
       try {
         const BACKEND_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:3000";
@@ -32,8 +31,7 @@ const CoverPhoto = ({ userId }) => {
         }
 
         const data = await response.json();
-        setCoverImage(data.path); // Update state with new path from backend
-
+        setCoverImage(data.path); // Set new cover image from backend
       } catch (error) {
         console.error("Error uploading cover photo:", error);
         alert("Failed to upload image. Please try again.");

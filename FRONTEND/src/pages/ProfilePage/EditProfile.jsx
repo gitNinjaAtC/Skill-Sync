@@ -21,17 +21,17 @@ const EditProfile = () => {
   });
 
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await axios.get(`https://skill-sync-backend-522o.onrender.com/API_B/profile/${id}`, {
-          withCredentials: true,
-        });
-
+        const res = await axios.get(
+          `https://skill-sync-backend-522o.onrender.com/API_B/profile/${id}`,
+          { withCredentials: true }
+        );
         const data = res.data;
-
         setFormData({
           name: data.name || "",
           description: data.description || "",
@@ -62,6 +62,8 @@ const EditProfile = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
+    setSaving(true);
+    setError(null);
     try {
       await axios.put(
         `https://skill-sync-backend-522o.onrender.com/API_B/profile/update/${id}`,
@@ -85,6 +87,8 @@ const EditProfile = () => {
     } catch (err) {
       console.error("Error updating profile:", err);
       setError("Failed to update profile.");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -92,76 +96,72 @@ const EditProfile = () => {
     navigate(`/profile/${id}`);
   };
 
-  if (loading) return <div>Loading profile data...</div>;
   if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="edit-profile-container">
       <div className="top-bar">
         <button className="back-btn" onClick={handleCancel}>
-          &lt; Back To Profile
+          <span className="arrow-symbol">&larr;</span>
+          <span className="go-back-text">Back To Profile</span>
         </button>
       </div>
 
       <h1>Edit Profile</h1>
 
       <form className="edit-profile-form" onSubmit={handleSave}>
-        <label>
-          Name <span className="required">*</span>
-          <input type="text" name="name" value={formData.name} onChange={handleChange} required />
-        </label>
-
-        <label>
-          About / Description
-          <textarea name="description" value={formData.description} onChange={handleChange} rows={4} />
-        </label>
-
-        <label>
-          Skills
-          <textarea name="skills" value={formData.skills} onChange={handleChange} rows={3} placeholder="e.g. React, Node.js, SQL..." />
-        </label>
-
-        <label>
-          Education
-          <textarea name="education" value={formData.education} onChange={handleChange} rows={3} placeholder="e.g. B.Tech in CSE from XYZ University..." />
-        </label>
-
-        <label>
-          Professional Experience
-          <textarea name="experience" value={formData.experience} onChange={handleChange} rows={3} placeholder="e.g. Intern at ABC Corp, Project Lead at XYZ..." />
-        </label>
-
-        <label>
-          Others
-          <textarea name="others" value={formData.others} onChange={handleChange} rows={3} placeholder="Certifications, volunteering, etc." />
-        </label>
-
-        <label>
-          Facebook URL
-          <input type="url" name="facebook" value={formData.facebook} onChange={handleChange} placeholder="https://facebook.com/username" />
-        </label>
-
-        <label>
-          Instagram URL
-          <input type="url" name="instagram" value={formData.instagram} onChange={handleChange} placeholder="https://instagram.com/username" />
-        </label>
-
-        <label>
-          Twitter URL
-          <input type="url" name="twitter" value={formData.twitter} onChange={handleChange} placeholder="https://twitter.com/username" />
-        </label>
-
-        <label>
-          LinkedIn URL
-          <input type="url" name="linkedin" value={formData.linkedin} onChange={handleChange} placeholder="https://linkedin.com/in/username" />
-        </label>
+        {[
+          { label: "Name", name: "name", placeholder:"John Snow",required: true },
+          { label: "About / Description", name: "description", placeholder:"e.g. I am a Student...",type: "textarea", required: true },
+          { label: "Skills", name: "skills", type: "textarea", placeholder: "e.g. React, Node.js, SQL...", required: true },
+          { label: "Education", name: "education", type: "textarea", placeholder: "e.g. B.Tech in CSE from XYZ University..." },
+          { label: "Professional Experience", name: "experience", type: "textarea", placeholder: "e.g. Intern at ABC Corp..." },
+          { label: "Others", name: "others", type: "textarea", placeholder: "Certifications, volunteering, etc." },
+          { label: "Facebook URL", name: "facebook", placeholder: "https://facebook.com/username" },
+          { label: "Instagram URL", name: "instagram", placeholder: "https://instagram.com/username" },
+          { label: "Twitter URL", name: "twitter", placeholder: "https://twitter.com/username" },
+          { label: "LinkedIn URL", name: "linkedin", placeholder: "https://linkedin.com/in/username" },
+        ].map(({ label, name, type, placeholder, required }) => (
+          <label key={name}>
+            <div className="label-with-required">
+              {label}
+              {required && <span className="required">*</span>}
+            </div>
+            {type === "textarea" ? (
+              <textarea
+                name={name}
+                value={formData[name]}
+                onChange={handleChange}
+                {...(required ? { required: true } : {})}
+                placeholder={placeholder || ""}
+                rows={3}
+              />
+            ) : (
+              <input
+                type="text"
+                name={name}
+                value={formData[name]}
+                onChange={handleChange}
+                {...(required ? { required: true } : {})}
+                placeholder={placeholder || ""}
+              />
+            )}
+          </label>
+        ))}
 
         <div className="form-buttons">
           <button type="button" className="cancel-btn" onClick={handleCancel}>
             Cancel
           </button>
-          <button type="submit" className="save-btn">
-            Save Changes
+          <button type="submit" className="submit-btn" disabled={saving}>
+            {saving ? (
+              <>
+                Saving
+                <span className="spinner"></span>
+              </>
+            ) : (
+              "Save Changes"
+            )}
           </button>
         </div>
       </form>

@@ -1,15 +1,8 @@
-.job-layout {
-  display: flex;
-  gap: 2rem;
-  padding: 2rem;
-  background: #f8f9fc;
-
-  @media (max-width: 992px) {
-    flex-direction: column;
-    padding: 1.5rem;
+.item{
+  span{
+    padding-left: 12px;
   }
 }
-
 .job-header {
   flex: 3;
   background: #fff;
@@ -51,15 +44,12 @@
 }
 
 .job-main {
-  flex: 3;
-  background: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: transparent;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 
   .filter-container {
     display: flex;
+    align-items: center;
     justify-content: flex-end;
     margin-bottom: 1.25rem;
 
@@ -94,9 +84,7 @@
     margin-bottom: 1.5rem;
     transition: box-shadow 0.3s ease;
 
-    &:hover {
-      box-shadow: 0 4px 16px rgba(122, 89, 224, 0.15);
-    }
+
 
     .job-card-header {
       display: flex;

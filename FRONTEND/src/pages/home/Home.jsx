@@ -1,14 +1,24 @@
-import Posts from "../../components/posts/Posts"
-import Share from "../../components/share/Share"
-import "./home.scss"
+import Posts from "../../components/posts/Posts";
+import Share from "../../components/share/Share";
+import "./home.scss";
+import home from "../../assets/home.png";
 
 const Home = () => {
   return (
-    <div className="home">
-      <Share/>
-      <Posts/>
-    </div>
-  )
-}
+    <>
+      <div className="home-container">
+        <div className="home-header">
+          <img src={home} alt="post" className="home-icon" />
+          <span className="home-title">Home</span>
+        </div>
+      </div>
 
-export default Home
+      <div className="home">
+        <Share />
+        <Posts />
+      </div>
+    </>
+  );
+};
+
+export default Home;

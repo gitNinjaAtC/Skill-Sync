@@ -2,13 +2,12 @@
 
 .leftBar {
   @include themify($themes) {
-    flex: 2;
+    min-width: 300px;
     position: sticky;
-    top: 70px;
-    height: calc(100vh - 70px);
-    overflow-y: auto;
     background-color: themed("bg");
     color: themed("textColor");
+    border-radius: 10px;
+    border: 1px solid themed("border");
     z-index: 11;
 
     @include tablet {
@@ -46,6 +45,7 @@
 
         .user {
           .profile-button {
+            min-width: 260px;
             background-color: transparent;
             border: none;
             display: flex;
@@ -54,25 +54,41 @@
             cursor: pointer;
             padding: 5px;
             border-radius: 8px;
+            transition: background-color 0.3s ease;
 
-            &:hover {
-              background-color: themed("hoverBg");
+            &:hover,
+            &.active {              
+              background-color: #e6f0ff;
+
+              img {
+                border-color: #007bff;
+              }
+
+              span {
+                color: #007bff;
+              }
             }
 
             img {
-              width: 40px;
-              height: 40px;
+              width: 35px;
+              height: 35px;
               border-radius: 50%;
               object-fit: cover;
               border: 2px solid themed("border");
+              transition: border-color 0.3s ease;
             }
 
             span {
               font-size: 14px;
               font-weight: 600;
               color: themed("textColor");
+              transition: color 0.3s ease;
             }
           }
+        }
+
+        .item {
+          margin: 0 !important; // force override any external margin
         }
 
         .item {
@@ -80,23 +96,31 @@
           align-items: center;
           gap: 12px;
           cursor: pointer;
-          padding: 6px 8px;
+          padding: 8px;
           border-radius: 8px;
-          transition: background 0.2s ease;
+          transition: background-color 0.3s ease, color 0.3s ease;
 
-          &:hover {
-            background-color: themed("hoverBg");
+          &:hover,
+          &.active {
+            background-color: #e6f0ff;
+            color: #007bff;
+
+            img {
+              filter: brightness(0) saturate(100%) invert(35%) sepia(98%) saturate(2955%) hue-rotate(202deg) brightness(94%) contrast(101%);
+            }
           }
 
           img {
             width: 28px;
             height: 28px;
             object-fit: contain;
+            transition: filter 0.3s ease;
           }
 
           span {
             font-size: 14px;
             font-weight: 500;
+            transition: color 0.3s ease;
           }
         }
       }

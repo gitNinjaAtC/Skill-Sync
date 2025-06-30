@@ -12,7 +12,7 @@
     margin-bottom: 30px;
 
     .container {
-      padding: 20px;
+      padding: 20px 20px 0px 20px;
       .top {
         display: flex;
         align-items: center;
@@ -35,25 +35,21 @@
       }
 
       hr {
-        margin: 20px 0px;
+        margin: 50px 10px 40px 10px; ; 
         border: none;
         height: 0.5px;
         background-color: themed("border");
       }
 
       .bottom {
-        display: flex;
-        align-items: center;
+        display: flex;        
         justify-content: space-between;
         .left {
           display: flex;
-          align-items: center;
-          gap: 20px;
+          gap: 2rem;
 
           .item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            display: flex;           
             cursor: pointer;
 
             img {
@@ -67,13 +63,14 @@
           }
         }
         .right {
+          padding-right: 2rem;
           button {
             border: none;
-            padding: 5px;
+            padding: 5px 20px;
             color: white;
             cursor: pointer;
             background-color: #5271ff;
-            border-radius: 3px;
+            border-radius: 5px;
           }
         }
       }

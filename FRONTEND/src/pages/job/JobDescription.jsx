@@ -28,6 +28,13 @@ const JobDescription = () => {
 
   return (
     <div className="job-details-layout">
+
+      {/* Header */}
+      <header className="job-details-header">
+        <h1>{job.organisation_name}</h1>
+      </header>
+
+      <div className="job-content">
       {/* Main content */}
       <div className="job-details-page">
         <button className="back-button" onClick={() => navigate(-1)}>← Back</button>
@@ -143,6 +150,7 @@ const JobDescription = () => {
             <a href={job.letter_of_intent_path} target="_blank" rel="noreferrer">View Document</a>
           </div>
         )}
+      </div>
       </div>
     </div>
   );
