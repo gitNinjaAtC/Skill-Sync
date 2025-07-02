@@ -14,14 +14,62 @@
   .container {
     width: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 0 1.5rem;
 
     .logo {
       font-size: 1.8rem;
       font-weight: 700;
       color: #fbbf24;
       letter-spacing: 0.5px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .right-section {
+      margin-left: auto;
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      .profile-icon {
+        font-size: 28px;
+        color: #ccc;
+        cursor: pointer;
+        transition: color 0.3s;
+
+        &:hover {
+          color: #fff;
+        }
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        top: 40px;
+        right: 0;
+        background-color: #ffffff;
+        color: #000;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        padding: 0.5rem 0;
+        width: 160px;
+        z-index: 999;
+
+        .dropdown-item {
+          display: block;
+          padding: 10px 15px;
+          cursor: pointer;
+          font-size: 14px;
+          transition: background-color 0.2s;
+
+          &:hover {
+            background-color: #f3f4f6;
+          }
+        }
+      }
     }
   }
 }
