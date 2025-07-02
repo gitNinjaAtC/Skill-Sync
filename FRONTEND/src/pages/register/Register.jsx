@@ -9,6 +9,7 @@ const Register = () => {
     email: "",
     password: "",
     name: "",
+    role: "student", // Optional: default to student
   });
   const [err, setErr] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -29,9 +30,9 @@ const Register = () => {
         "https://skill-sync-backend-522o.onrender.com/API_B/auth/register",
         inputs
       );
-      setSuccess("User successfully created!");
-      setInputs({ username: "", email: "", password: "", name: "" });
-      setTimeout(() => navigate("/login"), 2000);
+      setSuccess(res.data || "Registration successful. Awaiting admin approval.");
+      setInputs({ username: "", email: "", password: "", name: "", role: "student" });
+      setTimeout(() => navigate("/login"), 3000); // wait 3 sec
     } catch (err) {
       const errorMessage =
         typeof err.response?.data === "string"
@@ -47,7 +48,6 @@ const Register = () => {
 
   return (
     <div className="register">
-      {/* ✅ Overlay spinner when loading */}
       {loading && (
         <div className="loading-container">
           <div className="spinner"></div>
@@ -60,10 +60,9 @@ const Register = () => {
           <h1>SISTEC</h1>
           <p>
             Reconnect with classmates, explore career opportunities, and stay
-            updated on events and achievements. Join a network that lasts a
-            lifetime!
+            updated on events and achievements. Join a network that lasts a lifetime!
           </p>
-          <span>Do you have an account?</span>
+          <span>Already have an account?</span>
           <Link to="/login">
             <button>Login</button>
           </Link>
@@ -97,12 +96,19 @@ const Register = () => {
             />
             <input
               type="text"
-              placeholder="Name"
+              placeholder="Full Name"
               name="name"
               value={inputs.name}
               onChange={handleChange}
               required
             />
+
+            {/* Optional: Role selection */}
+            <select name="role" value={inputs.role} onChange={handleChange} required>
+              <option value="student">Student</option>
+              <option value="alumni">Alumni</option>
+            </select>
+
             {err && <p className="error">{err}</p>}
             {success && <p className="success">{success}</p>}
             <button type="submit">Register</button>

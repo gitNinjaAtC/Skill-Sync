@@ -1,0 +1,27 @@
+.navbar {
+  height: 64px;
+  position: fixed;
+  top: 0;
+  left: 200px; // sidebar width
+  right: 0;
+  background-color: #1f2937;
+  color: #fff;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fbbf24;
+      letter-spacing: 0.5px;
+    }
+  }
+}
