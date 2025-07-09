@@ -18,7 +18,6 @@ import jobRoutes from "./routes/job.js";
 dotenv.config();
 
 const app = express();
-
 db();
 
 const allowedOrigins = [
@@ -28,7 +27,6 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // allow requests with no origin (like Postman, curl)
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -41,24 +39,23 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
-// Use CORS for all routes
 app.use(cors(corsOptions));
-
-// Handle preflight OPTIONS requests for all routes
 app.options("*", cors(corsOptions));
 
-// Middleware
 app.use(express.json());
 app.use(cookieParser());
-
 app.use("/uploads", express.static("uploads"));
 
-// Logging middleware
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   console.log("Incoming cookies:", req.cookies);
   console.log("Request headers:", req.headers);
   next();
+});
+
+// ✅ Health check route
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
 });
 
 // Routes
