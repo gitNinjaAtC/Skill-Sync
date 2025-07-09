@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const validateToken = (req, res, next) => {
+export const validateToken = (req, res, next) => {
   console.log("🛑 Running validateToken middleware...");
   console.log("Request cookies:", req.cookies);
   console.log("Request headers:", req.headers);
@@ -36,4 +36,14 @@ const validateToken = (req, res, next) => {
   }
 };
 
-export default validateToken;
+export const admin = (req, res, next) => {
+  // Check if user exists and has admin privileges
+  if (req.user && req.user.isAdmin) {
+    next(); // User is admin, proceed to the next middleware/controller
+  } else {
+    res.status(403).json({
+      success: false,
+      message: "Access denied. Admin privileges required.",
+    });
+  }
+};

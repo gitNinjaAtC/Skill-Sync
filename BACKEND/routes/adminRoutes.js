@@ -1,36 +1,41 @@
 import express from "express";
 import User from "../models/Users.js";
-import nodemailer from "nodemailer";
+import { getUsers, approveUser } from "../controllers/adminControllers.js";
+// import nodemailer from "nodemailer";
+import { validateToken } from "../middleware/validateTokenHandler.js";
 
 const router = express.Router();
 
+router.post("/approve-user", validateToken, approveUser);
+router.get("/users", validateToken, getUsers);
+
 // Nodemailer transporter (make sure env vars are set)
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS,
+//   },
+// });
 
 // ✅ GET all users, with optional filters
-router.get("/users", async (req, res) => {
-  try {
-    const { active, role } = req.query;
-    const filter = {};
+// router.get("/users", async (req, res) => {
+//   try {
+//     const { active, role } = req.query;
+//     const filter = {};
 
-    if (active === "true") filter.isActive = true;
-    else if (active === "false") filter.isActive = false;
+//     if (active === "true") filter.isActive = true;
+//     else if (active === "false") filter.isActive = false;
 
-    if (role) filter.role = role;
+//     if (role) filter.role = role;
 
-    const users = await User.find(filter).select("-password");
-    res.status(200).json(users);
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    res.status(500).json({ message: "Error fetching users" });
-  }
-});
+//     const users = await User.find(filter).select("-password");
+//     res.status(200).json(users);
+//   } catch (error) {
+//     console.error("Error fetching users:", error);
+//     res.status(500).json({ message: "Error fetching users" });
+//   }
+// });
 
 // ✅ GET user stats
 router.get("/stats", async (req, res) => {
@@ -53,7 +58,11 @@ router.put("/user/:id/role", async (req, res) => {
   if (!role) return res.status(400).json({ message: "Role is required." });
 
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, { role }, { new: true });
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { role },
+      { new: true }
+    );
     if (!user) return res.status(404).json({ message: "User not found." });
 
     res.status(200).json({ message: "Role updated", user });

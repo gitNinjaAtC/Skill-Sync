@@ -13,7 +13,7 @@
 // export default router;
 import express from "express";
 import { addComment, getComments } from "../controllers/comment.js";
-import validateToken from "../middleware/validateTokenHandler.js";
+import { validateToken } from "../middleware/validateTokenHandler.js";
 
 const router = express.Router();
 

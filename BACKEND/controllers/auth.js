@@ -28,12 +28,14 @@ export const register = async (req, res) => {
       password: hashedPassword,
       name,
       role: role || "student",
-      isActive: false, // ✅ New users must be approved by admin
+      //isActive: false, // ✅ New users must be approved by admin
     });
 
     await newUser.save();
     console.log("✅ User created successfully!");
-    return res.status(200).json("Registration successful. Awaiting admin approval.");
+    return res
+      .status(200)
+      .json("Registration successful. Awaiting admin approval.");
   } catch (err) {
     console.error("❌ Registration error:", err);
     return res.status(500).json({ error: err.message });
@@ -112,6 +114,8 @@ export const logout = (req, res) => {
     });
     return res.status(200).json({ message: "Successfully logged out." });
   } catch (err) {
-    return res.status(500).json({ message: "Logout failed", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Logout failed", error: err.message });
   }
 };

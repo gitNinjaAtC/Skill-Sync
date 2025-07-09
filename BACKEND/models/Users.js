@@ -8,7 +8,6 @@ const userSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   profilePic: { type: String, maxlength: 255, default: null },
   role: { type: String, required: true, default: "student", maxlength: 20 },
-  isActive: { type: Boolean, default: false }, // 👈 added
   about: { type: String, default: null },
   facebook: { type: String, maxlength: 255, default: null },
   instagram: { type: String, maxlength: 255, default: null },
@@ -21,6 +20,7 @@ const userSchema = new mongoose.Schema({
   coverPhoto: { type: String, maxlength: 255, default: null },
 });
 
+userSchema.add({ isActive: { type: Boolean, default: false } }); // 👈 added
 
 const User = mongoose.model("User", userSchema);
 
