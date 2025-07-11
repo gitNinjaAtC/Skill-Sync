@@ -1,0 +1,71 @@
+.gallery-page {
+  padding: 0rem 0.5rem 2rem 2rem;
+
+  h1 {
+    font-size: 2rem;
+    border-bottom: 2px solid #929292;
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+  }
+
+  .batch-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+  }
+
+  .batch-card {
+    background-color: #f3f4f6;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+
+    h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: #4b5563;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: #6b7280;
+      margin-bottom: 1rem;
+    }
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+
+  button {
+    background-color: #3b82f6; // View button
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #2563eb;
+    }
+  }
+
+  button:nth-child(2) {
+    background-color: #10b981; // Upload button (green)
+    
+    &:hover {
+      background-color: #059669;
+    }
+  }
+}
+
+
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+}

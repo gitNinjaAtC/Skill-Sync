@@ -8,17 +8,21 @@ const userSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   profilePic: { type: String, maxlength: 255, default: null },
   role: { type: String, required: true, default: "student", maxlength: 20 },
-  about: { type: String, default: null }, // TEXT in MySQL -> String in Mongoose
+  about: { type: String, default: null },
   facebook: { type: String, maxlength: 255, default: null },
   instagram: { type: String, maxlength: 255, default: null },
   twitter: { type: String, maxlength: 255, default: null },
   linkedin: { type: String, maxlength: 255, default: null },
-  skills: { type: String, default: null }, // TEXT -> String, or array if you want to parse skills individually
+  skills: { type: String, default: null },
   education: { type: String, default: null },
   experience: { type: String, default: null },
   others: { type: String, default: null },
   coverPhoto: { type: String, maxlength: 255, default: null },
+
+  // ✅ Add here
+  isActive: { type: Boolean, default: false }
 });
+
 
 const User = mongoose.model("User", userSchema);
 

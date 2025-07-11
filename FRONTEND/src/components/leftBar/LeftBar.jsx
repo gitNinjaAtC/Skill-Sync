@@ -43,9 +43,9 @@ const LeftBar = () => {
             <img src={home} alt="Home" />
             <span>Home</span>
           </div>
-          <div className={`item ${isActive("#") ? "active" : ""}`} onClick={() => navigate("#")}>
+          <div className={`item ${isActive("/people") ? "active" : ""}`} onClick={() => navigate("/people")}>
             <img src={Friends} alt="Friends" />
-            <span>Friends</span>
+            <span>People</span>
           </div>
           <div className={`item ${isActive("/forums") ? "active" : ""}`} onClick={() => navigate("/forums")}>
             <img src={Forums} alt="Forums" />
@@ -63,7 +63,7 @@ const LeftBar = () => {
             <img src={GalleryIcon} alt="Gallery" />
             <span>Gallery</span>
           </div>
-          <div className={`item ${isActive("#") ? "active" : ""}`} onClick={() => navigate("#")}>
+          <div className={`item ${isActive("/messages") ? "active" : ""}`} onClick={() => navigate("/messages")}>
             <img src={Messages} alt="Messages" />
             <span>Messages</span>
           </div>
