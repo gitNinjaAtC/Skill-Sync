@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.7.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -12,7 +13,8 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.13.0",
     "nodemailer": "^7.0.4",
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.9",
+    "socket.io": "^4.8.1"
   },
   "name": "api_b",
   "version": "1.0.0",

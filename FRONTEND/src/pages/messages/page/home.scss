@@ -1,0 +1,99 @@
+.home {
+  height: 100vh;
+  background-color: #f1f5f9; // base-200
+
+  .home-wrapper {
+    display: flex;
+    justify-content: center;
+    padding-top: 5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+
+    .home-content {
+      background-color: #ffffff; // base-100
+      border-radius: 0.5rem;
+      width: 100%;
+      max-width: 96rem;
+      height: calc(100vh - 8rem);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+      .chat-wrapper {
+        display: flex;
+        height: 100%;
+        border-radius: 0.5rem;
+        overflow: hidden;
+
+        .chat-sidebar {
+          width: 100%;
+
+          @media (min-width: 1024px) {
+            width: auto;
+          }
+
+          &.mobile-hidden {
+            display: none;
+
+            @media (min-width: 1024px) {
+              display: block;
+            }
+          }
+        }
+
+        .chat-main {
+          flex: 1;
+          width: 100%;
+          position: relative;
+          display: flex;
+          flex-direction: column;
+
+          .mobile-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-bottom: 1px solid #d1d5db;
+
+            @media (min-width: 1024px) {
+              display: none;
+            }
+
+            .back-btn {
+              background: none;
+              border: none;
+              padding: 0;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+
+              .back-icon {
+                width: 1.5rem;
+                height: 1.5rem;
+                color: #1f2937;
+              }
+            }
+
+            .back-text {
+              font-weight: 600;
+              font-size: 1rem;
+              color: #1f2937;
+            }
+          }
+
+          .chat-body {
+            flex: 1;
+            height: 100%;
+
+            .desktop-only {
+              display: none;
+
+              @media (min-width: 1024px) {
+                display: block;
+                height: 100%;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

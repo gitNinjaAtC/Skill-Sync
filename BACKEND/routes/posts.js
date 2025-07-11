@@ -5,7 +5,7 @@ import {
   reviewPost,
   deletePost,
 } from "../controllers/post.js";
-import validateToken from "../middleware/validateTokenHandler.js";
+import {validateToken} from "../middleware/validateTokenHandler.js";
 
 const router = express.Router();
 

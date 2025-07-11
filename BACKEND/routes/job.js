@@ -5,7 +5,7 @@ import {
   getJobs,
   getJobById, // new controller
 } from "../controllers/job.js";
-import validateToken from "../middleware/validateTokenHandler.js";
+import {validateToken} from "../middleware/validateTokenHandler.js";
 
 const router = express.Router();
 

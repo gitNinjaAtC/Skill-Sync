@@ -1,39 +1,48 @@
 import jwt from "jsonwebtoken";
+import User from "../models/Users.js"; // Use your primary user model
+import dotenv from "dotenv";
 
-const validateToken = (req, res, next) => {
-  console.log("🛑 Running validateToken middleware...");
-  console.log("Request cookies:", req.cookies);
-  console.log("Request headers:", req.headers);
+dotenv.config();
 
-  // Extract token from cookie (cookie-based auth only)
-  const token = req.cookies?.accessToken;
+const  validateToken = async (req, res, next) => {
+    try {
+    const token = req.cookies?.accessToken; // ✅ Standardized token key
 
-  // Check if token exists
-  if (!token) {
-    console.log("❌ No accessToken cookie found. Rejecting request.");
-    return res.status(401).json({ message: "Unauthorized: No token provided" });
-  }
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized: No token provided" });
+    }
 
-  console.log("✅ Token found:", token.substring(0, 10) + "...");
-
-  // Verify Token
-  try {
+    // ✅ Decode & verify JWT
     const decoded = jwt.verify(token, process.env.JWT_SECRET, {
-      clockTolerance: 300, // Allow 5-minute clock skew
+      clockTolerance: 300, // Allow small clock skew
     });
-    console.log("✅ Token valid. User authenticated:", decoded);
-    req.user = decoded;
+
+    if (!decoded?.id) {
+      return res.status(401).json({ message: "Invalid token payload" });
+    }
+
+    // ✅ Optional: fetch full user from DB
+    const user = await User.findById(decoded.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // ✅ Attach user to request object
+    req.user = user;
+
     next();
-  } catch (err) {
-    console.error("❌ Token verification error:", {
-      name: err.name,
-      message: err.message,
-      token: token.substring(0, 10) + "...",
-    });
-    return res
-      .status(403)
-      .json({ message: "Forbidden: Invalid or expired token" });
+  } catch (error) {
+    console.error("❌ protectRoute error:", error.message);
+    return res.status(403).json({ message: "Forbidden: Invalid or expired token" });
   }
 };
 
-export default validateToken;
+// ✅ Optional: Admin-only access
+const isAdmin = (req, res, next) => {
+  if (req.user?.role !== "admin") {
+    return res.status(403).json({ message: "Access denied: Admins only" });
+  }
+  next();
+};
+
+export { validateToken, isAdmin };

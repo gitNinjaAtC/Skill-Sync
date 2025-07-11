@@ -1,0 +1,60 @@
+.no-chat-container {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  background-color: rgba(255, 255, 255, 0.5); // base-100/50
+}
+
+.no-chat-content {
+  max-width: 28rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  .icon-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+
+    .icon-bounce {
+      width: 4rem;
+      height: 4rem;
+      border-radius: 1rem;
+      background-color: rgba(59, 130, 246, 0.1); // primary/10
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: bounce 1.5s infinite;
+
+      .chat-icon {
+        width: 2rem;
+        height: 2rem;
+        color: #3b82f6; // Tailwind's primary
+      }
+    }
+  }
+
+  .welcome-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .welcome-subtitle {
+    color: rgba(0, 0, 0, 0.6); // text-base-content/60
+    font-size: 1rem;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}

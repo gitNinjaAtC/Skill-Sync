@@ -1,6 +1,6 @@
 import express from "express";
 import { createForum, getForums, deleteForum } from "../controllers/forums.js";
-import validateToken from "../middleware/validateTokenHandler.js";
+import {validateToken} from "../middleware/validateTokenHandler.js";
 
 const router = express.Router();
 
