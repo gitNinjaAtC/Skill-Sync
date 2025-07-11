@@ -28,7 +28,7 @@ export const register = async (req, res) => {
       password: hashedPassword,
       name,
       role: role || "student",
-      //isActive: false, // ✅ New users must be approved by admin
+      // isActive: false, // ✅ New users must be approved by admin
     });
 
     await newUser.save();

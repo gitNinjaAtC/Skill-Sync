@@ -1,13 +1,69 @@
 import express from "express";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 import User from "../models/Users.js";
-import { getUsers, approveUser } from "../controllers/adminControllers.js";
-// import nodemailer from "nodemailer";
+import {
+  getUsers,
+  approveUser,
+  updateUserRole,
+  getStats,
+  deleteUser,
+  importFile,
+} from "../controllers/adminControllers.js";
+
 import { validateToken } from "../middleware/validateTokenHandler.js";
 
 const router = express.Router();
 
+// Multer configuration
+// Multer configuration
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(process.cwd(), "Uploads");
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    console.log("File details:", {
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+      ext: path.extname(file.originalname).toLowerCase(),
+    }); // Debug log
+    const filetypes = /csv|xlsx|xls/;
+    const mimetypes = [
+      "text/csv",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+      "application/vnd.ms-excel", // .xls
+    ];
+    const extname = filetypes.test(
+      path.extname(file.originalname).toLowerCase()
+    );
+    const mimetype = mimetypes.includes(file.mimetype);
+    if (extname && mimetype) {
+      return cb(null, true);
+    }
+    cb(new Error("File type not supported! Only CSV and Excel files allowed."));
+  },
+});
+
+// Import file endpoint
+router.post("/upload", upload.single("file"), importFile);
+
 router.post("/approve-user", validateToken, approveUser);
-router.get("/users", validateToken, getUsers);
+router.get("/users", getUsers);
+router.put("/user/:id/role", updateUserRole);
+router.get("/stats", getStats);
+router.delete("/user/:id", deleteUser);
 
 // Nodemailer transporter (make sure env vars are set)
 // const transporter = nodemailer.createTransport({
@@ -18,97 +74,78 @@ router.get("/users", validateToken, getUsers);
 //   },
 // });
 
-// ✅ GET all users, with optional filters
-// router.get("/users", async (req, res) => {
+// ✅ GET user stats
+// router.get("/stats", async (req, res) => {
 //   try {
-//     const { active, role } = req.query;
-//     const filter = {};
+//     const total = await User.countDocuments();
+//     const students = await User.countDocuments({ role: "student" });
+//     const alumni = await User.countDocuments({ role: "alumni" });
+//     const admins = await User.countDocuments({ role: "admin" });
 
-//     if (active === "true") filter.isActive = true;
-//     else if (active === "false") filter.isActive = false;
-
-//     if (role) filter.role = role;
-
-//     const users = await User.find(filter).select("-password");
-//     res.status(200).json(users);
-//   } catch (error) {
-//     console.error("Error fetching users:", error);
-//     res.status(500).json({ message: "Error fetching users" });
+//     res.status(200).json({ total, students, alumni, admins });
+//   } catch (err) {
+//     console.error("Stats error:", err);
+//     res.status(500).json({ message: "Error getting stats" });
 //   }
 // });
 
-// ✅ GET user stats
-router.get("/stats", async (req, res) => {
-  try {
-    const total = await User.countDocuments();
-    const students = await User.countDocuments({ role: "student" });
-    const alumni = await User.countDocuments({ role: "alumni" });
-    const admins = await User.countDocuments({ role: "admin" });
-
-    res.status(200).json({ total, students, alumni, admins });
-  } catch (err) {
-    console.error("Stats error:", err);
-    res.status(500).json({ message: "Error getting stats" });
-  }
-});
-
 // ✅ Change user role
-router.put("/user/:id/role", async (req, res) => {
-  const { role } = req.body;
-  if (!role) return res.status(400).json({ message: "Role is required." });
+// router.put("/user/:id/role", async (req, res) => {
+//   const { role } = req.body;
+//   if (!role) return res.status(400).json({ message: "Role is required." });
 
-  try {
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { role },
-      { new: true }
-    );
-    if (!user) return res.status(404).json({ message: "User not found." });
+//   try {
+//     const user = await User.findByIdAndUpdate(
+//       req.params.id,
+//       { role },
+//       { new: true }
+//     );
+//     if (!user) return res.status(404).json({ message: "User not found." });
 
-    res.status(200).json({ message: "Role updated", user });
-  } catch (err) {
-    console.error("Role update error:", err);
-    res.status(500).json({ message: "Failed to update role" });
-  }
-});
+//     res.status(200).json({ message: "Role updated", user });
+//   } catch (err) {
+//     console.error("Role update error:", err);
+//     res.status(500).json({ message: "Failed to update role" });
+//   }
+// });
 
 // ✅ Delete user
-router.delete("/user/:id", async (req, res) => {
-  try {
-    const user = await User.findByIdAndDelete(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found." });
+// router.delete("/user/:id", async (req, res) => {
+//   try {
+//     const user = await User.findByIdAndDelete(req.params.id);
+//     if (!user) return res.status(404).json({ message: "User not found." });
 
-    res.status(200).json({ message: "User deleted" });
-  } catch (err) {
-    console.error("Delete error:", err);
-    res.status(500).json({ message: "Failed to delete user" });
-  }
-});
+//     res.status(200).json({ message: "User deleted" });
+//   } catch (err) {
+//     console.error("Delete error:", err);
+//     res.status(500).json({ message: "Failed to delete user" });
+//   }
+// });
 
 // ✅ Approve user (activate + email)
-router.put("/approve/:id", async (req, res) => {
-  try {
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { isActive: true },
-      { new: true }
-    ).select("-password");
+// router.put("/approve/:id", async (req, res) => {
+//   try {
+//     const user = await User.findByIdAndUpdate(
+//       req.params.id,
+//       { isActive: true },
+//       { new: true }
+//     ).select("-password");
 
-    if (!user) return res.status(404).json({ message: "User not found" });
+//     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Send approval email
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: user.email,
-      subject: "SISTec Alumni Portal – Account Approved",
-      text: `Hi ${user.name},\n\nYour account has been approved. You can now login to the portal.\n\nRegards,\nSISTec Admin`,
-    });
+//     // Send approval email
+//     await transporter.sendMail({
+//       from: process.env.EMAIL_USER,
+//       to: user.email,
+//       subject: "SISTec Alumni Portal – Account Approved",
+//       text: `Hi ${user.name},\n\nYour account has been approved. You can now login to the portal.\n\nRegards,\nSISTec Admin`,
+//     });
 
-    res.status(200).json({ message: "User approved and notified", user });
-  } catch (err) {
-    console.error("Approval error:", err);
-    res.status(500).json({ message: "Approval failed" });
-  }
-});
+//     res.status(200).json({ message: "User approved and notified", user });
+//   } catch (err) {
+//     console.error("Approval error:", err);
+//     res.status(500).json({ message: "Approval failed" });
+//   }
+// });
 
 export default router;
