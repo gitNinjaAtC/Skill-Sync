@@ -1,16 +1,21 @@
 import jwt from "jsonwebtoken";
 
-const validateToken = (req, res, next) => {
+export const validateToken = (req, res, next) => {
   console.log("🛑 Running validateToken middleware...");
   console.log("Request cookies:", req.cookies);
   console.log("Request headers:", req.headers);
 
-  // Extract token from cookie (cookie-based auth only)
-  const token = req.cookies?.accessToken;
+  // Get token from cookies or Authorization header
+  const cookieToken = req.cookies?.accessToken;
+  const headerToken = req.headers.authorization?.startsWith("Bearer ")
+    ? req.headers.authorization.split(" ")[1]
+    : null;
+
+  const token = cookieToken || headerToken;
 
   // Check if token exists
   if (!token) {
-    console.log("❌ No accessToken cookie found. Rejecting request.");
+    console.log("❌ No token found in cookies or Authorization header.");
     return res.status(401).json({ message: "Unauthorized: No token provided" });
   }
 
@@ -36,4 +41,14 @@ const validateToken = (req, res, next) => {
   }
 };
 
-export default validateToken;
+export const admin = (req, res, next) => {
+  // Check if user exists and has admin privileges
+  if (req.user && req.user.isAdmin) {
+    next(); // User is admin, proceed to the next middleware/controller
+  } else {
+    res.status(403).json({
+      success: false,
+      message: "Access denied. Admin privileges required.",
+    });
+  }
+};

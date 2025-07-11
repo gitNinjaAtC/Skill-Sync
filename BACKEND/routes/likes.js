@@ -5,7 +5,7 @@ import {
   getLikes,
   getLikeStatus,
 } from "../controllers/like.js";
-import validateToken from "../middleware/validateTokenHandler.js";
+import { validateToken } from "../middleware/validateTokenHandler.js";
 
 const router = express.Router();
 

@@ -1,13 +1,17 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/Users.js";
-// Adjust path if needed
 
-// REGISTER
+// ✅ REGISTER
 export const register = async (req, res) => {
-   console.log("Register route hit, body:", req.body);
+  console.log("Register route hit, body:", req.body);
   try {
-    const { username, email, password, name } = req.body;
+    const { username, email, password, name, role } = req.body;
+
+    // 🚫 Prevent admin registration via public signup
+    if (role === "admin") {
+      return res.status(403).json("Admin registration is not allowed");
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({ username });
@@ -17,24 +21,27 @@ export const register = async (req, res) => {
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
-    // Create new user
+    // Create new user with default role (student if not provided)
     const newUser = new User({
       username,
       email,
       password: hashedPassword,
       name,
+      role: role || "student",
     });
 
     await newUser.save();
     console.log("✅ User created successfully!");
-    return res.status(200).json("User created");
+    return res
+      .status(200)
+      .json("Registration successful. Awaiting admin approval.");
   } catch (err) {
     console.error("❌ Registration error:", err);
     return res.status(500).json({ error: err.message });
   }
 };
 
-// LOGIN
+// ✅ LOGIN
 export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -42,9 +49,14 @@ export const login = async (req, res) => {
     const user = await User.findOne({ username });
     if (!user) return res.status(404).json("User not found");
 
+    if (!user.isActive) {
+      return res.status(403).json("Your account is not yet approved by admin.");
+    }
+
     const validPassword = bcrypt.compareSync(password, user.password);
-    if (!validPassword)
+    if (!validPassword) {
       return res.status(400).json("Wrong password or username");
+    }
 
     const token = jwt.sign(
       { id: user._id, role: user.role },
@@ -60,7 +72,7 @@ export const login = async (req, res) => {
       path: "/",
     });
 
-    const { password: pwd, ...userData } = user._doc;
+    const { password: _, ...userData } = user._doc;
     return res.status(200).json(userData);
   } catch (err) {
     console.error("❌ Login error:", err);
@@ -68,10 +80,9 @@ export const login = async (req, res) => {
   }
 };
 
-// VERIFY TOKEN
+// ✅ VERIFY TOKEN
 export const verifyToken = async (req, res) => {
   const token = req.cookies.accessToken;
-
   if (!token) return res.status(401).json({ error: "Not authenticated" });
 
   jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
@@ -92,7 +103,7 @@ export const verifyToken = async (req, res) => {
   });
 };
 
-// LOGOUT
+// ✅ LOGOUT
 export const logout = (req, res) => {
   try {
     res.clearCookie("accessToken", {
