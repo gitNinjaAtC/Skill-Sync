@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import ProfileSkeleton from "./ProfileSkeleton";
@@ -13,20 +13,26 @@ import SkillsSection from "./SkillsSection";
 import EducationSection from "./EducationSection";
 import ProfessionalExperienceSection from "./ProfessionalExperienceSection";
 import OthersSection from "./OthersSection";
+import { AuthContext } from "../../context/authContext";
+import { useChatStore } from "../messages/store/useChatStore";
 
 const ProfileInfo = ({ userId }) => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("skills");
+
+  const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { setSelectedUser } = useChatStore(); // ✅ get from chat store
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await axios.get(`https://skill-sync-backend-522o.onrender.com/API_B/profile/${userId}`, {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          `https://skill-sync-backend-522o.onrender.com/API_B/profile/${userId}`,
+          { withCredentials: true }
+        );
         setUserData(res.data);
       } catch (err) {
         console.error("Error fetching user data:", err);
@@ -40,6 +46,11 @@ const ProfileInfo = ({ userId }) => {
   }, [userId]);
 
   const handleEditClick = () => navigate(`/edit-profile/${userId}`);
+
+  const handleMessage = () => {
+    setSelectedUser(userData);         // ✅ Set chat user
+    navigate("/messages");            // ✅ Redirect to chat page
+  };
 
   if (loading) return <ProfileSkeleton />;
   if (error) return <div className="error">{error}</div>;
@@ -71,7 +82,11 @@ const ProfileInfo = ({ userId }) => {
       <div className="profile-info-header">
         <div className="profile-header">
           <h2>{name}</h2>
-          <button className="edit-btn" onClick={handleEditClick}>Edit Profile</button>
+          {currentUser?.id === userId && (
+            <button className="edit-btn" onClick={handleEditClick}>
+              Edit Profile
+            </button>
+          )}
         </div>
       </div>
 
@@ -102,7 +117,9 @@ const ProfileInfo = ({ userId }) => {
               </a>
             )}
           </div>
-          <button className="message-btn">Message</button>
+          {currentUser?.id !== userId && (
+            <button className="message-btn" onClick={handleMessage}>Message</button>
+          )}
         </div>
 
         <div className="profile-tabs">

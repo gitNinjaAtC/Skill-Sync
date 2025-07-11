@@ -1,5 +1,5 @@
 import "./style.scss";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -11,6 +11,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // Contexts
 import { DarkModeContext } from "./context/darkModeContext";
 import { AuthContext } from "./context/authContext";
+
+// Zustand store for socket/user syncing
+import { useAuthStore } from "./store/useAuthStore";
+
+
 
 // Layout Components
 import Navbar from "./components/navbar/Navbar";
@@ -29,27 +34,41 @@ import Jobs from "./pages/job/job";
 import JobDescription from "./pages/job/JobDescription";
 import CreateOffer from "./pages/jobs/CreateOffer";
 import Events from "./pages/events/Events";
+import PeopleSection from "./pages/people/PeopleSection";
 import Gallery from "./pages/gallery/Gallery";
+import HomePage from "./pages/messages/page/HomePage";
+import ErrorPage from "./pages/ErrorPage";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
   const { darkMode } = useContext(DarkModeContext);
   const queryClient = new QueryClient();
 
-  const Layout = () => (
-    <QueryClientProvider client={queryClient}>
-      <div className={`theme-${darkMode ? "dark" : "light"}`}>
-        <Navbar />
-        <div style={{ display: "flex" }}>
-          <LeftBar />
-          <div style={{ flex: 6 }}>
-            <Outlet />
+  const Layout = () => {
+    const { connectSocket, setCurrentUser } = useAuthStore();
+
+    useEffect(() => {
+      if (currentUser?._id) {
+        setCurrentUser(currentUser); // bridge AuthContext → Zustand
+        connectSocket(currentUser._id); // initialize socket
+      }
+    }, [currentUser]);
+
+    return (
+      <QueryClientProvider client={queryClient}>
+        <div className={`theme-${darkMode ? "dark" : "light"}`}>
+          <Navbar />
+          <div style={{ display: "flex" }}>
+            <LeftBar />
+            <div style={{ flex: 6 }}>
+              <Outlet />
+            </div>
           </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
-    </QueryClientProvider>
-  );
+      </QueryClientProvider>
+    );
+  };
 
   const ProtectedRoute = ({ children }) => {
     return currentUser ? children : <Navigate to="/login" replace />;
@@ -63,6 +82,7 @@ function App() {
           <Layout />
         </ProtectedRoute>
       ),
+      errorElement: <ErrorPage />,
       children: [
         { path: "/", element: <Home /> },
         { path: "/profile/:id", element: <ProfilePage /> },
@@ -73,11 +93,14 @@ function App() {
         { path: "/jobs/:id", element: <JobDescription /> },
         { path: "/jobs/CreateOffer", element: <CreateOffer /> },
         { path: "/events", element: <Events /> },
+        { path: "/messages", element: <HomePage /> },
+        { path: "/people", element: <PeopleSection /> },
         { path: "/gallery", element: <Gallery /> },
       ],
     },
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
+    { path: "*", element: <ErrorPage /> },
   ]);
 
   return <RouterProvider router={router} />;
