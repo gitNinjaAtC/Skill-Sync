@@ -17,9 +17,11 @@ const generateBatches = (startYear = 2007) => {
 };
 
 const UploadForm = ({ onClose }) => {
+  const [file, setFile] = useState(null);
   const [parsedData, setParsedData] = useState(null);
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [responseData, setResponseData] = useState(null);
   const [selectedBatch, setSelectedBatch] = useState("");
   const [fileInfo, setFileInfo] = useState({ rows: 0, columns: 0 });
   const [loading, setLoading] = useState(false);
@@ -28,11 +30,12 @@ const UploadForm = ({ onClose }) => {
   const allowedTypes = ["csv", "xlsx"];
   const batchOptions = generateBatches();
 
-  const processFile = (file) => {
+  const processFileForPreview = (file) => {
     if (!file) return;
 
     setError("");
     setSuccessMsg("");
+    setResponseData(null);
 
     const ext = file.name.split(".").pop().toLowerCase();
     if (!allowedTypes.includes(ext)) {
@@ -77,32 +80,54 @@ const UploadForm = ({ onClose }) => {
 
   const handleDrop = (e) => {
     e.preventDefault();
-    const file = e.dataTransfer.files?.[0];
-    if (file) processFile(file);
+    const selectedFile = e.dataTransfer.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      processFileForPreview(selectedFile);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      processFileForPreview(selectedFile);
+    }
   };
 
   const handleUpload = async () => {
-    if (!parsedData || !selectedBatch) {
+    if (!file || !selectedBatch) {
       setError("Please select a batch and upload a valid file.");
       return;
     }
 
     try {
       setLoading(true);
-      const payload = {
-        batch: selectedBatch,
-        users: parsedData,
-      };
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("batch", selectedBatch);
 
-      await axios.post("/api/users/bulk-upload", payload);
-      setSuccessMsg("Data uploaded successfully!");
-      setTimeout(() => {
-        setLoading(false);
-        onClose();
-      }, 1500);
+      console.log("Uploading file with batch:", selectedBatch);
+      const response = await axios.post(
+        "http://localhost:8800/API_B/admin/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("Response:", response.data);
+      setSuccessMsg(
+        `Data uploaded successfully! ${response.data.count} rows imported.`
+      );
+      setResponseData(response.data);
+      setLoading(false);
     } catch (err) {
-      console.error(err);
-      setError("Failed to upload data.");
+      console.error("Upload error:", err.response?.data, err.message);
+      setError(
+        "Failed to upload data: " + (err.response?.data?.error || err.message)
+      );
       setLoading(false);
     }
   };
@@ -135,11 +160,8 @@ const UploadForm = ({ onClose }) => {
           <input
             type="file"
             ref={inputRef}
-            accept=".csv, .xlsx"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) processFile(file);
-            }}
+            accept=".csv,.xlsx"
+            onChange={handleFileChange}
             disabled={loading}
           />
         </div>
@@ -177,16 +199,46 @@ const UploadForm = ({ onClose }) => {
           </>
         )}
 
+        {responseData && (
+          <div className="response-details">
+            <h3>Upload Results</h3>
+            <p>Total Rows Uploaded: {responseData.count}</p>
+            {(responseData.duplicateRows?.length > 0 ||
+              responseData.invalidRows?.length > 0) && (
+              <div className="non-imported-rows">
+                <h4>
+                  Issues Detected (
+                  {(responseData.duplicateRows?.length || 0) +
+                    (responseData.invalidRows?.length || 0)}
+                  ):
+                </h4>
+                <ul>
+                  {responseData.duplicateRows?.map((row, i) => (
+                    <li key={`duplicate-${i}`}>
+                      {row.row.StudentName}: {row.reason} (Row {row.rowIndex})
+                    </li>
+                  ))}
+                  {responseData.invalidRows?.map((row, i) => (
+                    <li key={`invalid-${i}`}>
+                      {row.row.StudentName}: {row.reason} (Row {row.rowIndex})
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="btn-row">
           <button
             className="submit-btn"
             onClick={handleUpload}
-            disabled={!parsedData || loading}
+            disabled={!file || !selectedBatch || loading}
           >
             {loading ? "Uploading..." : "Upload"}
           </button>
           <button className="close-btn" onClick={onClose} disabled={loading}>
-            Cancel
+            Close
           </button>
         </div>
 
