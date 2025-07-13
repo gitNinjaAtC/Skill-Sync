@@ -7,7 +7,9 @@ const CoverPhoto = ({ userId }) => {
   const [uploading, setUploading] = useState(false);
 
   const BACKEND_URL =
-    process.env.REACT_APP_API_BASE_URL || "http://localhost:8800";
+    process.env.NODE_ENV === "production"
+      ? process.env.REACT_APP_API_BASE_URL_PROD
+      : process.env.REACT_APP_API_BASE_URL_LOCAL;
 
   useEffect(() => {
     const fetchCoverPhoto = async () => {
@@ -24,7 +26,7 @@ const CoverPhoto = ({ userId }) => {
       }
     };
     if (userId) fetchCoverPhoto();
-  }, [userId]);
+  }, [userId, BACKEND_URL]);
 
   const handleEditClick = () => {
     fileInputRef.current.click();

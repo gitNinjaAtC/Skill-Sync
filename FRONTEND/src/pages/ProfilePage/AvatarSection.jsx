@@ -10,7 +10,9 @@ const AvatarSection = ({ userId }) => {
   const [uploading, setUploading] = useState(false);
 
   const BACKEND_URL =
-    process.env.REACT_APP_API_BASE_URL || "http://localhost:8800";
+    process.env.NODE_ENV === "production"
+      ? process.env.REACT_APP_API_BASE_URL_PROD
+      : process.env.REACT_APP_API_BASE_URL_LOCAL;
 
   useEffect(() => {
     const fetchProfilePic = async () => {
@@ -32,7 +34,7 @@ const AvatarSection = ({ userId }) => {
     };
 
     if (userId) fetchProfilePic();
-  }, [userId]);
+  }, [userId, BACKEND_URL]);
 
   const handleEditClick = () => {
     if (currentUser?._id === userId) {
