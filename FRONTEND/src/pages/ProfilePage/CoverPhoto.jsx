@@ -6,22 +6,29 @@ const CoverPhoto = ({ userId }) => {
   const fileInputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
 
+  const BACKEND_URL =
+    process.env.REACT_APP_API_BASE_URL || "http://localhost:8800";
+
   useEffect(() => {
     const fetchCoverPhoto = async () => {
       try {
-        const BACKEND_URL =
-          process.env.REACT_APP_API_BASE_URL || "http://localhost:8800";
-        const res = await fetch(`${BACKEND_URL}/API_B/profile/${userId}`);
+        const res = await fetch(`${BACKEND_URL}/API_B/profile/${userId}`, {
+          credentials: "include",
+        });
         const data = await res.json();
-        if (data.coverPhoto) {
-          setCoverImage(data.coverPhoto);
+
+        if (data.coverPhoto && data.coverPhoto.trim() !== "") {
+          setCoverImage(`${data.coverPhoto}?t=${Date.now()}`); // ✅ use Cloudinary URL directly
+        } else {
+          setCoverImage(defaultCover);
         }
       } catch (error) {
         console.error("Failed to load cover photo", error);
+        setCoverImage(defaultCover);
       }
     };
     if (userId) fetchCoverPhoto();
-  }, [userId]);
+  }, [userId, BACKEND_URL]);
 
   const handleEditClick = () => {
     fileInputRef.current.click();
@@ -36,8 +43,6 @@ const CoverPhoto = ({ userId }) => {
       formData.append("image", file);
 
       try {
-        const BACKEND_URL =
-          process.env.REACT_APP_API_BASE_URL || "http://localhost:8800";
         const response = await fetch(
           `${BACKEND_URL}/API_B/profile/cover/${userId}`,
           {
@@ -53,7 +58,7 @@ const CoverPhoto = ({ userId }) => {
           throw new Error(data.message || "Upload failed");
         }
 
-        setCoverImage(data.url);
+        setCoverImage(`${data.url}?t=${Date.now()}`); // ✅ force refresh after upload
       } catch (error) {
         console.error("Error uploading cover photo:", error);
         alert("Failed to upload image. Please try again.");

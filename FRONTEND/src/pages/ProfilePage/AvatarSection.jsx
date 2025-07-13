@@ -1,4 +1,3 @@
-// src/components/profile/AvatarSection.jsx
 import { useRef, useState, useContext, useEffect } from "react";
 import cameraIcon from "../../assets/camera-icon.png";
 import defaultProfilePic from "../../assets/profile.jpg";
@@ -22,10 +21,7 @@ const AvatarSection = ({ userId }) => {
         const data = await res.json();
 
         if (data.profilePic && data.profilePic.trim() !== "") {
-          const baseUrl = data.profilePic.startsWith("http")
-            ? data.profilePic
-            : `${BACKEND_URL}${data.profilePic}`;
-          setAvatarSrc(`${baseUrl}?t=${Date.now()}`); // force image refresh
+          setAvatarSrc(`${data.profilePic}?t=${Date.now()}`); // ✅ don't prefix cloudinary URLs
         } else {
           setAvatarSrc(defaultProfilePic);
         }
@@ -66,10 +62,7 @@ const AvatarSection = ({ userId }) => {
 
       const data = await response.json();
       if (response.ok) {
-        const newUrl = data.url.startsWith("http")
-          ? data.url
-          : `${BACKEND_URL}${data.url}`;
-        setAvatarSrc(`${newUrl}?t=${Date.now()}`); // force refresh after upload
+        setAvatarSrc(`${data.url}?t=${Date.now()}`); // ✅ use Cloudinary URL directly
       } else {
         alert("Upload failed: " + data.message);
       }
