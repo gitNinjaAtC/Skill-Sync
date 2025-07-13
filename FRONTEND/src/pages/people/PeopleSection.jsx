@@ -1,8 +1,9 @@
+// src/pages/people/PeopleSection.jsx
 import React, { useEffect, useState } from "react";
 import "./people.scss";
 import defaultPic from "../../assets/profile.jpg";
 import { useChatStore } from "../messages/store/useChatStore";
-import { useNavigate } from "react-router-dom"; // ✅ New import
+import { useNavigate } from "react-router-dom";
 
 const SkeletonCard = () => (
   <div className="user-card skeleton-card">
@@ -26,7 +27,7 @@ const PeopleSection = () => {
   const [loading, setLoading] = useState(true);
   const [skeletonCount, setSkeletonCount] = useState(12);
   const { setSelectedUser: openChatWithUser } = useChatStore();
-  const navigate = useNavigate(); // ✅ Hook
+  const navigate = useNavigate();
 
   useEffect(() => {
     preloadSkeletonCount();
@@ -34,7 +35,7 @@ const PeopleSection = () => {
 
   const preloadSkeletonCount = async () => {
     try {
-      const res = await fetch("http://localhost:8800/API_B/users/users", {
+      const res = await fetch("https://skill-sync-backend-522o.onrender.com/API_B/users/users", {
         credentials: "include",
       });
       const data = await res.json();
@@ -54,8 +55,17 @@ const PeopleSection = () => {
   const closePopup = () => setSelectedUser(null);
 
   const handleMessage = (user) => {
-    openChatWithUser(user);        // ✅ Set selected user in chat store
-    navigate("/messages");         // ✅ Navigate to messages route
+    openChatWithUser(user);
+    navigate("/messages");
+  };
+
+  const getProfilePic = (pic) => {
+    if (pic && pic.trim() !== "") {
+      return pic.startsWith("http")
+        ? pic
+        : `https://skill-sync-backend-522o.onrender.com${pic}`;
+    }
+    return defaultPic;
   };
 
   return (
@@ -70,10 +80,13 @@ const PeopleSection = () => {
               <div className="user-card" key={user._id}>
                 <div className="card-left">
                   <img
-                    src={user.profilePic || defaultPic}
+                    src={getProfilePic(user.profilePic)}
                     alt="Profile"
                     className="profile-pic"
-                    onError={(e) => (e.target.src = defaultPic)}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = defaultPic;
+                    }}
                   />
                 </div>
                 <div className="card-right">
@@ -96,10 +109,13 @@ const PeopleSection = () => {
         <div className="popup-overlay">
           <div className="popup-card">
             <img
-              src={selectedUser.profilePic || defaultPic}
+              src={getProfilePic(selectedUser.profilePic)}
               alt="Profile"
               className="popup-profile-pic"
-              onError={(e) => (e.target.src = defaultPic)}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = defaultPic;
+              }}
             />
             <h3>{selectedUser.name}</h3>
             <p>

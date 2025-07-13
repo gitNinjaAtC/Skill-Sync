@@ -1,3 +1,4 @@
+// src/components/profile/AvatarSection.jsx
 import { useRef, useState, useContext, useEffect } from "react";
 import cameraIcon from "../../assets/camera-icon.png";
 import defaultProfilePic from "../../assets/profile.jpg";
@@ -15,10 +16,16 @@ const AvatarSection = ({ userId }) => {
   useEffect(() => {
     const fetchProfilePic = async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}/API_B/profile/${userId}`);
+        const res = await fetch(`${BACKEND_URL}/API_B/profile/${userId}`, {
+          credentials: "include",
+        });
         const data = await res.json();
-        if (data.profilePic) {
-          setAvatarSrc(data.profilePic);
+
+        if (data.profilePic && data.profilePic.trim() !== "") {
+          const picUrl = data.profilePic.startsWith("http")
+            ? data.profilePic
+            : `${BACKEND_URL}${data.profilePic}`;
+          setAvatarSrc(picUrl);
         } else {
           setAvatarSrc(defaultProfilePic);
         }
@@ -59,7 +66,10 @@ const AvatarSection = ({ userId }) => {
 
       const data = await response.json();
       if (response.ok) {
-        setAvatarSrc(data.url);
+        const newUrl = data.url.startsWith("http")
+          ? data.url
+          : `${BACKEND_URL}${data.url}`;
+        setAvatarSrc(newUrl);
       } else {
         alert("Upload failed: " + data.message);
       }

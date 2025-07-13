@@ -35,6 +35,13 @@ const ChatContainer = () => {
     }
   }, [messages]);
 
+  const resolveProfilePic = (user) => {
+    if (!user?.profilePic || user.profilePic.trim() === "") return avatar;
+    return user.profilePic.startsWith("http")
+      ? user.profilePic
+      : `https://skill-sync-backend-522o.onrender.com${user.profilePic}`;
+  };
+
   if (isMessagesLoading) {
     return (
       <div className="chat-container">
@@ -55,7 +62,9 @@ const ChatContainer = () => {
         {messages.map((message) => (
           <div
             key={message._id}
-            className={`chat-message ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`}
+            className={`chat-message ${
+              message.senderId === authUser._id ? "chat-end" : "chat-start"
+            }`}
             ref={messageEndRef}
           >
             <div className="chat-content">
@@ -63,15 +72,14 @@ const ChatContainer = () => {
                 <img
                   src={
                     message.senderId === authUser._id
-                      ? authUser.profilePic && authUser.profilePic.trim() !== ""
-                        ? authUser.profilePic
-                        : avatar
-                      : selectedUser.profilePic && selectedUser.profilePic.trim() !== ""
-                      ? selectedUser.profilePic
-                      : avatar
+                      ? resolveProfilePic(authUser)
+                      : resolveProfilePic(selectedUser)
                   }
-                  onError={(e) => (e.currentTarget.src = avatar)}
                   alt="profile pic"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = avatar;
+                  }}
                 />
               </div>
 
@@ -80,7 +88,11 @@ const ChatContainer = () => {
                   <time>{formatMessageTime(message.createdAt)}</time>
                 </div>
 
-                <div className={`chat-bubble ${message.image && !message.text ? "image-only" : ""}`}>
+                <div
+                  className={`chat-bubble ${
+                    message.image && !message.text ? "image-only" : ""
+                  }`}
+                >
                   {message.image && (
                     <img
                       src={message.image}

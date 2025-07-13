@@ -18,7 +18,7 @@ import Gallery from "../../assets/gallery.png";
 import Messages from "../../assets/message.png";
 import Resume from "../../assets/11.png";
 import Fund from "../../assets/13.png";
-import profilePic from "../../assets/profile.jpg";
+import defaultAvatar from "../../assets/profile.jpg";
 import home from "../../assets/home.png";
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -72,6 +72,13 @@ const Navbar = () => {
 
   const isActive = (path) => location.pathname === path;
 
+  const getProfilePicUrl = () => {
+    if (!currentUser?.profilePic || currentUser.profilePic.trim() === "") return defaultAvatar;
+    return currentUser.profilePic.startsWith("http")
+      ? currentUser.profilePic
+      : `https://skill-sync-backend-522o.onrender.com${currentUser.profilePic}`;
+  };
+
   return (
     <>
       <div className="navbar">
@@ -109,32 +116,42 @@ const Navbar = () => {
             <button
               className={`profile-button ${isActive(`/profile/${currentUser?.id}`) ? "active" : ""}`}
               onClick={handleProfile}
-            > 
+            >
               <PersonOutlinedIcon />
             </button>
             <Link to="#" className={`iconWrapper ${isActive("#") ? "active" : ""}`}>
-              <EmailOutlinedIcon className="mailIcon"/>
+              <EmailOutlinedIcon className="mailIcon" />
             </Link>
 
             <Link to="#" className={`iconWrapper ${isActive("#") ? "active" : ""}`}>
-              <NotificationsOutlinedIcon className="notificationIcon"/>
+              <NotificationsOutlinedIcon className="notificationIcon" />
             </Link>
-
           </div>
 
           <div className="user">
             <img
-              src={currentUser?.profilePic || profilePic}
+              src={getProfilePicUrl()}
               alt="Profile"
               className="profile-pic"
               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
               ref={avatarRef}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = defaultAvatar;
+              }}
             />
 
             {userDropdownOpen && (
               <div className="user-dropdown" ref={dropdownRef}>
                 <div className="dropdown-header">
-                  <img src={currentUser?.profilePic || profilePic} alt="Profile" />
+                  <img
+                    src={getProfilePicUrl()}
+                    alt="Profile"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = defaultAvatar;
+                    }}
+                  />
                   <span>{currentUser?.name}</span>
                 </div>
                 <div className="dropdown-item" onClick={handleProfile}>
@@ -176,8 +193,12 @@ const Navbar = () => {
               <div className="user">
                 <button className="profile-button" onClick={handleProfile}>
                   <img
-                    src={currentUser?.profilePic || profilePic}
+                    src={getProfilePicUrl()}
                     alt="User"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = defaultAvatar;
+                    }}
                   />
                   <span>{currentUser?.name}</span>
                 </button>
@@ -190,13 +211,16 @@ const Navbar = () => {
                 <img src={Friends} alt="Friends" />
                 <span>Peoples</span>
               </div>
-              <div className={`item ${isActive("/forums") ? "active" : ""}`} onClick={() => navigate("/forums")}>                <img src={Forums} alt="Forums" />
+              <div className={`item ${isActive("/forums") ? "active" : ""}`} onClick={() => navigate("/forums")}>
+                <img src={Forums} alt="Forums" />
                 <span>Forums</span>
               </div>
-              <div className={`item ${isActive("/job") ? "active" : ""}`} onClick={() => navigate("/job")}>                <img src={Jobs} alt="Jobs" />
+              <div className={`item ${isActive("/job") ? "active" : ""}`} onClick={() => navigate("/job")}>
+                <img src={Jobs} alt="Jobs" />
                 <span>Jobs</span>
               </div>
-              <div className={`item ${isActive("/events") ? "active" : ""}`} onClick={() => navigate("/events")}>                <img src={Events} alt="Events" />
+              <div className={`item ${isActive("/events") ? "active" : ""}`} onClick={() => navigate("/events")}>
+                <img src={Events} alt="Events" />
                 <span>Events</span>
               </div>
               <div className={`item ${isActive("/gallery") ? "active" : ""}`} onClick={() => navigate("/gallery")}>

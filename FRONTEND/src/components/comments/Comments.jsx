@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import "./comments.scss";
 import { AuthContext } from "../../context/authContext";
 import axios from "axios";
+import defaultAvatar from "../../assets/avatar.png";
 
 const Comments = ({ postId }) => {
   const { currentUser, loading: authLoading } = useContext(AuthContext);
@@ -9,13 +10,11 @@ const Comments = ({ postId }) => {
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState(null);
 
-  // Fetch comments when component mounts
   useEffect(() => {
     const fetchComments = async () => {
       if (!currentUser) return;
 
       try {
-        console.log(`Fetching comments for postId=${postId}`);
         const res = await axios.get(
           `https://skill-sync-backend-522o.onrender.com/API_B/comments/${postId}`,
           { withCredentials: true }
@@ -33,7 +32,6 @@ const Comments = ({ postId }) => {
     fetchComments();
   }, [postId, currentUser]);
 
-  // Handle sending a new comment
   const handleSend = async () => {
     if (!newComment.trim()) {
       setError("Comment cannot be empty.");
@@ -46,14 +44,12 @@ const Comments = ({ postId }) => {
     }
 
     try {
-      console.log(`Posting comment for postId=${postId}`);
       const res = await axios.post(
         "https://skill-sync-backend-522o.onrender.com/API_B/comments",
         { postId, comment: newComment },
         { withCredentials: true }
       );
 
-      // Update comments list after successful post
       setComments((prev) => [
         {
           id: res.data.commentId,
@@ -77,6 +73,13 @@ const Comments = ({ postId }) => {
     }
   };
 
+  const getProfilePicUrl = (pic) => {
+    if (!pic || pic.trim() === "") return defaultAvatar;
+    return pic.startsWith("http")
+      ? pic
+      : `https://skill-sync-backend-522o.onrender.com${pic}`;
+  };
+
   if (authLoading) {
     return <div className="comments">Loading...</div>;
   }
@@ -86,7 +89,14 @@ const Comments = ({ postId }) => {
       {error && <p className="error">{error}</p>}
       {currentUser && (
         <div className="write">
-          <img src={currentUser.profilePic || "/default-avatar.png"} alt="" />
+          <img
+            src={getProfilePicUrl(currentUser.profilePic)}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = defaultAvatar;
+            }}
+            alt=""
+          />
           <input
             type="text"
             placeholder="Write a comment..."
@@ -96,14 +106,22 @@ const Comments = ({ postId }) => {
           <button onClick={handleSend}>Send</button>
         </div>
       )}
+
       {comments.length === 0 ? (
         <p>No comments yet.</p>
       ) : (
         comments.map((comment) => (
           <div className="comment" key={comment.id}>
-            <img src={comment.userId?.profilePic || "/default-avatar.png"} alt="" />
+            <img
+              src={getProfilePicUrl(comment.profilePic || comment.userId?.profilePic)}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = defaultAvatar;
+              }}
+              alt=""
+            />
             <div className="info">
-              <span>{comment.userId?.name}</span>
+              <span>{comment.name || comment.userId?.name || "User"}</span>
               <p>{comment.comment}</p>
             </div>
             <span className="date">

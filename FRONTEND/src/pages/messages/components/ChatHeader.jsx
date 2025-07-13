@@ -1,13 +1,19 @@
-import { X } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
 import avatar from "../../../assets/avatar.png";
 import "./chatHeader.scss";
-import { ArrowLeft } from "lucide-react";
 
 const ChatHeader = () => {
   const { selectedUser, setSelectedUser } = useChatStore();
   const { onlineUsers } = useAuthStore();
+
+  const resolveProfilePic = (user) => {
+    if (!user?.profilePic || user.profilePic.trim() === "") return avatar;
+    return user.profilePic.startsWith("http")
+      ? user.profilePic
+      : `https://skill-sync-backend-522o.onrender.com${user.profilePic}`;
+  };
 
   return (
     <div className="chat-header-container">
@@ -15,23 +21,23 @@ const ChatHeader = () => {
         <button className="close-btn" onClick={() => setSelectedUser(null)}>
           <ArrowLeft className="back-icon" />
         </button>
+
         <div className="user-info">
           <div className="avatar">
             <div className="avatar-img">
               <img
-                src={
-                  selectedUser.profilePic && selectedUser.profilePic.trim() !== ""
-                    ? selectedUser.profilePic
-                    : avatar
-                }
-                onError={(e) => (e.currentTarget.src = avatar)}
-                alt={selectedUser.name}
+                src={resolveProfilePic(selectedUser)}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = avatar;
+                }}
+                alt={selectedUser?.name || "User"}
               />
             </div>
           </div>
 
           <div className="user-meta">
-            <h3>{selectedUser.name}</h3>
+            <h3>{selectedUser?.name || "User"}</h3>
             <p className={onlineUsers.includes(selectedUser._id) ? "online" : "offline"}>
               {onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
             </p>

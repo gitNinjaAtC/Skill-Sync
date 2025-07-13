@@ -25,6 +25,13 @@ const Sidebar = () => {
     ? users.filter((user) => onlineUsers.includes(String(user._id)))
     : users;
 
+  const resolveProfilePic = (user) => {
+    if (!user?.profilePic || user.profilePic.trim() === "") return avatar;
+    return user.profilePic.startsWith("http")
+      ? user.profilePic
+      : `https://skill-sync-backend-522o.onrender.com${user.profilePic}`;
+  };
+
   if (isUsersLoading) return <SidebarSkeleton />;
 
   return (
@@ -60,8 +67,11 @@ const Sidebar = () => {
                 <div className="contact-content">
                   <div className="avatar-wrapper">
                     <img
-                      src={user.profilePic && user.profilePic.trim() !== "" ? user.profilePic : avatar}
-                      onError={(e) => (e.currentTarget.src = avatar)}
+                      src={resolveProfilePic(user)}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = avatar;
+                      }}
                       alt="avatar"
                       className="avatar"
                     />
