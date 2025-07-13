@@ -21,11 +21,6 @@ const Sidebar = () => {
     getUsers();
   }, []);
 
-  useEffect(() => {
-    console.log("All users fetched:", users);
-    console.log("Online users:", onlineUsers);
-  }, [users, onlineUsers]);
-
   const filteredUsers = showOnlineOnly
     ? users.filter((user) => onlineUsers.includes(String(user._id)))
     : users;
@@ -65,7 +60,8 @@ const Sidebar = () => {
                 <div className="contact-content">
                   <div className="avatar-wrapper">
                     <img
-                      src={user.profilePic || avatar}
+                      src={user.profilePic && user.profilePic.trim() !== "" ? user.profilePic : avatar}
+                      onError={(e) => (e.currentTarget.src = avatar)}
                       alt="avatar"
                       className="avatar"
                     />

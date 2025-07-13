@@ -63,9 +63,14 @@ const ChatContainer = () => {
                 <img
                   src={
                     message.senderId === authUser._id
-                      ? authUser.profilePic || avatar
-                      : selectedUser.profilePic || avatar
+                      ? authUser.profilePic && authUser.profilePic.trim() !== ""
+                        ? authUser.profilePic
+                        : avatar
+                      : selectedUser.profilePic && selectedUser.profilePic.trim() !== ""
+                      ? selectedUser.profilePic
+                      : avatar
                   }
+                  onError={(e) => (e.currentTarget.src = avatar)}
                   alt="profile pic"
                 />
               </div>

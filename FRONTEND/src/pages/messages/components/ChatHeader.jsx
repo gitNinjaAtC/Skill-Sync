@@ -15,7 +15,12 @@ const ChatHeader = () => {
           <div className="avatar">
             <div className="avatar-img">
               <img
-                src={selectedUser.profilePic || avatar}
+                src={
+                  selectedUser.profilePic && selectedUser.profilePic.trim() !== ""
+                    ? selectedUser.profilePic
+                    : avatar
+                }
+                onError={(e) => (e.currentTarget.src = avatar)}
                 alt={selectedUser.name}
               />
             </div>
