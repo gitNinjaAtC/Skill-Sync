@@ -3,6 +3,7 @@ import { useAuthStore } from "../../../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
 import avatar from "../../../assets/avatar.png";
 import "./chatHeader.scss";
+import { ArrowLeft } from "lucide-react";
 
 const ChatHeader = () => {
   const { selectedUser, setSelectedUser } = useChatStore();
@@ -11,6 +12,9 @@ const ChatHeader = () => {
   return (
     <div className="chat-header-container">
       <div className="chat-header-inner">
+        <button className="close-btn" onClick={() => setSelectedUser(null)}>
+          <ArrowLeft className="back-icon" />
+        </button>
         <div className="user-info">
           <div className="avatar">
             <div className="avatar-img">
@@ -33,10 +37,6 @@ const ChatHeader = () => {
             </p>
           </div>
         </div>
-
-        <button className="close-btn" onClick={() => setSelectedUser(null)}>
-          <X />
-        </button>
       </div>
     </div>
   );

@@ -186,9 +186,9 @@ const Navbar = () => {
                 <img src={home} alt="Home" />
                 <span>Home</span>
               </div>
-              <div className={`item ${isActive("/friends") ? "active" : ""}`}>
+              <div className={`item ${isActive("/people") ? "active" : ""}`} onClick={() => navigate("/people")}>
                 <img src={Friends} alt="Friends" />
-                <span>Friends</span>
+                <span>Peoples</span>
               </div>
               <div className={`item ${isActive("/forums") ? "active" : ""}`} onClick={() => navigate("/forums")}>                <img src={Forums} alt="Forums" />
                 <span>Forums</span>
@@ -199,11 +199,11 @@ const Navbar = () => {
               <div className={`item ${isActive("/events") ? "active" : ""}`} onClick={() => navigate("/events")}>                <img src={Events} alt="Events" />
                 <span>Events</span>
               </div>
-              <div className="item">
+              <div className={`item ${isActive("/gallery") ? "active" : ""}`} onClick={() => navigate("/gallery")}>
                 <img src={Gallery} alt="Gallery" />
                 <span>Gallery</span>
               </div>
-              <div className="item">
+              <div className={`item ${isActive("/messages") ? "active" : ""}`} onClick={() => navigate("/messages")}>
                 <img src={Messages} alt="Messages" />
                 <span>Messages</span>
               </div>
@@ -213,11 +213,11 @@ const Navbar = () => {
 
             <div className="menu">
               <span>Others</span>
-              <div className="item">
+              <div className={`item ${isActive("/Fundraiser") ? "active" : ""}`} onClick={() => navigate("/Fundraiser")}>
                 <img src={Fund} alt="Fundraiser" />
                 <span>Fundraiser</span>
               </div>
-              <div className="item">
+              <div className={`item ${isActive("/resume-builder") ? "active" : ""}`} onClick={() => navigate("/resume-builder")}>
                 <img src={Resume} alt="Resume Builder" />
                 <span>Resume Builder</span>
               </div>

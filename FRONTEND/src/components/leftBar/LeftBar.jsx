@@ -59,7 +59,7 @@ const LeftBar = () => {
             <img src={Events} alt="Events" />
             <span>Events</span>
           </div>
-          <div className={`item ${isActive("#") ? "active" : ""}`} onClick={() => navigate("#")}>
+          <div className={`item ${isActive("/gallery") ? "active" : ""}`} onClick={() => navigate("/gallery")}>
             <img src={GalleryIcon} alt="Gallery" />
             <span>Gallery</span>
           </div>
@@ -73,11 +73,11 @@ const LeftBar = () => {
 
         <div className="menu">
           <span>Others</span>
-          <div className={`item ${isActive("#") ? "active" : ""}`} onClick={() => navigate("#")}>
+          <div className={`item ${isActive("/Fundraiser") ? "active" : ""}`} onClick={() => navigate("/Fundraiser")}>
             <img src={Fund} alt="Fundraiser" />
             <span>Fundraiser</span>
           </div>
-          <div className={`item ${isActive("#") ? "active" : ""}`} onClick={() => navigate("#")}>
+          <div className={`item ${isActive("/resume-builder") ? "active" : ""}`} onClick={() => navigate("/resume-builder")}>
             <img src={Resume} alt="Resume Builder" />
             <span>Resume Builder</span>
           </div>

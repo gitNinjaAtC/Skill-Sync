@@ -6,6 +6,7 @@ import home from "../../assets/home.png";
 const Home = () => {
   return (
     <>
+      <div className="home-wrapper">
       <div className="home-container">
         <div className="home-header">
           <img src={home} alt="post" className="home-icon" />
@@ -17,6 +18,8 @@ const Home = () => {
         <Share />
         <Posts />
       </div>
+    </div>
+
     </>
   );
 };

@@ -1,55 +1,55 @@
-.auth-image-pattern {
-  display: none;
+// .auth-image-pattern {
+//   display: none;
 
-  @media (min-width: 1024px) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f1f5f9; // Approx. bg-base-200
-    padding: 3rem;
-  }
+//   @media (min-width: 1024px) {
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     background-color: #f1f5f9; // Approx. bg-base-200
+//     padding: 3rem;
+//   }
 
-  .pattern-content {
-    max-width: 28rem; // Tailwind's max-w-md
-    text-align: center;
+//   .pattern-content {
+//     max-width: 28rem; // Tailwind's max-w-md
+//     text-align: center;
 
-    .pattern-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.75rem;
-      margin-bottom: 2rem;
+//     .pattern-grid {
+//       display: grid;
+//       grid-template-columns: repeat(3, 1fr);
+//       gap: 0.75rem;
+//       margin-bottom: 2rem;
 
-      .grid-square {
-        aspect-ratio: 1 / 1;
-        border-radius: 1rem;
-        background-color: rgba(59, 130, 246, 0.1); // Approx. bg-primary/10
-      }
+//       .grid-square {
+//         aspect-ratio: 1 / 1;
+//         border-radius: 1rem;
+//         background-color: rgba(59, 130, 246, 0.1); // Approx. bg-primary/10
+//       }
 
-      .pulse {
-        animation: pulse 1.5s infinite ease-in-out;
-      }
-    }
+//       .pulse {
+//         animation: pulse 1.5s infinite ease-in-out;
+//       }
+//     }
 
-    .pattern-title {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-bottom: 1rem;
-    }
+//     .pattern-title {
+//       font-size: 1.5rem;
+//       font-weight: bold;
+//       margin-bottom: 1rem;
+//     }
 
-    .pattern-subtitle {
-      color: rgba(0, 0, 0, 0.6); // Approx. text-base-content/60
-    }
-  }
-}
+//     .pattern-subtitle {
+//       color: rgba(0, 0, 0, 0.6); // Approx. text-base-content/60
+//     }
+//   }
+// }
 
-@keyframes pulse {
-  0% {
-    background-color: rgba(59, 130, 246, 0.1);
-  }
-  50% {
-    background-color: rgba(59, 130, 246, 0.2);
-  }
-  100% {
-    background-color: rgba(59, 130, 246, 0.1);
-  }
-}
+// @keyframes pulse {
+//   0% {
+//     background-color: rgba(59, 130, 246, 0.1);
+//   }
+//   50% {
+//     background-color: rgba(59, 130, 246, 0.2);
+//   }
+//   100% {
+//     background-color: rgba(59, 130, 246, 0.1);
+//   }
+// }

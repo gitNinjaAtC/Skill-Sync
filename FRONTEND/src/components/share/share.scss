@@ -13,10 +13,12 @@
 
     .container {
       padding: 20px 20px 0px 20px;
+
       .top {
         display: flex;
         align-items: center;
         gap: 20px;
+
         img {
           width: 40px;
           height: 40px;
@@ -35,21 +37,23 @@
       }
 
       hr {
-        margin: 50px 10px 40px 10px; ; 
+        margin: 50px 10px 40px 10px;
         border: none;
         height: 0.5px;
         background-color: themed("border");
       }
 
       .bottom {
-        display: flex;        
+        display: flex;
         justify-content: space-between;
+
         .left {
           display: flex;
           gap: 2rem;
 
           .item {
-            display: flex;           
+            display: flex;
+            align-items: center;
             cursor: pointer;
 
             img {
@@ -59,11 +63,21 @@
             span {
               font-size: 12px;
               color: gray;
+
+              @include mobile {
+                display: none;
+              }
+
+              @include tablet {
+                display: none;
+              }
             }
           }
         }
+
         .right {
           padding-right: 2rem;
+
           button {
             border: none;
             padding: 5px 20px;

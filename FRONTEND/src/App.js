@@ -12,10 +12,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { DarkModeContext } from "./context/darkModeContext";
 import { AuthContext } from "./context/authContext";
 
-// Zustand store for socket/user syncing
+// Zustand store
 import { useAuthStore } from "./store/useAuthStore";
-
-
 
 // Layout Components
 import Navbar from "./components/navbar/Navbar";
@@ -35,9 +33,9 @@ import JobDescription from "./pages/job/JobDescription";
 import CreateOffer from "./pages/jobs/CreateOffer";
 import Events from "./pages/events/Events";
 import PeopleSection from "./pages/people/PeopleSection";
-import Gallery from "./pages/gallery/Gallery";
 import HomePage from "./pages/messages/page/HomePage";
 import ErrorPage from "./pages/ErrorPage";
+import ComingSoon from "./pages/Comingsoon/Comingsoon";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -49,8 +47,8 @@ function App() {
 
     useEffect(() => {
       if (currentUser?._id) {
-        setCurrentUser(currentUser); // bridge AuthContext → Zustand
-        connectSocket(currentUser._id); // initialize socket
+        setCurrentUser(currentUser);
+        connectSocket(currentUser._id);
       }
     }, [currentUser]);
 
@@ -58,13 +56,21 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <div className={`theme-${darkMode ? "dark" : "light"}`}>
           <Navbar />
-          <div style={{ display: "flex" }}>
-            <LeftBar />
-            <div style={{ flex: 6 }}>
-              <Outlet />
+          {/* Main vertical layout container */}
+          <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+            {/* Body with LeftBar + Outlet */}
+            <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+              <LeftBar />
+              <div style={{ flex: 6, overflowY: "auto" }}>
+                <Outlet />
+              </div>
             </div>
+
+
+
+            {/* Footer at the bottom */}
+            <Footer />
           </div>
-          <Footer />
         </div>
       </QueryClientProvider>
     );
@@ -95,7 +101,9 @@ function App() {
         { path: "/events", element: <Events /> },
         { path: "/messages", element: <HomePage /> },
         { path: "/people", element: <PeopleSection /> },
-        { path: "/gallery", element: <Gallery /> },
+        { path: "/gallery", element: <ComingSoon /> },
+        { path: "/fundraiser", element: <ComingSoon /> },
+        { path: "/resume-builder", element: <ComingSoon /> },
       ],
     },
     { path: "/login", element: <Login /> },

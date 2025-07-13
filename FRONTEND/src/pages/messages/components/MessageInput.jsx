@@ -64,6 +64,14 @@ const MessageInput = () => {
       )}
 
       <form className="input-form" onSubmit={handleSendMessage}>
+        <button
+          type="button"
+          className={`image-btn ${imagePreview ? "active" : ""}`}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <Image size={20} />
+        </button>
+
         <div className="input-group">
           <input
             type="text"
@@ -78,18 +86,13 @@ const MessageInput = () => {
             ref={fileInputRef}
             onChange={handleImageChange}
           />
-          <button
-            type="button"
-            className={`image-btn ${imagePreview ? "active" : ""}`}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <Image size={20} />
-          </button>
         </div>
+
         <button type="submit" className="send-btn" disabled={!text.trim() && !imagePreview}>
           <Send size={20} />
         </button>
       </form>
+
     </div>
   );
 };

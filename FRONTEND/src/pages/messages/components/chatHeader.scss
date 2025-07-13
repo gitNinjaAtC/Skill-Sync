@@ -6,8 +6,8 @@
 
 .chat-header-inner {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  align-items: left;
+  gap: 1rem;
 
   .user-info {
     display: flex;
@@ -51,15 +51,16 @@
       }
     }
   }
-
+  
   .close-btn {
     background: none;
     border: none;
     cursor: pointer;
 
-    svg {
-      width: 1.25rem;
-      height: 1.25rem;
+    .back-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #1f2937;
     }
   }
 }
