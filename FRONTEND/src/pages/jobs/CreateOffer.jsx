@@ -59,7 +59,7 @@ const handleSubmit = async (e) => {
   setSuccess(null);
   setLoading(true);
 
-  if (!currentUser || currentUser.role !== "Alumni" ) {
+  if (!currentUser || currentUser.role !== "alumni" ) {
     setLoading(false);
     return setError("Only Alumni can create job offers.");
   }

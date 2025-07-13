@@ -2,47 +2,44 @@ import User from "../models/Users.js";
 import multer from "multer";
 import fs from "fs";
 import path from "path";
+import cloudinary from "../lib/cloudinary.js";
 
-// Ensure the upload directory exists
-const uploadDir = path.join(process.cwd(), "uploads/coverPhotos");
+// Ensure the temporary upload directory exists
+const uploadDir = path.resolve("uploads/tempImages");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
-  console.log("Created upload directory:", uploadDir);
+  console.log("✅ Created upload directory:", uploadDir);
 }
 
 // ========== GET PROFILE INFO ==========
 export const getProfileInfo = async (req, res) => {
   const userId = req.params.id;
-
-  if (!userId) {
-    return res.status(400).json({ message: "User ID is required" });
-  }
+  if (!userId) return res.status(400).json({ message: "User ID is required" });
 
   try {
     const user = await User.findById(userId).select(
-      "name about facebook instagram twitter linkedin skills education experience others"
+      "name about facebook instagram twitter linkedin skills education experience others profilePic coverPhoto"
     );
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     const profileData = {
-      name: user.name,
-      description: user.about,
-      facebook: user.facebook,
-      instagram: user.instagram,
-      twitter: user.twitter,
-      linkedin: user.linkedin,
-      skills: user.skills,
-      education: user.education,
-      experience: user.experience,
-      others: user.others,
+      name: user.name || "",
+      description: user.about || "",
+      facebook: user.facebook || "",
+      instagram: user.instagram || "",
+      twitter: user.twitter || "",
+      linkedin: user.linkedin || "",
+      skills: user.skills || [],
+      education: user.education || [],
+      experience: user.experience || [],
+      others: user.others || "",
+      profilePic: user.profilePic || null,
+      coverPhoto: user.coverPhoto || null,
     };
 
     res.status(200).json(profileData);
   } catch (error) {
-    console.error("Error fetching profile info:", error);
+    console.error("❌ Error fetching profile info:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -60,9 +57,7 @@ export const updateProfile = async (req, res) => {
     others,
   } = req.body;
 
-  if (!userId) {
-    return res.status(400).json({ message: "User ID is required" });
-  }
+  if (!userId) return res.status(400).json({ message: "User ID is required" });
 
   try {
     const updateFields = {
@@ -84,70 +79,85 @@ export const updateProfile = async (req, res) => {
       { new: true }
     );
 
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!updatedUser) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json({ message: "Profile updated successfully" });
   } catch (error) {
-    console.error("Error updating profile:", error);
+    console.error("❌ Error updating profile:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-// ========== MULTER STORAGE CONFIGURATION ==========
+// ========== MULTER CONFIG ==========
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/coverPhotos/");
-  },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    const filename = Date.now() + ext;
-    cb(null, filename);
-  },
+  destination: (_, __, cb) => cb(null, uploadDir),
+  filename: (_, file, cb) => cb(null, `${Date.now()}${path.extname(file.originalname)}`),
 });
 
-const fileFilter = (req, file, cb) => {
+const fileFilter = (_, file, cb) => {
   const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-  if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Only .jpeg, .jpg, and .png files are allowed"));
-  }
+  if (allowedTypes.includes(file.mimetype)) cb(null, true);
+  else cb(new Error("Only .jpeg, .jpg, and .png files are allowed"));
 };
 
-export const uploadCoverPhotoMiddleware = multer({
+export const uploadImageMiddleware = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-}).single("cover");
+  limits: { fileSize: 5 * 1024 * 1024 }, // Max 5MB
+}).single("image");
 
 // ========== UPDATE COVER PHOTO ==========
 export const updateCoverPhoto = async (req, res) => {
   const userId = req.params.id;
-
-  if (!req.file || !userId) {
+  if (!req.file || !userId)
     return res.status(400).json({ message: "File and user ID are required" });
-  }
-
-  const filePath = `/uploads/coverPhotos/${req.file.filename}`;
 
   try {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "skill-sync/coverPhotos",
+    });
+
+    fs.unlinkSync(req.file.path); // Clean up
+
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { coverPhoto: filePath },
+      { coverPhoto: result.secure_url },
       { new: true }
     );
 
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!updatedUser) return res.status(404).json({ message: "User not found" });
 
-    return res
-      .status(200)
-      .json({ message: "Cover photo updated", path: filePath });
+    res.status(200).json({ message: "Cover photo updated", url: result.secure_url });
   } catch (error) {
-    console.error("Error updating cover photo:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error("❌ Error updating cover photo:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+// ========== UPDATE PROFILE PICTURE ==========
+export const updateProfilePic = async (req, res) => {
+  const userId = req.params.id;
+  if (!req.file || !userId)
+    return res.status(400).json({ message: "File and user ID are required" });
+
+  try {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "skill-sync/profilePics",
+    });
+
+    fs.unlinkSync(req.file.path); // Clean up
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { profilePic: result.secure_url },
+      { new: true }
+    );
+
+    if (!updatedUser) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json({ message: "Profile picture updated", url: result.secure_url });
+  } catch (error) {
+    console.error("❌ Error uploading profile picture:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };

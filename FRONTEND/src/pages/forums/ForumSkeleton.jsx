@@ -13,7 +13,7 @@ const ForumSkeleton = () => {
       <div className="skeleton-description shimmer"></div>
       <div className="skeleton-tags">
         {[...Array(3)].map((_, idx) => (
-          <div key={idx} className="skeleton-tag shimmer"></div>
+          <div key={`skeleton-tag-${idx}`} className="skeleton-tag shimmer"></div>
         ))}
       </div>
       <div className="skeleton-created shimmer"></div>

@@ -22,6 +22,7 @@ export const addLike = async (req, res) => {
       // Duplicate key error (violates unique index)
       return res.status(400).json("Post already liked.");
     }
+    console.error("❌ addLike error:", err.message);
     res.status(500).json({ error: err.message });
   }
 };
@@ -48,31 +49,40 @@ export const removeLike = async (req, res) => {
 
     res.status(200).json("Post unliked.");
   } catch (err) {
-    console.error("removeLike: Error:", err);
+    console.error("❌ removeLike error:", err.message);
     res.status(500).json({ error: err.message });
   }
 };
 
-// Get all users who liked a post
+// ✅ Get all users who liked a post (updated with logs and safety)
 export const getLikes = async (req, res) => {
   try {
     const { postId } = req.params;
 
-    // Validate ObjectId
+    console.log("🔥 Incoming postId:", postId);
+
     if (!mongoose.Types.ObjectId.isValid(postId)) {
+      console.log("❌ Invalid ObjectId received");
       return res.status(400).json({ error: "Invalid post ID" });
     }
 
-    const likes = await Like.find({ postId }).populate("userId", "id name");
+    const likes = await Like.find({ postId }).populate("userId", "name");
 
-    const users = likes.map((like) => ({
-      id: like.userId._id,
-      name: like.userId.name,
-    }));
+    console.log("✅ Raw Likes Fetched:", likes);
+
+    const users = likes
+      .filter((like) => like.userId) // skip if user is deleted
+      .map((like) => ({
+        id: like.userId._id,
+        name: like.userId.name,
+      }));
+
+    console.log("✅ Returning Users:", users);
 
     res.status(200).json(users);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("❌ getLikes error:", err.message);
+    res.status(500).json({ error: "Internal Server Error", message: err.message });
   }
 };
 
@@ -82,7 +92,6 @@ export const getLikeStatus = async (req, res) => {
     const userId = req.user.id;
     const { postId } = req.params;
 
-    // Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(postId)) {
       return res.status(400).json({ error: "Invalid post ID" });
     }
@@ -94,6 +103,7 @@ export const getLikeStatus = async (req, res) => {
 
     res.status(200).json({ liked: !!like });
   } catch (err) {
+    console.error("❌ getLikeStatus error:", err.message);
     res.status(500).json({ error: err.message });
   }
 };

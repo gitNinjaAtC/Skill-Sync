@@ -79,7 +79,7 @@ const CreateForum = () => {
     );
   }
 
-  if (!["Admin", "Alumni"].includes(currentUser.role)) {
+  if (!["admin", "alumni"].includes(currentUser.role)) {
     return (
       <div className="create-forum-container">
         Access denied: Admin or Alumni only.

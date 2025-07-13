@@ -9,15 +9,17 @@ export const getPosts = async (req, res) => {
       .populate("userId", "name profilePic")
       .sort({ createdAt: -1 });
 
-    // Map to flatten user info on top level for frontend convenience
     const formattedPosts = posts.map((post) => {
-      const postObj = post.toObject(); // convert mongoose doc to plain JS object
+      const postObj = post.toObject();
       return {
         ...postObj,
         id: postObj._id,
         name: postObj.userId?.name || "User",
-        profilePic: postObj.userId?.profilePic || "/default-avatar.png",
-        userId: postObj.userId?._id || null, // keep userId for link routing
+        profilePic:
+          postObj.userId?.profilePic && postObj.userId.profilePic.trim() !== ""
+            ? postObj.userId.profilePic
+            : null,
+        userId: postObj.userId?._id || null,
       };
     });
 
@@ -27,6 +29,7 @@ export const getPosts = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // ADD NEW POST
 export const addPost = async (req, res) => {
