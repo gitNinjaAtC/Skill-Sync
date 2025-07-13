@@ -8,16 +8,22 @@ const Users = () => {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ total: 0, students: 0, alumni: 0, admins: 0 });
   const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all"); // all, approved, pending
 
   useEffect(() => {
     fetchUsers();
     fetchStats();
-  }, []);
+  }, [filter]);
 
   const fetchUsers = () => {
     setLoading(true);
+    let url = "http://localhost:8800/API_B/admin/users";
+
+    if (filter === "approved") url += "?active=true";
+    else if (filter === "pending") url += "?active=false";
+
     axios
-      .get("http://localhost:8800/API_B/admin/users", { withCredentials: true })
+      .get(url, { withCredentials: true })
       .then((res) => {
         setUsers(res.data);
         setOriginalUsers(res.data);
@@ -40,7 +46,10 @@ const Users = () => {
         { role: newRole },
         { withCredentials: true }
       )
-      .then(() => fetchUsers())
+      .then(() => {
+        fetchUsers();
+        fetchStats();
+      })
       .catch((err) => console.error("Error updating role:", err));
   };
 
@@ -50,10 +59,27 @@ const Users = () => {
         .delete(`http://localhost:8800/API_B/admin/user/${userId}`, {
           withCredentials: true,
         })
-        .then(() => fetchUsers())
+        .then(() => {
+          fetchUsers();
+          fetchStats();
+        })
         .catch((err) => console.error("Error deleting user:", err));
     }
   };
+
+  // const handleApprove = (userId) => {
+  //   axios
+  //     .post(
+  //       "http://localhost:8800/API_B/admin/approve-user",
+  //       { userId },
+  //       { withCredentials: true }
+  //     )
+  //     .then(() => {
+  //       fetchUsers();
+  //       fetchStats();
+  //     })
+  //     .catch((err) => console.error("Error approving user:", err));
+  // };
 
   const handleSearch = (e) => {
     const keyword = e.target.value.toLowerCase();
@@ -71,22 +97,16 @@ const Users = () => {
       <h1>All Users</h1>
 
       <div className="stats-box">
-        <div className="stat">
-          <h3>Total</h3>
-          <p>{stats.total}</p>
-        </div>
-        <div className="stat">
-          <h3>Students</h3>
-          <p>{stats.students}</p>
-        </div>
-        <div className="stat">
-          <h3>Alumni</h3>
-          <p>{stats.alumni}</p>
-        </div>
-        <div className="stat">
-          <h3>Admins</h3>
-          <p>{stats.admins}</p>
-        </div>
+        <div className="stat"><h3>Total</h3><p>{stats.total}</p></div>
+        <div className="stat"><h3>Students</h3><p>{stats.students}</p></div>
+        <div className="stat"><h3>Alumni</h3><p>{stats.alumni}</p></div>
+        <div className="stat"><h3>Admins</h3><p>{stats.admins}</p></div>
+      </div>
+
+      <div className="filter-buttons">
+        <button className={filter === "all" ? "active" : ""} onClick={() => setFilter("all")}>All</button>
+        <button className={filter === "approved" ? "active" : ""} onClick={() => setFilter("approved")}>Approved</button>
+        <button className={filter === "pending" ? "active" : ""} onClick={() => setFilter("pending")}>Pending</button>
       </div>
 
       <div className="search-bar">
@@ -107,6 +127,7 @@ const Users = () => {
               <th>Name</th>
               <th>Email</th>
               <th>Role</th>
+              <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -124,6 +145,9 @@ const Users = () => {
                     <option value="alumni">Alumni</option>
                     <option value="admin">Admin</option>
                   </select>
+                </td>
+                <td>
+                  {u.isActive ? "✅ Active" : "🕓 Pending"}
                 </td>
                 <td>
                   <button onClick={() => handleDelete(u._id)}>Delete</button>

@@ -38,6 +38,31 @@
     }
   }
 
+  .filter-buttons {
+    margin-bottom: 1rem;
+
+    button {
+      margin-right: 10px;
+      padding: 8px 14px;
+      border: none;
+      background-color: #e5e7eb;
+      color: #111;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+
+      &.active {
+        background-color: #4f46e5;
+        color: white;
+      }
+
+      &:hover {
+        background-color: #d1d5db;
+      }
+    }
+  }
+
   .search-bar {
     margin-bottom: 1rem;
 
@@ -64,6 +89,7 @@
       border: 1px solid #e5e7eb;
       text-align: left;
       font-size: 0.95rem;
+      white-space: nowrap;
     }
 
     th {
@@ -79,6 +105,14 @@
       background-color: #f1f5f9;
     }
 
+    select {
+      padding: 4px 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #fff;
+      font-size: 0.9rem;
+    }
+
     button {
       padding: 6px 12px;
       margin: 0 4px;
@@ -92,16 +126,13 @@
         opacity: 0.9;
       }
 
+      // Approve button
       &:first-child {
         background-color: #4f46e5;
         color: white;
       }
 
-      &:nth-child(2) {
-        background-color: #059669;
-        color: white;
-      }
-
+      // Delete button
       &:last-child {
         background-color: #dc2626;
         color: white;
@@ -117,6 +148,12 @@
 
     .stats-box {
       flex-direction: column;
+    }
+
+    .filter-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
   }
 }

@@ -40,7 +40,7 @@ export const addPost = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (user.role === "Admin") {
+    if (user.role === "admin") {
       const newPost = new Post({ userId, desc, status: "approved" });
       await newPost.save();
       return res.status(201).json({
@@ -48,7 +48,7 @@ export const addPost = async (req, res) => {
         message: "Post created successfully",
         postId: newPost._id,
       });
-    } else if (user.role === "Alumni") {
+    } else if (user.role === "alumni") {
       const pendingPost = new PendingPost({ userId, desc });
       await pendingPost.save();
       return res.status(201).json({

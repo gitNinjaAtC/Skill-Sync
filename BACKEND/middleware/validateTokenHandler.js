@@ -1,49 +1,58 @@
 import jwt from "jsonwebtoken";
+import User from "../models/Users.js";
+import dotenv from "dotenv";
 
-export const validateToken = (req, res, next) => {
-  console.log("🛑 Running validateToken middleware...");
-  console.log("Request cookies:", req.cookies);
-  console.log("Request headers:", req.headers);
+dotenv.config();
 
-  // Extract token from cookie (cookie-based auth only)
-  const token = req.cookies?.accessToken;
-
-  // Check if token exists
-  if (!token) {
-    console.log("❌ No accessToken cookie found. Rejecting request.");
-    return res.status(401).json({ message: "Unauthorized: No token provided" });
-  }
-
-  console.log("✅ Token found:", token.substring(0, 10) + "...");
-
-  // Verify Token
+// ✅ Middleware: Validate JWT Token
+export const validateToken = async (req, res, next) => {
   try {
+    console.log("🛑 Running validateToken middleware...");
+    console.log("Request cookies:", req.cookies);
+    console.log("Request headers:", req.headers);
+
+    // Get token from cookies or Authorization header
+    const cookieToken = req.cookies?.accessToken;
+    const headerToken = req.headers.authorization?.startsWith("Bearer ")
+      ? req.headers.authorization.split(" ")[1]
+      : null;
+
+    const token = cookieToken || headerToken;
+
+    if (!token) {
+      console.log("❌ No token found in cookies or Authorization header.");
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: No token provided" });
+    }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET, {
-      clockTolerance: 300, // Allow 5-minute clock skew
+      clockTolerance: 300, // Allow clock skew
     });
-    console.log("✅ Token valid. User authenticated:", decoded);
-    req.user = decoded;
+
+    if (!decoded?.id) {
+      return res.status(401).json({ message: "Invalid token payload" });
+    }
+
+    const user = await User.findById(decoded.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    req.user = user;
     next();
-  } catch (err) {
-    console.error("❌ Token verification error:", {
-      name: err.name,
-      message: err.message,
-      token: token.substring(0, 10) + "...",
-    });
+  } catch (error) {
+    console.error("❌ validateToken error:", error.message);
     return res
       .status(403)
       .json({ message: "Forbidden: Invalid or expired token" });
   }
 };
 
-export const admin = (req, res, next) => {
-  // Check if user exists and has admin privileges
-  if (req.user && req.user.isAdmin) {
-    next(); // User is admin, proceed to the next middleware/controller
-  } else {
-    res.status(403).json({
-      success: false,
-      message: "Access denied. Admin privileges required.",
-    });
+// ✅ Middleware: Admin-only access check
+export const isAdmin = (req, res, next) => {
+  if (req.user?.role !== "admin") {
+    return res.status(403).json({ message: "Access denied: Admins only" });
   }
+  next();
 };

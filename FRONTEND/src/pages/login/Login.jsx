@@ -16,20 +16,30 @@ const Login = () => {
 
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setErr(null);
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setErr(null);
     setLoading(true);
+
     try {
-      await login(inputs);
-      // navigation is handled by useEffect
+      const user = await login(inputs);
+
+      if (!user?.isActive) {
+        setErr("Your account is not yet approved by admin.");
+        return;
+      }
+
+      // Navigation is handled by useEffect if approved
     } catch (err) {
       const errorMessage =
-        err.response?.data?.error ||
-        err.message ||
-        "Login failed. Please try again.";
+        typeof err === "string"
+          ? err
+          : err?.response?.data?.error ||
+            err?.message ||
+            "Login failed. Please try again.";
       setErr(errorMessage);
     } finally {
       setLoading(false);
@@ -37,14 +47,13 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser?.isActive) {
       navigate("/");
     }
   }, [currentUser, navigate]);
 
   return (
     <div className="login">
-      {/* ✅ Overlay the entire .login area */}
       {loading && (
         <div className="loading-container">
           <div className="spinner"></div>
@@ -65,6 +74,7 @@ const Login = () => {
             <button>Register</button>
           </Link>
         </div>
+
         <div className="right">
           <h1>Login</h1>
           <form onSubmit={handleLogin}>
@@ -85,7 +95,9 @@ const Login = () => {
               required
             />
             {err && <p className="error">{err}</p>}
-            <button type="submit">Login</button>
+            <button type="submit" disabled={loading}>
+              {loading ? "Logging in..." : "Login"}
+            </button>
           </form>
         </div>
       </div>

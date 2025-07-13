@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/Users.js";
+import cloudinary from "../lib/cloudinary.js";
 
 // ✅ REGISTER
 export const register = async (req, res) => {
@@ -28,7 +29,6 @@ export const register = async (req, res) => {
       password: hashedPassword,
       name,
       role: role || "student",
-      // isActive: false, // ✅ New users must be approved by admin
     });
 
     await newUser.save();
@@ -119,3 +119,40 @@ export const logout = (req, res) => {
       .json({ message: "Logout failed", error: err.message });
   }
 };
+
+// ========== UPDATE PROFILE PIC ==========
+
+export const updateProfilePic = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    if (!req.body || !req.body.profilePic) {
+      return res.status(400).json({ message: "Profile picture is required" });
+    }
+
+    const uploadResponse = await cloudinary.uploader.upload(req.body.profilePic, {
+      folder: "profilePics", // Optional folder in Cloudinary
+      upload_preset: "default_preset", // Optional if you use upload presets
+    });
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { profilePic: uploadResponse.secure_url },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "Profile picture updated successfully",
+      profilePic: updatedUser.profilePic,
+    });
+  } catch (error) {
+    console.error("❌ Error updating profile picture:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+

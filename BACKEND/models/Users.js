@@ -18,6 +18,9 @@ const userSchema = new mongoose.Schema({
   experience: { type: String, default: null },
   others: { type: String, default: null },
   coverPhoto: { type: String, maxlength: 255, default: null },
+
+  // ✅ Add here
+  isActive: { type: Boolean, default: false }
 });
 
 userSchema.add({ isActive: { type: Boolean, default: false } }); // 👈 added

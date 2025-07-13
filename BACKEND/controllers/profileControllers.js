@@ -10,6 +10,13 @@ if (!fs.existsSync(uploadDir)) {
   console.log("Created upload directory:", uploadDir);
 }
 
+// Ensure the profile pictures upload directory exists
+const profilePicDir = path.join(process.cwd(), "uploads/profilePics");
+if (!fs.existsSync(profilePicDir)) {
+  fs.mkdirSync(profilePicDir, { recursive: true });
+  console.log("Created profile pictures upload directory:", profilePicDir);
+}
+
 // ========== GET PROFILE INFO ==========
 export const getProfileInfo = async (req, res) => {
   const userId = req.params.id;
@@ -20,7 +27,7 @@ export const getProfileInfo = async (req, res) => {
 
   try {
     const user = await User.findById(userId).select(
-      "name about facebook instagram twitter linkedin skills education experience others"
+      "name about facebook instagram twitter linkedin skills education experience others coverPhoto profilePic"
     );
 
     if (!user) {
@@ -38,6 +45,8 @@ export const getProfileInfo = async (req, res) => {
       education: user.education,
       experience: user.experience,
       others: user.others,
+      coverPhoto: user.coverPhoto,
+      profilePic: user.profilePic,
     };
 
     res.status(200).json(profileData);
@@ -95,8 +104,8 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// ========== MULTER STORAGE CONFIGURATION ==========
-const storage = multer.diskStorage({
+// ========== MULTER STORAGE CONFIGURATION FOR COVER PHOTO ==========
+const coverStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/coverPhotos/");
   },
@@ -107,7 +116,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const fileFilter = (req, file, cb) => {
+const coverFileFilter = (req, file, cb) => {
   const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
@@ -117,10 +126,37 @@ const fileFilter = (req, file, cb) => {
 };
 
 export const uploadCoverPhotoMiddleware = multer({
-  storage,
-  fileFilter,
+  storage: coverStorage,
+  fileFilter: coverFileFilter,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
 }).single("cover");
+
+// ========== MULTER STORAGE CONFIGURATION FOR PROFILE PICTURE ==========
+const profilePicStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/profilePics/");
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    const filename = Date.now() + ext;
+    cb(null, filename);
+  },
+});
+
+const profilePicFileFilter = (req, file, cb) => {
+  const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only .jpeg, .jpg, and .png files are allowed"));
+  }
+};
+
+export const uploadProfilePicMiddleware = multer({
+  storage: profilePicStorage,
+  fileFilter: profilePicFileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+}).single("profilePic");
 
 // ========== UPDATE COVER PHOTO ==========
 export const updateCoverPhoto = async (req, res) => {
@@ -148,6 +184,36 @@ export const updateCoverPhoto = async (req, res) => {
       .json({ message: "Cover photo updated", path: filePath });
   } catch (error) {
     console.error("Error updating cover photo:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// ========== UPDATE PROFILE PICTURE ==========
+export const updateProfilePic = async (req, res) => {
+  const userId = req.params.id;
+
+  if (!req.file || !userId) {
+    return res.status(400).json({ message: "File and user ID are required" });
+  }
+
+  const filePath = `/uploads/profilePics/${req.file.filename}`;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { profilePic: filePath },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Profile picture updated", path: filePath });
+  } catch (error) {
+    console.error("Error updating profile picture:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

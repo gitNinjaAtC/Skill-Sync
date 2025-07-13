@@ -66,54 +66,6 @@ export const getUsers = async (req, res) => {
   }
 };
 
-//get stats
-export const getStats = async (req, res) => {
-  try {
-    const total = await User.countDocuments();
-    const students = await User.countDocuments({ role: "student" });
-    const alumni = await User.countDocuments({ role: "alumni" });
-    const admins = await User.countDocuments({ role: "admin" });
-
-    res.status(200).json({ total, students, alumni, admins });
-  } catch (err) {
-    console.error("Stats error:", err);
-    res.status(500).json({ message: "Error getting stats" });
-  }
-};
-
-//update user role
-export const updateUserRole = async (req, res) => {
-  const { role } = req.body;
-  if (!role) return res.status(400).json({ message: "Role is required." });
-
-  try {
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { role },
-      { new: true }
-    );
-    if (!user) return res.status(404).json({ message: "User not found." });
-
-    res.status(200).json({ message: "Role updated", user });
-  } catch (err) {
-    console.error("Role update error:", err);
-    res.status(500).json({ message: "Failed to update role" });
-  }
-};
-
-//delete user
-export const deleteUser = async (req, res) => {
-  try {
-    const user = await User.findByIdAndDelete(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found." });
-
-    res.status(200).json({ message: "User deleted" });
-  } catch (err) {
-    console.error("Delete error:", err);
-    res.status(500).json({ message: "Failed to delete user" });
-  }
-};
-
 //import file
 export const importFile = async (req, res) => {
   try {

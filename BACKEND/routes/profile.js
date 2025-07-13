@@ -4,6 +4,8 @@ import {
   updateProfile,
   uploadCoverPhotoMiddleware,
   updateCoverPhoto,
+  uploadProfilePicMiddleware,
+  updateProfilePic,
 } from "../controllers/profileControllers.js";
 
 const router = express.Router();
@@ -14,7 +16,10 @@ router.get("/:id", getProfileInfo);
 // PUT /API_B/profile/update/:id
 router.put("/update/:id", updateProfile);
 
-// ✅ NEW: PUT /API_B/profile/cover/:id
+// PUT /API_B/profile/cover/:id
 router.put("/cover/:id", uploadCoverPhotoMiddleware, updateCoverPhoto);
+
+// PUT /API_B/profile/profilePic/:id
+router.put("/profilePic/:id", uploadProfilePicMiddleware, updateProfilePic);
 
 export default router;

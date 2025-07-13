@@ -1,28 +1,77 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import axios from "axios";
 import cameraIcon from "../../assets/camera-icon.png"; // Adjust path if needed
-import profilePic from "../../assets/profile.jpg";       // Import your local profile.jpg
+import profilePic from "../../assets/profile.jpg"; // Default fallback image
 
-const AvatarSection = () => {
-  const [avatarSrc, setAvatarSrc] = useState(profilePic); // Use imported image here
+const AvatarSection = ({ userId }) => {
+  const [avatarSrc, setAvatarSrc] = useState(profilePic); // Default to local image
   const fileInputRef = useRef(null);
+
+  // Fetch profile picture on component mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/API_B/profile/${userId}`
+        );
+        const profilePicPath = response.data.profilePic;
+        if (profilePicPath) {
+          // Prepend the server URL to the profilePic path
+          setAvatarSrc(`http://localhost:3000${profilePicPath}`);
+        } else {
+          setAvatarSrc(profilePic); // Fallback to default image
+        }
+      } catch (error) {
+        console.error("Error fetching profile picture:", error);
+        setAvatarSrc(profilePic); // Fallback to default image on error
+      }
+    };
+
+    if (userId) {
+      fetchProfile();
+    }
+  }, [userId]);
 
   const handleEditClick = () => {
     fileInputRef.current.click();
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Preview the image locally before upload
       const reader = new FileReader();
       reader.onloadend = () => {
-        setAvatarSrc(reader.result);
+        setAvatarSrc(reader.result); // Temporarily show the selected image
       };
       reader.readAsDataURL(file);
+
+      // Upload the image to the server
+      const formData = new FormData();
+      formData.append("profilePic", file);
+
+      try {
+        const response = await axios.put(
+          `http://localhost:3000/API_B/profile/profilePic/${userId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        // Update avatarSrc with the server-returned path
+        setAvatarSrc(`http://localhost:3000${response.data.path}`);
+      } catch (error) {
+        console.error("Error uploading profile picture:", error);
+        // Revert to default or previous image on error
+        setAvatarSrc(profilePic);
+      }
     }
   };
 
   const handleImageError = () => {
-    setAvatarSrc(""); // Clears image and leaves fallback styling
+    setAvatarSrc(profilePic); // Fallback to default image if the server image fails to load
   };
 
   return (
@@ -40,7 +89,7 @@ const AvatarSection = () => {
       </div>
       <input
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png,image/jpg"
         ref={fileInputRef}
         style={{ display: "none" }}
         onChange={handleFileChange}
