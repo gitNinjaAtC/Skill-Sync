@@ -7,10 +7,11 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
 import { useState, useEffect, useContext, useRef } from "react";
-import axios from "axios";
 import { AuthContext } from "../../context/authContext";
 import PostSkeleton from "./PostSkeleton";
-import profilePic from "../../assets/profile.jpg";
+import defaultAvatar from "../../assets/avatar.png";
+import { makeRequest } from "../../axios"; // ✅ updated import
+
 const Post = ({ post }) => {
   const { currentUser, loading } = useContext(AuthContext);
 
@@ -21,28 +22,31 @@ const Post = ({ post }) => {
   const [likedBy, setLikedBy] = useState([]);
   const [showLikedBy, setShowLikedBy] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
-
   const optionsRef = useRef();
 
-  // Close delete button when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (optionsRef.current && !optionsRef.current.contains(e.target)) {
         setShowOptions(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const fetchCommentsCount = async () => {
+    try {
+      const res = await makeRequest.get(`/API_B/comments/${post.id}`);
+      setCommentsCount(res.data.length);
+    } catch (err) {
+      console.error("Error fetching comments:", err);
+    }
+  };
+
   useEffect(() => {
     const fetchLikes = async () => {
       try {
-        const res = await axios.get(
-          `https://skill-sync-backend-522o.onrender.com/API_B/likes/${post.id}`,
-          { withCredentials: true }
-        );
+        const res = await makeRequest.get(`/API_B/likes/${post.id}`);
         setLikesCount(res.data.length);
         setLiked(res.data.some((user) => user.id === currentUser?.id));
         setLikedBy(res.data);
@@ -51,54 +55,26 @@ const Post = ({ post }) => {
       }
     };
 
-    fetchLikes();
+    if (post?.id) fetchLikes();
   }, [post.id, currentUser?.id]);
 
   useEffect(() => {
-    if (post?.id) {
-      fetchCommentsCount();
-    }
+    if (post?.id) fetchCommentsCount();
   }, [post.id]);
 
-  const fetchCommentsCount = async () => {
-    try {
-      const res = await axios.get(
-        `https://skill-sync-backend-522o.onrender.com/API_B/comments/${post.id}`,
-        { withCredentials: true }
-      );
-      setCommentsCount(res.data.length);
-    } catch (err) {
-      console.error("Error fetching comments:", err);
-    }
-  };
-
   const handleLike = async () => {
-    if (!currentUser) {
-      alert("Please log in to like posts.");
-      return;
-    }
-
+    if (!currentUser) return alert("Please log in to like posts.");
     try {
-      const response = await axios.get(
-        `https://skill-sync-backend-522o.onrender.com/API_B/likes/${post.id}/status`,
-        { withCredentials: true }
-      );
+      const response = await makeRequest.get(`/API_B/likes/${post.id}/status`);
       const isLiked = response.data.liked;
 
       if (isLiked) {
-        await axios.delete(
-          `https://skill-sync-backend-522o.onrender.com/API_B/likes/${post.id}`,
-          { withCredentials: true }
-        );
+        await makeRequest.delete(`/API_B/likes/${post.id}`);
         setLiked(false);
         setLikesCount((prev) => Math.max(prev - 1, 0));
         setLikedBy((prev) => prev.filter((user) => user.id !== currentUser.id));
       } else {
-        await axios.post(
-          "https://skill-sync-backend-522o.onrender.com/API_B/likes",
-          { postId: post.id },
-          { withCredentials: true }
-        );
+        await makeRequest.post(`/API_B/likes`, { postId: post.id });
         setLiked(true);
         setLikesCount((prev) => prev + 1);
         setLikedBy((prev) => [
@@ -107,34 +83,25 @@ const Post = ({ post }) => {
         ]);
       }
     } catch (err) {
-      console.error("Error toggling like:", err.response?.data || err.message);
+      console.error("Error toggling like:", err);
       alert("Failed to toggle like.");
     }
   };
 
   const handleShare = () => {
-    if (!currentUser) {
-      alert("Please log in to share posts.");
-      return;
-    }
-
+    if (!currentUser) return alert("Please log in to share posts.");
     const postUrl = `https://skill-sync-frontend.onrender.com/post/${post.id}`;
     const shareText = encodeURIComponent(`Check out this post: ${post.desc}`);
     const shareLink = encodeURIComponent(postUrl);
     const whatsappUrl = `https://wa.me/?text=${shareText}%20${shareLink}`;
-
     window.open(whatsappUrl, "_blank");
   };
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this post?");
     if (!confirmDelete) return;
-
     try {
-      await axios.delete(
-        `https://skill-sync-backend-522o.onrender.com/API_B/posts/${post.id}`,
-        { withCredentials: true }
-      );
+      await makeRequest.delete(`/API_B/posts/${post.id}`);
       alert("Post deleted successfully.");
       window.location.reload();
     } catch (err) {
@@ -143,16 +110,21 @@ const Post = ({ post }) => {
     }
   };
 
-if (loading) {
-  return <PostSkeleton />;
-}
+  if (loading) return <PostSkeleton />;
 
   return (
     <div className="post">
       <div className="container">
         <div className="user">
           <div className="userInfo">
-            <img src={currentUser?.profilePic || profilePic} alt="" />
+            <img
+              src={
+                post.profilePic && post.profilePic.trim() !== ""
+                  ? post.profilePic
+                  : defaultAvatar
+              }
+              alt="User"
+            />
             <div className="details">
               <Link
                 to={`/profile/${post.userId}`}

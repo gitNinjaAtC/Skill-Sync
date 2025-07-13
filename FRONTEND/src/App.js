@@ -15,8 +15,6 @@ import { AuthContext } from "./context/authContext";
 // Zustand store for socket/user syncing
 import { useAuthStore } from "./store/useAuthStore";
 
-
-
 // Layout Components
 import Navbar from "./components/navbar/Navbar";
 import LeftBar from "./components/leftBar/LeftBar";
@@ -103,7 +101,7 @@ function App() {
     { path: "*", element: <ErrorPage /> },
   ]);
 
-  return <RouterProvider router={router} />;
+  return <RouterProvider router={router} future={{ v7_startTransition: true }} />;
 }
 
 export default App;

@@ -9,15 +9,17 @@ export const getPosts = async (req, res) => {
       .populate("userId", "name profilePic")
       .sort({ createdAt: -1 });
 
-    // Map to flatten user info on top level for frontend convenience
     const formattedPosts = posts.map((post) => {
-      const postObj = post.toObject(); // convert mongoose doc to plain JS object
+      const postObj = post.toObject();
       return {
         ...postObj,
         id: postObj._id,
         name: postObj.userId?.name || "User",
-        profilePic: postObj.userId?.profilePic || "/default-avatar.png",
-        userId: postObj.userId?._id || null, // keep userId for link routing
+        profilePic:
+          postObj.userId?.profilePic && postObj.userId.profilePic.trim() !== ""
+            ? postObj.userId.profilePic
+            : null,
+        userId: postObj.userId?._id || null,
       };
     });
 
@@ -27,6 +29,7 @@ export const getPosts = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // ADD NEW POST
 export const addPost = async (req, res) => {
@@ -40,7 +43,7 @@ export const addPost = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (user.role === "Admin") {
+    if (user.role === "admin") {
       const newPost = new Post({ userId, desc, status: "approved" });
       await newPost.save();
       return res.status(201).json({
@@ -48,7 +51,7 @@ export const addPost = async (req, res) => {
         message: "Post created successfully",
         postId: newPost._id,
       });
-    } else if (user.role === "Alumni") {
+    } else if (user.role === "alumni") {
       const pendingPost = new PendingPost({ userId, desc });
       await pendingPost.save();
       return res.status(201).json({
@@ -78,7 +81,7 @@ export const reviewPost = async (req, res) => {
 
   try {
     const user = await User.findById(userId);
-    if (!user || user.role !== "Admin")
+    if (!user || user.role !== "admin")
       return res.status(403).json({ message: "Access denied: Admins only" });
 
     const pendingPost = await PendingPost.findById(postId);
@@ -119,7 +122,7 @@ export const deletePost = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (user.role !== "Admin" && post.userId.toString() !== userId) {
+    if (user.role !== "admin" && post.userId.toString() !== userId) {
       return res
         .status(403)
         .json({ message: "Access denied: You cannot delete this post" });
