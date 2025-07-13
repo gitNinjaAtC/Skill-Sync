@@ -1,3 +1,4 @@
+// src/components/post/Post.jsx
 import "./post.scss";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
@@ -10,7 +11,7 @@ import { useState, useEffect, useContext, useRef } from "react";
 import { AuthContext } from "../../context/authContext";
 import PostSkeleton from "./PostSkeleton";
 import defaultAvatar from "../../assets/avatar.png";
-import { makeRequest } from "../../axios"; // ✅ updated import
+import { makeRequest } from "../../axios";
 
 const Post = ({ post }) => {
   const { currentUser, loading } = useContext(AuthContext);
@@ -120,9 +121,15 @@ const Post = ({ post }) => {
             <img
               src={
                 post.profilePic && post.profilePic.trim() !== ""
-                  ? post.profilePic
+                  ? post.profilePic.startsWith("http")
+                    ? post.profilePic
+                    : `https://skill-sync-backend-522o.onrender.com${post.profilePic}`
                   : defaultAvatar
               }
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = defaultAvatar;
+              }}
               alt="User"
             />
             <div className="details">
