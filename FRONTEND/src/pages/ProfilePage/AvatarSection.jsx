@@ -21,7 +21,7 @@ const AvatarSection = ({ userId }) => {
         const data = await res.json();
 
         if (data.profilePic && data.profilePic.trim() !== "") {
-          setAvatarSrc(`${data.profilePic}?t=${Date.now()}`); // ✅ don't prefix cloudinary URLs
+          setAvatarSrc(`${data.profilePic}?t=${Date.now()}`);
         } else {
           setAvatarSrc(defaultProfilePic);
         }
@@ -32,7 +32,7 @@ const AvatarSection = ({ userId }) => {
     };
 
     if (userId) fetchProfilePic();
-  }, [userId, BACKEND_URL]);
+  }, [userId]);
 
   const handleEditClick = () => {
     if (currentUser?._id === userId) {
@@ -62,7 +62,7 @@ const AvatarSection = ({ userId }) => {
 
       const data = await response.json();
       if (response.ok) {
-        setAvatarSrc(`${data.url}?t=${Date.now()}`); // ✅ use Cloudinary URL directly
+        setAvatarSrc(`${data.url}?t=${Date.now()}`);
       } else {
         alert("Upload failed: " + data.message);
       }
@@ -87,7 +87,6 @@ const AvatarSection = ({ userId }) => {
           alt="Avatar"
           onError={handleImageError}
           loading="lazy"
-          crossOrigin="anonymous"
         />
         {currentUser?._id === userId && (
           <button

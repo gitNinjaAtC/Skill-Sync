@@ -16,19 +16,15 @@ const CoverPhoto = ({ userId }) => {
           credentials: "include",
         });
         const data = await res.json();
-
-        if (data.coverPhoto && data.coverPhoto.trim() !== "") {
-          setCoverImage(`${data.coverPhoto}?t=${Date.now()}`); // ✅ use Cloudinary URL directly
-        } else {
-          setCoverImage(defaultCover);
+        if (data.coverPhoto) {
+          setCoverImage(`${data.coverPhoto}?t=${Date.now()}`);
         }
       } catch (error) {
         console.error("Failed to load cover photo", error);
-        setCoverImage(defaultCover);
       }
     };
     if (userId) fetchCoverPhoto();
-  }, [userId, BACKEND_URL]);
+  }, [userId]);
 
   const handleEditClick = () => {
     fileInputRef.current.click();
@@ -58,7 +54,7 @@ const CoverPhoto = ({ userId }) => {
           throw new Error(data.message || "Upload failed");
         }
 
-        setCoverImage(`${data.url}?t=${Date.now()}`); // ✅ force refresh after upload
+        setCoverImage(`${data.url}?t=${Date.now()}`);
       } catch (error) {
         console.error("Error uploading cover photo:", error);
         alert("Failed to upload image. Please try again.");
