@@ -1,17 +1,27 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/Users.js";
+import Student from "../models/Student.js";
 import cloudinary from "../lib/cloudinary.js";
 
 // ✅ REGISTER
 export const register = async (req, res) => {
   console.log("Register route hit, body:", req.body);
   try {
-    const { username, email, password, name, role } = req.body;
+    const { username, email, password, name, role, enrollmentNo } = req.body;
 
     // 🚫 Prevent admin registration via public signup
     if (role === "admin") {
       return res.status(403).json("Admin registration is not allowed");
+    }
+
+    // Check if enrollmentNo and email match in Student model
+    const student = await Student.findOne({
+      EnrollmentNo: enrollmentNo,
+      EmailId: email,
+    });
+    if (!student) {
+      return res.status(400).json("Email and enrollment number do not match");
     }
 
     // Check if user already exists
@@ -29,6 +39,7 @@ export const register = async (req, res) => {
       password: hashedPassword,
       name,
       role: role || "student",
+      enrollmentNo, // Include enrollmentNo in user creation
     });
 
     await newUser.save();
@@ -130,10 +141,13 @@ export const updateProfilePic = async (req, res) => {
       return res.status(400).json({ message: "Profile picture is required" });
     }
 
-    const uploadResponse = await cloudinary.uploader.upload(req.body.profilePic, {
-      folder: "profilePics", // Optional folder in Cloudinary
-      upload_preset: "default_preset", // Optional if you use upload presets
-    });
+    const uploadResponse = await cloudinary.uploader.upload(
+      req.body.profilePic,
+      {
+        folder: "profilePics", // Optional folder in Cloudinary
+        upload_preset: "default_preset", // Optional if you use upload presets
+      }
+    );
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
@@ -154,5 +168,3 @@ export const updateProfilePic = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
-

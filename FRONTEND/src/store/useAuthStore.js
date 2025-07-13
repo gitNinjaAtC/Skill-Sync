@@ -2,11 +2,11 @@ import { create } from "zustand";
 import { io } from "socket.io-client";
 import axios from "axios";
 
+// ✅ Use same base URL logic as Axios setup
 const BASE_URL =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:8800"
-    : window.location.origin;
-
+    ? process.env.REACT_APP_API_BASE_URL_LOCAL || "http://localhost:8800"
+    : process.env.REACT_APP_API_BASE_URL_PROD || "https://skill-sync-backend-522o.onrender.com";
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,
@@ -14,7 +14,7 @@ export const useAuthStore = create((set, get) => ({
   onlineUsers: [],
   socket: null,
 
-  // Call this on app load or login success
+  // ✅ Called on app load or login success
   checkAuth: async () => {
     try {
       const res = await axios.get(`${BASE_URL}/API_B/auth/check`, {
@@ -31,12 +31,13 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // Call after successful login
+  // ✅ Set user after login
   setCurrentUser: (user) => {
     set({ authUser: user });
     get().connectSocket();
   },
 
+  // ✅ Connect Socket.IO properly using BASE_URL
   connectSocket: () => {
     const { authUser, socket } = get();
     if (!authUser || socket?.connected) return;
@@ -44,6 +45,7 @@ export const useAuthStore = create((set, get) => ({
     const newSocket = io(BASE_URL, {
       withCredentials: true,
       query: { userId: authUser._id },
+      transports: ["websocket"], // ✅ Avoid fallback to polling
     });
 
     newSocket.connect();
