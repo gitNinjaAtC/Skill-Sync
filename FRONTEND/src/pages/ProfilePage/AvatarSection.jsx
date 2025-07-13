@@ -22,10 +22,10 @@ const AvatarSection = ({ userId }) => {
         const data = await res.json();
 
         if (data.profilePic && data.profilePic.trim() !== "") {
-          const picUrl = data.profilePic.startsWith("http")
+          const baseUrl = data.profilePic.startsWith("http")
             ? data.profilePic
             : `${BACKEND_URL}${data.profilePic}`;
-          setAvatarSrc(picUrl);
+          setAvatarSrc(`${baseUrl}?t=${Date.now()}`); // force image refresh
         } else {
           setAvatarSrc(defaultProfilePic);
         }
@@ -69,7 +69,7 @@ const AvatarSection = ({ userId }) => {
         const newUrl = data.url.startsWith("http")
           ? data.url
           : `${BACKEND_URL}${data.url}`;
-        setAvatarSrc(newUrl);
+        setAvatarSrc(`${newUrl}?t=${Date.now()}`); // force refresh after upload
       } else {
         alert("Upload failed: " + data.message);
       }
@@ -93,6 +93,8 @@ const AvatarSection = ({ userId }) => {
           src={avatarSrc}
           alt="Avatar"
           onError={handleImageError}
+          loading="lazy"
+          crossOrigin="anonymous"
         />
         {currentUser?._id === userId && (
           <button
