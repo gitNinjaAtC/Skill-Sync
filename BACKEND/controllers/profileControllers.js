@@ -4,12 +4,30 @@ import fs from "fs";
 import path from "path";
 import cloudinary from "../lib/cloudinary.js";
 
-// Ensure the temporary upload directory exists
+// ====== Ensure temp directory exists ======
 const uploadDir = path.resolve("uploads/tempImages");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
   console.log("✅ Created upload directory:", uploadDir);
 }
+
+// ========== MULTER CONFIG ==========
+const storage = multer.diskStorage({
+  destination: (_, __, cb) => cb(null, uploadDir),
+  filename: (_, file, cb) => cb(null, `${Date.now()}${path.extname(file.originalname)}`),
+});
+
+const fileFilter = (_, file, cb) => {
+  const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+  if (allowedTypes.includes(file.mimetype)) cb(null, true);
+  else cb(new Error("Only .jpeg, .jpg, and .png files are allowed"));
+};
+
+export const uploadImageMiddleware = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // Max 5MB
+}).single("image");
 
 // ========== GET PROFILE INFO ==========
 export const getProfileInfo = async (req, res) => {
@@ -88,24 +106,6 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// ========== MULTER CONFIG ==========
-const storage = multer.diskStorage({
-  destination: (_, __, cb) => cb(null, uploadDir),
-  filename: (_, file, cb) => cb(null, `${Date.now()}${path.extname(file.originalname)}`),
-});
-
-const fileFilter = (_, file, cb) => {
-  const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-  if (allowedTypes.includes(file.mimetype)) cb(null, true);
-  else cb(new Error("Only .jpeg, .jpg, and .png files are allowed"));
-};
-
-export const uploadImageMiddleware = multer({
-  storage,
-  fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // Max 5MB
-}).single("image");
-
 // ========== UPDATE COVER PHOTO ==========
 export const updateCoverPhoto = async (req, res) => {
   const userId = req.params.id;
@@ -117,7 +117,7 @@ export const updateCoverPhoto = async (req, res) => {
       folder: "skill-sync/coverPhotos",
     });
 
-    fs.unlinkSync(req.file.path); // Clean up
+    fs.unlinkSync(req.file.path); // Clean up temp file
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
@@ -145,7 +145,7 @@ export const updateProfilePic = async (req, res) => {
       folder: "skill-sync/profilePics",
     });
 
-    fs.unlinkSync(req.file.path); // Clean up
+    fs.unlinkSync(req.file.path); // Clean up temp file
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,

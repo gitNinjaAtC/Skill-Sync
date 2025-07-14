@@ -1,4 +1,3 @@
-// src/components/profile/AvatarSection.jsx
 import { useRef, useState, useContext, useEffect } from "react";
 import cameraIcon from "../../assets/camera-icon.png";
 import defaultProfilePic from "../../assets/profile.jpg";
@@ -11,7 +10,9 @@ const AvatarSection = ({ userId }) => {
   const [uploading, setUploading] = useState(false);
 
   const BACKEND_URL =
-    process.env.REACT_APP_API_BASE_URL || "http://localhost:8800";
+    process.env.NODE_ENV === "production"
+      ? process.env.REACT_APP_API_BASE_URL_PROD
+      : process.env.REACT_APP_API_BASE_URL_LOCAL;
 
   useEffect(() => {
     const fetchProfilePic = async () => {
@@ -22,10 +23,7 @@ const AvatarSection = ({ userId }) => {
         const data = await res.json();
 
         if (data.profilePic && data.profilePic.trim() !== "") {
-          const baseUrl = data.profilePic.startsWith("http")
-            ? data.profilePic
-            : `${BACKEND_URL}${data.profilePic}`;
-          setAvatarSrc(`${baseUrl}?t=${Date.now()}`); // force image refresh
+          setAvatarSrc(`${data.profilePic}?t=${Date.now()}`);
         } else {
           setAvatarSrc(defaultProfilePic);
         }
@@ -66,10 +64,7 @@ const AvatarSection = ({ userId }) => {
 
       const data = await response.json();
       if (response.ok) {
-        const newUrl = data.url.startsWith("http")
-          ? data.url
-          : `${BACKEND_URL}${data.url}`;
-        setAvatarSrc(`${newUrl}?t=${Date.now()}`); // force refresh after upload
+        setAvatarSrc(`${data.url}?t=${Date.now()}`);
       } else {
         alert("Upload failed: " + data.message);
       }
@@ -94,7 +89,6 @@ const AvatarSection = ({ userId }) => {
           alt="Avatar"
           onError={handleImageError}
           loading="lazy"
-          crossOrigin="anonymous"
         />
         {currentUser?._id === userId && (
           <button

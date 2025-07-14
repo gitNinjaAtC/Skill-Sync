@@ -9,6 +9,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { initSocketServer } from "./lib/socket.js";
+import rateLimit from "express-rate-limit"; // ✅ added
 
 // Routes
 import authRoutes from "./routes/auth.js";
@@ -26,12 +27,21 @@ dotenv.config();
 db();
 
 const app = express();
-const server = http.createServer(app); // attach socket.io to this server
+const server = http.createServer(app);
+
+// ✅ Login rate limiter (5 attempts per 5 minutes)
+const loginLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  max: 5,
+  message: "⚠️ Too many login attempts. Try again in 5 minutes.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // CORS setup
 const allowedOrigins = [
-  "http://localhost:3000", // Frontend
-  "http://localhost:3001", // ✅ ADDED for Admin panel on port 3001
+  "http://localhost:3000",
+  "http://localhost:3001",
   "https://skill-sync-frontend.onrender.com",
 ];
 
@@ -49,12 +59,10 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // handle preflight
+app.options("*", cors(corsOptions));
 
-// ✅ Increased payload size limit to handle image base64 data
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
-
 app.use(cookieParser());
 
 // Serve static uploaded files
@@ -69,10 +77,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// ✅ Health check route
+// ✅ Health check
 app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
+
+// ✅ Apply rate limit to login route only
+app.use("/API_B/auth/login", loginLimiter);
 
 // API Routes
 app.use("/API_B/auth", authRoutes);
@@ -86,10 +97,9 @@ app.use("/API_B/profile", profileRoutes);
 app.use("/API_B/admin", adminRoutes);
 app.use("/API_B/messages", messageRoutes);
 
-// Start Socket.IO
+// Start socket server
 initSocketServer(server);
 
-// Run server
 const PORT = process.env.PORT || 8800;
 server.listen(PORT, () => {
   console.log(`🚀 API_B + Socket.IO running at http://localhost:${PORT}`);
