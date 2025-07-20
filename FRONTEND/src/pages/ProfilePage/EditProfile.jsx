@@ -29,7 +29,7 @@ const EditProfile = () => {
     const fetchUserData = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8800/API_B/profile/${id}`,
+          `https://skill-sync-backend-522o.onrender.com/API_B/profile/${id}`,
           { withCredentials: true }
         );
         const data = res.data;
