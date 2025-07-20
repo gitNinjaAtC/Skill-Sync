@@ -97,10 +97,10 @@ export const updateProfile = async (req, res) => {
       }),
     };
 
-    // ✅ Accept arrays directly from frontend
-    if (Array.isArray(skills)) updateFields.skills = skills;
-    if (Array.isArray(education)) updateFields.education = education;
-    if (Array.isArray(experience)) updateFields.experience = experience;
+    // ✅ Update logic to allow both strings and arrays
+    if (skills !== undefined) updateFields.skills = skills;
+    if (education !== undefined) updateFields.education = education;
+    if (experience !== undefined) updateFields.experience = experience;
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
