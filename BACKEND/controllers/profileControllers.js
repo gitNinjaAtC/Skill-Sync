@@ -63,48 +63,63 @@ export const getProfileInfo = async (req, res) => {
 };
 
 // ========== UPDATE PROFILE ==========
+
 export const updateProfile = async (req, res) => {
   const userId = req.params.id;
-  const {
-    name,
-    description,
-    socialLinks,
-    skills,
-    education,
-    experience,
-    others,
-  } = req.body;
 
   if (!userId) return res.status(400).json({ message: "User ID is required" });
 
   try {
+    const {
+      name,
+      description,
+      skills,
+      education,
+      experience,
+      others,
+      socialLinks = {},
+    } = req.body;
+
+    // ✅ Normalize comma-separated strings into arrays (or handle if already arrays)
+    const parseArray = (input) => {
+      if (!input) return [];
+      if (Array.isArray(input)) return input;
+      return input
+        .split(",")
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0);
+    };
+
     const updateFields = {
       ...(name && { name }),
       ...(description && { about: description }),
-      ...(skills && { skills }),
-      ...(education && { education }),
-      ...(experience && { experience }),
+      skills: parseArray(skills),
+      education: parseArray(education),
+      experience: parseArray(experience),
       ...(others && { others }),
-      ...(socialLinks?.facebook && { facebook: socialLinks.facebook }),
-      ...(socialLinks?.instagram && { instagram: socialLinks.instagram }),
-      ...(socialLinks?.twitter && { twitter: socialLinks.twitter }),
-      ...(socialLinks?.linkedin && { linkedin: socialLinks.linkedin }),
+      ...(socialLinks.facebook !== undefined && { facebook: socialLinks.facebook }),
+      ...(socialLinks.instagram !== undefined && { instagram: socialLinks.instagram }),
+      ...(socialLinks.twitter !== undefined && { twitter: socialLinks.twitter }),
+      ...(socialLinks.linkedin !== undefined && { linkedin: socialLinks.linkedin }),
     };
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { $set: updateFields },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
-    if (!updatedUser) return res.status(404).json({ message: "User not found" });
+    if (!updatedUser)
+      return res.status(404).json({ message: "User not found" });
 
-    res.status(200).json({ message: "Profile updated successfully" });
+    res.status(200).json({ message: "Profile updated successfully", user: updatedUser });
   } catch (error) {
     console.error("❌ Error updating profile:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };
+
+
 
 // ========== UPDATE COVER PHOTO ==========
 export const updateCoverPhoto = async (req, res) => {
