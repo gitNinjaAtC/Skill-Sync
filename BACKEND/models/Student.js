@@ -47,6 +47,11 @@ const studentSchema = new mongoose.Schema(
       trim: true,
       match: [/^\d{4}-\d{4}$/, "Batch must be in the format YYYY-YYYY"],
     },
+    branch: {
+    type: String,
+    trim: true,
+    default: "Unknown",
+    },
   },
   {
     timestamps: true,

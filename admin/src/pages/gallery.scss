@@ -1,71 +1,119 @@
-.gallery-page {
-  padding: 0rem 0.5rem 2rem 2rem;
+.gallery-container {
+  padding: 0rem 0rem 0rem 2rem;
+  text-align: center;
 
-  h1 {
-    font-size: 2rem;
-    border-bottom: 2px solid #929292;
-    color: #1f2937;
-    margin-bottom: 1.5rem;
-  }
+  .slider {
+    position: relative;
+    width: 79rem;
+    max-height: 79rem;
+    overflow: hidden;
 
-  .batch-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
-  }
-
-  .batch-card {
-    background-color: #f3f4f6;
-    padding: 1rem;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease;
-
-    h3 {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-      color: #4b5563;
+    .main-image {
+      width: 79rem;
+      height: 70vh;
+      max-height: 70vh;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      display: block;
     }
 
-    p {
-      font-size: 0.9rem;
-      color: #6b7280;
-      margin-bottom: 1rem;
-    }
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.3);
+      border: none;
+      color: white;
+      padding: 0.5rem;
+      cursor: pointer;
+      z-index: 2;
+      border-radius: 50%;
+      transition: background 0.3s;
 
-.button-group {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
+      &.left {
+        left: 1rem;
+      }
 
-  button {
-    background-color: #3b82f6; // View button
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease;
+      &.right {
+        right: 1rem;
+      }
 
-    &:hover {
-      background-color: #2563eb;
+      &:hover {
+        background: rgba(0, 0, 0, 0.5);
+      }
     }
   }
 
-  button:nth-child(2) {
-    background-color: #10b981; // Upload button (green)
-    
-    &:hover {
-      background-color: #059669;
+  .tape-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-top: 0.5rem;
+    width: 79rem;
+    overflow: hidden;
+
+    .tape-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.3);
+      border: none;
+      color: white;
+      padding: 0.5rem;
+      cursor: pointer;
+      z-index: 2;
+      border-radius: 50%;
+      transition: background 0.3s;
+
+      &.left {
+        left: 0.5rem;
+      }
+
+      &.right {
+        right: 0.5rem;
+      }
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.6);
+      }
     }
-  }
-}
 
+    .tape-strip {
+      display: flex;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      gap: 10px;
+      padding: 0.5rem 2.5rem; // Leave space for absolute buttons
+      flex: 1;
+      max-width: 100%;
+      width: 100%;
 
-    &:hover {
-      transform: translateY(-4px);
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .thumbnail {
+        height: 80px;
+        width: 80px;
+        border-radius: 6px;
+        object-fit: cover;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: 0.3s ease;
+        opacity: 0.6;
+
+        &.active {
+          border-color: #007bff;
+          transform: scale(1.1);
+          opacity: 1;
+        }
+
+        &:hover {
+          opacity: 0.9;
+        }
+      }
     }
   }
 }

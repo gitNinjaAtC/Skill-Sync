@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Job.scss";
+import { AuthContext } from "../../context/authContext";
 import Jobs from "../../assets/Job.png";
 import JobSkeleton from "./JobSkeleton.jsx";
 import defaultLogo from "../../assets/default_logo.jpg"; // ✅ Import default logo
@@ -21,6 +22,7 @@ const popularTags = [
 ];
 
 const Job = () => {
+  const { currentUser, loading: authLoading } = useContext(AuthContext);
   const [jobs, setJobs] = useState([]);
   const [filterTag, setFilterTag] = useState("All");
   const [loading, setLoading] = useState(true);
@@ -165,9 +167,15 @@ const Job = () => {
           ))}
       </section>
 
-      <button className="create-forum-btn" onClick={handleCreateJob}>
-        Create Job
-      </button>
+      {currentUser && ["admin", "alumni"].includes(currentUser.role) && (
+        <button
+          className="create-forum-btn"
+          onClick={handleCreateJob}
+          disabled={authLoading || loading}
+        >
+          Create Job
+        </button>
+      )}      
     </div>
   );
 };

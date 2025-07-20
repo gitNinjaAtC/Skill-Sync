@@ -5,10 +5,13 @@ import Navbar from "./components/Navbar";
 import Events from "./pages/Events";
 import Dashboard from "./pages/Dashboard";
 import JobsDashboard from "./pages/Jobs";
-import Gallery from "./pages/Gallery";
+import Gallery from "./pages/Gallery.jsx";
+import Batches from "./pages/Batches";
 import ManageUsers from "./pages/manageUsers";
 import Users from "./pages/Users";
 import AdminLogin from "./pages/adminLogin/adminLogin";
+import CreateAdmin from "./createAdmin/createAdmin";
+
 
 const App = () => {
   const [admin, setAdmin] = useState(null);
@@ -49,7 +52,9 @@ const App = () => {
                       <Route path="/users" element={<Users />} />
                       <Route path="/jobs" element={<JobsDashboard />} />
                       <Route path="/gallery" element={<Gallery />} />
+                      <Route path="/batches" element={<Batches />} />
                       <Route path="/events" element={<Events />} />
+                      <Route path="/create-admin" element={<CreateAdmin />} />
                       <Route path="/manageUsers" element={<ManageUsers />} />
                     </Routes>
                   </main>

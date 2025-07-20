@@ -4,6 +4,13 @@ import "./people.scss";
 import defaultPic from "../../assets/profile.jpg";
 import { useChatStore } from "../messages/store/useChatStore";
 import { useNavigate } from "react-router-dom";
+import {
+  FacebookTwoTone as FacebookTwoToneIcon,
+  LinkedIn as LinkedInIcon,
+  Instagram as InstagramIcon,
+  Twitter as TwitterIcon,
+  Message as MessageIcon
+} from "@mui/icons-material";
 
 const SkeletonCard = () => (
   <div className="user-card skeleton-card">
@@ -53,6 +60,12 @@ const PeopleSection = () => {
 
   const handleView = (user) => setSelectedUser(user);
   const closePopup = () => setSelectedUser(null);
+
+  const handleViewProfile = (user) => {
+  closePopup();
+  navigate(`/profile/${user._id}`);
+  };
+
 
   const handleMessage = (user) => {
     openChatWithUser(user);
@@ -106,8 +119,9 @@ const PeopleSection = () => {
       </div>
 
       {selectedUser && (
-        <div className="popup-overlay">
-          <div className="popup-card">
+        <div className="popup-overlay">          
+          <div className="popup-card">  
+            <button className="close-btn" onClick={closePopup}>✖</button>          
             <img
               src={getProfilePic(selectedUser.profilePic)}
               alt="Profile"
@@ -118,17 +132,14 @@ const PeopleSection = () => {
               }}
             />
             <h3>{selectedUser.name}</h3>
-            <p>
-              <strong>Email:</strong> {selectedUser.email}
-            </p>
-            <p>
-              <strong>Role:</strong> {selectedUser.role}
-            </p>
-            {selectedUser.about && (
-              <p>
-                <strong>About:</strong> {selectedUser.about}
+            <div className="popup-row">
+              <p className="left">
+                <strong>Email:</strong> {selectedUser.email}
               </p>
-            )}
+              <p className="right">
+                <strong>Role:</strong> {selectedUser.role}
+              </p>
+            </div>
             {selectedUser.skills && (
               <p>
                 <strong>Skills:</strong>{" "}
@@ -151,29 +162,29 @@ const PeopleSection = () => {
             <div className="popup-links">
               {selectedUser.linkedin && (
                 <a href={selectedUser.linkedin} target="_blank" rel="noreferrer">
-                  LinkedIn
+                  <LinkedInIcon fontSize="large" />
                 </a>
               )}
               {selectedUser.facebook && (
                 <a href={selectedUser.facebook} target="_blank" rel="noreferrer">
-                  Facebook
+                  <FacebookTwoToneIcon fontSize="large" />
                 </a>
               )}
               {selectedUser.instagram && (
                 <a href={selectedUser.instagram} target="_blank" rel="noreferrer">
-                  Instagram
+                  <InstagramIcon fontSize="large" />
                 </a>
               )}
               {selectedUser.twitter && (
                 <a href={selectedUser.twitter} target="_blank" rel="noreferrer">
-                  Twitter
+                  <TwitterIcon fontSize="large" />
                 </a>
               )}
+              <button className="btn" onClick={() => handleMessage(selectedUser)}><MessageIcon fontSize="large"/></button>  
             </div>
 
             <div className="popup-buttons">
-              <button onClick={() => handleMessage(selectedUser)}>Message</button>
-              <button onClick={closePopup}>Close</button>
+              <button onClick={() => handleViewProfile(selectedUser)}>View Profile</button>            
             </div>
           </div>
         </div>

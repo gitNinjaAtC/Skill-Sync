@@ -7,9 +7,10 @@ const Register = () => {
   const [inputs, setInputs] = useState({
     username: "",
     email: "",
+    enrollmentNo: "",
     password: "",
     name: "",
-    role: "student", // default role
+    role: "student",
   });
 
   const [err, setErr] = useState(null);
@@ -37,7 +38,14 @@ const Register = () => {
       );
 
       setSuccess("Registration successful. Awaiting admin approval.");
-      setInputs({ username: "", email: "", password: "", name: "", role: "student" });
+      setInputs({
+        username: "",
+        email: "",
+        enrollmentNo: "",
+        password: "",
+        name: "",
+        role: "student",
+      });
 
       setTimeout(() => navigate("/login"), 3000);
     } catch (err) {
@@ -68,7 +76,8 @@ const Register = () => {
           <h1>SISTEC</h1>
           <p>
             Reconnect with classmates, explore career opportunities, and stay
-            updated on events and achievements. Join a network that lasts a lifetime!
+            updated on events and achievements. Join a network that lasts a
+            lifetime!
           </p>
           <span>Already have an account?</span>
           <Link to="/login">
@@ -105,13 +114,26 @@ const Register = () => {
             />
             <input
               type="text"
+              placeholder="Enrollment Number"
+              name="enrollmentNo"
+              value={inputs.enrollmentNo}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="text"
               placeholder="Full Name"
               name="name"
               value={inputs.name}
               onChange={handleChange}
               required
             />
-            <select name="role" value={inputs.role} onChange={handleChange} required>
+            <select
+              name="role"
+              value={inputs.role}
+              onChange={handleChange}
+              required
+            >
               <option value="student">Student</option>
               <option value="alumni">Alumni</option>
             </select>

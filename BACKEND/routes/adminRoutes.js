@@ -3,7 +3,8 @@
   import path from "path";
   import fs from "fs";
   import User from "../models/Users.js";
-  import { getUsers, approveUser ,importFile, } from "../controllers/adminControllers.js";
+  import Student from "../models/Student.js";
+  import { getUsers, approveUser ,importFile, createAdmin } from "../controllers/adminControllers.js";
   import { validateToken } from "../middleware/validateTokenHandler.js";
   import jwt from "jsonwebtoken";
   import bcrypt from "bcryptjs";
@@ -12,6 +13,7 @@
 
   router.post("/approve-user", validateToken, approveUser);
   router.get("/users",  getUsers);
+  router.post("/create", validateToken, createAdmin);
 
   // Nodemailer transporter (make sure env vars are set)
   // const transporter = nodemailer.createTransport({
@@ -165,6 +167,21 @@ router.post("/upload", upload.single("file"), importFile);
       console.error("Approval error:", err);
       res.status(500).json({ message: "Approval failed" });
     }
+  });
+
+  // ✅ Get all students in a batch and branch
+  router.get("/students", async (req, res) => {
+  try {
+  const { batch, branch } = req.query;
+  if (!batch || !branch) {
+  return res.status(400).json({ error: "Batch and Branch are required" });
+  }
+  const students = await Student.find({ batch, branch });
+  res.status(200).json(students);
+  } catch (error) {
+  console.error("Error fetching students:", error);
+  res.status(500).json({ error: "Error fetching students" });
+  }
   });
 
   export default router;

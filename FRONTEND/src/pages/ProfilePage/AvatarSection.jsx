@@ -92,12 +92,16 @@ const AvatarSection = ({ userId }) => {
         />
         {currentUser?._id === userId && (
           <button
-            className="edit-avatar"
-            onClick={handleEditClick}
-            disabled={uploading}
-          >
+          className="edit-avatar"
+          onClick={handleEditClick}
+          disabled={uploading}
+        >
+          {uploading ? (
+            <div className="loader" />
+          ) : (
             <img src={cameraIcon} alt="Edit" className="edit-icon" />
-          </button>
+          )}
+        </button>
         )}
       </div>
       <input

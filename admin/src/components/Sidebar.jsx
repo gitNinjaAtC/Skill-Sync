@@ -30,6 +30,9 @@ const Sidebar = () => {
             <Link to="/gallery" className={isActive("/gallery") ? "active" : ""}>Gallery</Link>
           </li>
           <li>
+            <Link to="/batches" className={isActive("/batches") ? "active" : ""}>Batches</Link>
+          </li>
+          <li>
             <Link to="/manageUsers" className={isActive("/manageUsers") ? "active" : ""}>Registration Approval</Link>
           </li>
           <li>
