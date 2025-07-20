@@ -14,7 +14,8 @@ if (!fs.existsSync(uploadDir)) {
 // ========== MULTER CONFIG ==========
 const storage = multer.diskStorage({
   destination: (_, __, cb) => cb(null, uploadDir),
-  filename: (_, file, cb) => cb(null, `${Date.now()}${path.extname(file.originalname)}`),
+  filename: (_, file, cb) =>
+    cb(null, `${Date.now()}${path.extname(file.originalname)}`),
 });
 
 const fileFilter = (_, file, cb) => {
@@ -63,10 +64,8 @@ export const getProfileInfo = async (req, res) => {
 };
 
 // ========== UPDATE PROFILE ==========
-
 export const updateProfile = async (req, res) => {
   const userId = req.params.id;
-
   if (!userId) return res.status(400).json({ message: "User ID is required" });
 
   try {
@@ -80,28 +79,28 @@ export const updateProfile = async (req, res) => {
       socialLinks = {},
     } = req.body;
 
-    // ✅ Normalize comma-separated strings into arrays (or handle if already arrays)
-    const parseArray = (input) => {
-      if (!input) return [];
-      if (Array.isArray(input)) return input;
-      return input
-        .split(",")
-        .map((item) => item.trim())
-        .filter((item) => item.length > 0);
-    };
-
     const updateFields = {
       ...(name && { name }),
       ...(description && { about: description }),
-      skills: parseArray(skills),
-      education: parseArray(education),
-      experience: parseArray(experience),
       ...(others && { others }),
-      ...(socialLinks.facebook !== undefined && { facebook: socialLinks.facebook }),
-      ...(socialLinks.instagram !== undefined && { instagram: socialLinks.instagram }),
-      ...(socialLinks.twitter !== undefined && { twitter: socialLinks.twitter }),
-      ...(socialLinks.linkedin !== undefined && { linkedin: socialLinks.linkedin }),
+      ...(socialLinks.facebook !== undefined && {
+        facebook: socialLinks.facebook,
+      }),
+      ...(socialLinks.instagram !== undefined && {
+        instagram: socialLinks.instagram,
+      }),
+      ...(socialLinks.twitter !== undefined && {
+        twitter: socialLinks.twitter,
+      }),
+      ...(socialLinks.linkedin !== undefined && {
+        linkedin: socialLinks.linkedin,
+      }),
     };
+
+    // ✅ Accept arrays directly from frontend
+    if (Array.isArray(skills)) updateFields.skills = skills;
+    if (Array.isArray(education)) updateFields.education = education;
+    if (Array.isArray(experience)) updateFields.experience = experience;
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
@@ -112,14 +111,14 @@ export const updateProfile = async (req, res) => {
     if (!updatedUser)
       return res.status(404).json({ message: "User not found" });
 
-    res.status(200).json({ message: "Profile updated successfully", user: updatedUser });
+    res
+      .status(200)
+      .json({ message: "Profile updated successfully", user: updatedUser });
   } catch (error) {
     console.error("❌ Error updating profile:", error);
     res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };
-
-
 
 // ========== UPDATE COVER PHOTO ==========
 export const updateCoverPhoto = async (req, res) => {
@@ -132,7 +131,7 @@ export const updateCoverPhoto = async (req, res) => {
       folder: "skill-sync/coverPhotos",
     });
 
-    fs.unlinkSync(req.file.path); // Clean up temp file
+    fs.unlinkSync(req.file.path); // Delete temp file
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
@@ -140,9 +139,12 @@ export const updateCoverPhoto = async (req, res) => {
       { new: true }
     );
 
-    if (!updatedUser) return res.status(404).json({ message: "User not found" });
+    if (!updatedUser)
+      return res.status(404).json({ message: "User not found" });
 
-    res.status(200).json({ message: "Cover photo updated", url: result.secure_url });
+    res
+      .status(200)
+      .json({ message: "Cover photo updated", url: result.secure_url });
   } catch (error) {
     console.error("❌ Error updating cover photo:", error);
     res.status(500).json({ message: "Internal Server Error", error: error.message });
@@ -160,7 +162,7 @@ export const updateProfilePic = async (req, res) => {
       folder: "skill-sync/profilePics",
     });
 
-    fs.unlinkSync(req.file.path); // Clean up temp file
+    fs.unlinkSync(req.file.path); // Delete temp file
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
@@ -168,9 +170,12 @@ export const updateProfilePic = async (req, res) => {
       { new: true }
     );
 
-    if (!updatedUser) return res.status(404).json({ message: "User not found" });
+    if (!updatedUser)
+      return res.status(404).json({ message: "User not found" });
 
-    res.status(200).json({ message: "Profile picture updated", url: result.secure_url });
+    res
+      .status(200)
+      .json({ message: "Profile picture updated", url: result.secure_url });
   } catch (error) {
     console.error("❌ Error uploading profile picture:", error);
     res.status(500).json({ message: "Internal Server Error", error: error.message });

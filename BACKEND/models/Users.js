@@ -13,9 +13,9 @@ const userSchema = new mongoose.Schema({
   instagram: { type: String, maxlength: 255, default: null },
   twitter: { type: String, maxlength: 255, default: null },
   linkedin: { type: String, maxlength: 255, default: null },
-  skills: { type: String, default: null },
-  education: { type: String, default: null },
-  experience: { type: String, default: null },
+  skills: { type: [String], default: null },
+  education: { type: [String], default: null },
+  experience: { type: [String], default: null },
   others: { type: String, default: null },
   coverPhoto: { type: String, maxlength: 255, default: null },
 
