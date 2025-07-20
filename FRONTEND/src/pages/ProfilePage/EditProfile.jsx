@@ -111,7 +111,7 @@ const EditProfile = () => {
       };
 
       await axios.put(
-        `http://localhost:8800/API_B/profile/update/${id}`,
+        `https://skill-sync-backend-522o.onrender.com/API_B/profile/update/${id}`,
         payload,
         { withCredentials: true }
       );
