@@ -31,11 +31,11 @@ const server = http.createServer(app);
 
 // ✅ Login rate limiter (5 attempts per 5 minutes)
 const loginLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000,
-  max: 5,
-  message: "⚠️ Too many login attempts. Try again in 5 minutes.",
-  standardHeaders: true,
-  legacyHeaders: false,
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 10, // Allow up to 10 attempts per 5 minutes
+  message: "⚠️ Too many login attempts. Please wait 5 minutes before trying again.",
+  standardHeaders: true, // Sends `RateLimit-*` headers
+  legacyHeaders: false,  // Disables `X-RateLimit-*` headers
 });
 
 // CORS setup
@@ -43,6 +43,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
   "https://skill-sync-frontend.onrender.com",
+  "https://alumni.sistec.ac.in",
 ];
 
 const corsOptions = {
