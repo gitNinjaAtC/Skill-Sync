@@ -24,13 +24,13 @@ const ProfileInfo = ({ userId }) => {
 
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  const { setSelectedUser } = useChatStore(); // ✅ get from chat store
+  const { setSelectedUser } = useChatStore();
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const res = await axios.get(
-          `https://skill-sync-backend-522o.onrender.com/API_B/profile/${userId}`,
+          `http://localhost:8800/API_B/profile/${userId}`,
           { withCredentials: true }
         );
         setUserData(res.data);
@@ -46,10 +46,9 @@ const ProfileInfo = ({ userId }) => {
   }, [userId]);
 
   const handleEditClick = () => navigate(`/edit-profile/${userId}`);
-
   const handleMessage = () => {
-    setSelectedUser(userData);         // ✅ Set chat user
-    navigate("/messages");            // ✅ Redirect to chat page
+    setSelectedUser(userData);
+    navigate("/messages");
   };
 
   if (loading) return <ProfileSkeleton />;
@@ -67,6 +66,8 @@ const ProfileInfo = ({ userId }) => {
     instagram,
     twitter,
     linkedin,
+    batch,
+    branch,
   } = userData;
 
   const finalLinks = {
@@ -78,10 +79,18 @@ const ProfileInfo = ({ userId }) => {
 
   return (
     <div className="profile-info">
-      {/* 1st Division: Header only */}
       <div className="profile-info-header">
         <div className="profile-header">
-          <h2>{name}</h2>
+          <div className="header-text">
+            <h2>{name}</h2>
+            {(branch || batch) && (
+              <p className="sub-info">
+                {branch && <span>{branch}</span>}
+                {branch && batch && <span> • </span>}
+                {batch && <span>Batch of {batch}</span>}
+              </p>
+            )}
+          </div>
           {currentUser?.id === userId && (
             <button className="edit-btn" onClick={handleEditClick}>
               Edit Profile
@@ -90,7 +99,6 @@ const ProfileInfo = ({ userId }) => {
         </div>
       </div>
 
-      {/* 2nd Division: Everything below header */}
       <div className="profile-info-body">
         <p className="description">{description}</p>
 
@@ -118,7 +126,9 @@ const ProfileInfo = ({ userId }) => {
             )}
           </div>
           {currentUser?.id !== userId && (
-            <button className="message-btn" onClick={handleMessage}>Message</button>
+            <button className="message-btn" onClick={handleMessage}>
+              Message
+            </button>
           )}
         </div>
 

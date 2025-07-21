@@ -57,6 +57,26 @@
     }
   }
 
+  // ✅ Search bar style
+  .search-bar {
+    margin-top: 0.75rem;
+    margin-right: 0.45rem;
+
+    input {
+      width: 80%;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+
+      &:focus {
+        border-color: #3b82f6;
+      }
+    }
+  }
+
   border-bottom: 1px solid #d1d5db;
   margin: 0 1rem;
 }

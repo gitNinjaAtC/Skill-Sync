@@ -303,3 +303,28 @@
     }
   }
 }
+.people-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  h2 {
+    margin: 0;
+  }
+
+  .search-input {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 250px;
+    outline: none;
+    transition: border 0.3s;
+
+    &:focus {
+      border-color: #4169E1;
+    }
+  }
+}
+

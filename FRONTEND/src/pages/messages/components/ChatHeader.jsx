@@ -6,7 +6,7 @@ import "./chatHeader.scss";
 
 const ChatHeader = () => {
   const { selectedUser, setSelectedUser } = useChatStore();
-  const { onlineUsers } = useAuthStore();
+  const { onlineUsers, authUser } = useAuthStore();
 
   const resolveProfilePic = (user) => {
     if (!user?.profilePic || user.profilePic.trim() === "") return avatar;
@@ -37,7 +37,12 @@ const ChatHeader = () => {
           </div>
 
           <div className="user-meta">
-            <h3>{selectedUser?.name || "User"}</h3>
+            <h3>
+              {selectedUser?.name || "User"}
+              {selectedUser?._id === authUser?._id && (
+                <strong style={{ color: "#4A90E2" }}> (YOU)</strong>
+              )}
+            </h3>
             <p className={onlineUsers.includes(selectedUser._id) ? "online" : "offline"}>
               {onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
             </p>

@@ -14,16 +14,31 @@ const Sidebar = () => {
     setSelectedUser,
     isUsersLoading,
   } = useChatStore();
-  const { onlineUsers } = useAuthStore();
+
+  const { onlineUsers, authUser: currentUser } = useAuthStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     getUsers();
   }, []);
 
-  const filteredUsers = showOnlineOnly
-    ? users.filter((user) => onlineUsers.includes(String(user._id)))
-    : users;
+  // ✅ Filter out admin users
+  const nonAdminUsers = users.filter(
+    (user) => user.role?.toLowerCase() !== "admin"
+  );
+
+  // ✅ Apply online filter if needed
+  const onlineFilteredUsers = showOnlineOnly
+    ? nonAdminUsers.filter((user) =>
+        onlineUsers.includes(user._id?.toString())
+      )
+    : nonAdminUsers;
+
+  // ✅ Apply search filter
+  const filteredUsers = onlineFilteredUsers.filter((user) =>
+    user.name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const resolveProfilePic = (user) => {
     if (!user?.profilePic || user.profilePic.trim() === "") return avatar;
@@ -41,6 +56,7 @@ const Sidebar = () => {
           <Users className="icon" />
           <span className="title">Contacts</span>
         </div>
+
         <div className="filter-row">
           <label className="filter-toggle">
             <input
@@ -52,17 +68,31 @@ const Sidebar = () => {
           </label>
           <span className="online-count">({onlineUsers.length - 1} online)</span>
         </div>
+
+        {/* ✅ Search Bar */}
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search users..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
       </div>
 
       <div className="contact-list">
         {filteredUsers.length > 0 ? (
           filteredUsers.map((user) => {
-            const isOnline = onlineUsers.includes(String(user._id));
+            const isOnline = onlineUsers.includes(user._id?.toString());
+            const isCurrentUser = user._id?.toString() === currentUser?._id?.toString();
+
             return (
               <button
                 key={user._id}
                 onClick={() => setSelectedUser(user)}
-                className={`contact-item ${selectedUser?._id === user._id ? "selected" : ""}`}
+                className={`contact-item ${
+                  selectedUser?._id === user._id ? "selected" : ""
+                }`}
               >
                 <div className="contact-content">
                   <div className="avatar-wrapper">
@@ -78,7 +108,12 @@ const Sidebar = () => {
                     {isOnline && <span className="online-dot" />}
                   </div>
                   <div className="user-info">
-                    <div className="name">{user.name}</div>
+                    <div className="name">
+                      {user.name}{" "}
+                      {isCurrentUser && (
+                        <strong style={{ color: "#4A90E2" }}>(YOU)</strong>
+                      )}
+                    </div>
                     <div className="status">{isOnline ? "Online" : "Offline"}</div>
                   </div>
                 </div>
@@ -86,7 +121,9 @@ const Sidebar = () => {
             );
           })
         ) : (
-          showOnlineOnly && <div className="no-users">No online users</div>
+          <div className="no-users">
+            {showOnlineOnly ? "No online users" : "No users found"}
+          </div>
         )}
       </div>
     </aside>

@@ -1,4 +1,7 @@
+// C:\Users\Dell\Desktop\Skill-Sync\BACKEND\controllers\profileControllers.js
+
 import User from "../models/Users.js";
+import Student from "../models/Student.js"; // ✅ Add this line
 import multer from "multer";
 import fs from "fs";
 import path from "path";
@@ -37,9 +40,14 @@ export const getProfileInfo = async (req, res) => {
 
   try {
     const user = await User.findById(userId).select(
-      "name about facebook instagram twitter linkedin skills education experience others profilePic coverPhoto"
+      "name email about facebook instagram twitter linkedin skills education experience others profilePic coverPhoto"
     );
     if (!user) return res.status(404).json({ message: "User not found" });
+
+    // ✅ Match student by email (case-insensitive)
+    const student = await Student.findOne({
+      EmailId: user.email?.toLowerCase(),
+    });
 
     const profileData = {
       name: user.name || "",
@@ -54,6 +62,8 @@ export const getProfileInfo = async (req, res) => {
       others: user.others || "",
       profilePic: user.profilePic || null,
       coverPhoto: user.coverPhoto || null,
+      branch: student?.branch || "N/A",  // ✅ added
+      batch: student?.batch || "N/A",    // ✅ added
     };
 
     res.status(200).json(profileData);
