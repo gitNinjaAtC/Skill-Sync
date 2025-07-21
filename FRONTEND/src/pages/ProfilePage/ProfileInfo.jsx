@@ -30,7 +30,7 @@ const ProfileInfo = ({ userId }) => {
     const fetchUserData = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8800/API_B/profile/${userId}`,
+          `https://skill-sync-backend-522o.onrender.com/API_B/profile/${userId}`,
           { withCredentials: true }
         );
         setUserData(res.data);
