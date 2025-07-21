@@ -42,7 +42,7 @@ const PeopleSection = () => {
 
   const preloadSkeletonCount = async () => {
     try {
-      const res = await fetch("http://localhost:8800/API_B/users/users", {
+      const res = await fetch("https://skill-sync-backend-522o.onrender.com/API_B/users/users", {
         credentials: "include",
       });
       const data = await res.json();
