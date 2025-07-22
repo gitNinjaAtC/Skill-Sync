@@ -27,7 +27,7 @@ const ResetPassword = () => {
 
     try {
       const res = await axios.post(
-        `http://localhost:8800/API_B/auth/reset-password/${token}`,
+        `https://skill-sync-backend-522o.onrender.com/API_B/auth/reset-password/${token}`,
         { newPassword },
         { withCredentials: true }
       );

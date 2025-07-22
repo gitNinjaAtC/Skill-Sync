@@ -175,7 +175,14 @@ export const forgotPassword = async (req, res) => {
     user.resetTokenExpiry = Date.now() + 3600000;
     await user.save();
 
-    const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
+    const CLIENT_URL =
+      process.env.CLIENT_URL ||
+      "https://alumni.sistec.ac.in" ||
+      "https://skill-sync-frontend.onrender.com" ||
+      "http://localhost:3000";
+
+    const resetLink = `${CLIENT_URL}/reset-password/${resetToken}`;
+
 
     try {
       await sendResetEmail(user.email, resetLink); // ✅ email send
