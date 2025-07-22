@@ -31,8 +31,6 @@ const Login = () => {
         setErr("Your account is not yet approved by admin.");
         return;
       }
-
-      // Navigation is handled by useEffect if approved
     } catch (err) {
       const errorMessage =
         typeof err === "string"
@@ -69,9 +67,9 @@ const Login = () => {
             updated on events and achievements. Join a network that lasts a
             lifetime!
           </p>
-          <span>Don't you have an account?</span>
+          <span>Don't have an account?</span>
           <Link to="/register">
-            <button>Register</button>
+            <button className="btn-secondary">Register</button>
           </Link>
         </div>
 
@@ -94,10 +92,21 @@ const Login = () => {
               value={inputs.password}
               required
             />
+
+            <div className="form-footer">
+              <span>
+                Forgot your password?{" "}
+                <Link to="/forgot-password" className="forgot-link">
+                  Click here
+                </Link>
+              </span>
+
+              <button type="submit" disabled={loading} className="btn-primary">
+                {loading ? "Logging in..." : "Login"}
+              </button>
+            </div>
+
             {err && <p className="error">{err}</p>}
-            <button type="submit" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
-            </button>
           </form>
         </div>
       </div>

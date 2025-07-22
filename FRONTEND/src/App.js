@@ -37,6 +37,10 @@ import HomePage from "./pages/messages/page/HomePage";
 import ErrorPage from "./pages/ErrorPage";
 import ComingSoon from "./pages/Comingsoon/Comingsoon";
 
+// Forgot/Reset Password Pages
+import ForgotPassword from "./pages/Update Password/ForgotPassword";
+import ResetPassword from "./pages/Update Password/ResetPassword";
+
 function App() {
   const { currentUser } = useContext(AuthContext);
   const { darkMode } = useContext(DarkModeContext);
@@ -56,19 +60,13 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <div className={`theme-${darkMode ? "dark" : "light"}`}>
           <Navbar />
-          {/* Main vertical layout container */}
           <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            {/* Body with LeftBar + Outlet */}
             <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
               <LeftBar />
               <div style={{ flex: 6, overflowY: "auto" }}>
                 <Outlet />
               </div>
             </div>
-
-
-
-            {/* Footer at the bottom */}
             <Footer />
           </div>
         </div>
@@ -108,6 +106,8 @@ function App() {
     },
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
+    { path: "/forgot-password", element: <ForgotPassword /> },
+    { path: "/reset-password/:token", element: <ResetPassword /> },
     { path: "*", element: <ErrorPage /> },
   ]);
 

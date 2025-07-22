@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  position: relative; // ✅ Added to anchor loading overlay
+  position: relative;
 
   .card {
     width: 100%;
@@ -103,34 +103,54 @@
           }
         }
 
-        button {
-          width: 60%;
-          padding: 14px 0;
-          border: none;
-          border-radius: 6px;
-          background-color: #6a57e2;
-          color: #fff;
-          font-weight: 700;
-          cursor: pointer;
-          align-self: flex-start;
-          transition: background-color 0.3s ease;
+        .form-footer {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 1rem;
 
-          &:hover {
-            background-color: #5745c9;
+          span {
+            font-size: 0.95rem;
+            color: #555;
+
+            .forgot-link {
+              color: #6a57e2;
+              text-decoration: none;
+              font-weight: 500;
+              margin-left: 4px;
+
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+          }
+
+          button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            background-color: #6a57e2;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+            &:hover {
+              background-color: #5745c9;
+            }
           }
         }
       }
     }
   }
 
-  // ✅ Moved loading container here to overlay everything
   .loading-container {
-    position: absolute; // overlay mode
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.7); // semi-transparent
+    background: rgba(255, 255, 255, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -167,7 +187,6 @@
     text-align: center;
   }
 
-  // Responsive styles remain unchanged
   @media (max-width: 1024px) {
     .card {
       flex-direction: column;
@@ -202,9 +221,11 @@
           margin-bottom: 0.5rem;
         }
 
-        form button {
-          width: 80%;
-          padding: 14px 0;
+        form {
+          button {
+            width: auto;
+            padding: 14px 24px;
+          }
         }
       }
     }
@@ -245,9 +266,15 @@
             font-size: 0.95rem;
           }
 
-          button {
-            width: 100%;
-            padding: 14px 0;
+          .form-footer {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.8rem;
+
+            button {
+              width: 100%;
+              padding: 14px 0;
+            }
           }
         }
       }

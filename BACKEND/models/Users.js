@@ -20,7 +20,10 @@ const userSchema = new mongoose.Schema({
   coverPhoto: { type: String, maxlength: 255, default: null },
 
   // ✅ Add here
-  isActive: { type: Boolean, default: false }
+  isActive: { type: Boolean, default: false },
+  resetToken: { type: String, default: null },
+  resetTokenExpiry: { type: Date, default: null },
+
 });
 
 

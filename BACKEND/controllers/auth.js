@@ -1,8 +1,11 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import User from "../models/Users.js";
 import Student from "../models/Student.js";
 import cloudinary from "../lib/cloudinary.js";
+import { sendResetEmail } from "../lib/sendEmail.js";
+
 
 // ✅ REGISTER
 export const register = async (req, res) => {
@@ -10,12 +13,10 @@ export const register = async (req, res) => {
   try {
     const { username, email, password, name, role, enrollmentNo } = req.body;
 
-    // 🚫 Prevent admin registration via public signup
     if (role === "admin") {
       return res.status(403).json("Admin registration is not allowed");
     }
 
-    // Check if enrollmentNo and email match in Student model
     const student = await Student.findOne({
       EnrollmentNo: enrollmentNo,
       EmailId: email,
@@ -24,15 +25,12 @@ export const register = async (req, res) => {
       return res.status(400).json("Email and enrollment number do not match");
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ username });
     if (existingUser) return res.status(409).json("User already exists");
 
-    // Hash password
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
-    // Create new user with default role (student if not provided)
     const newUser = new User({
       username,
       email,
@@ -129,8 +127,7 @@ export const logout = (req, res) => {
   }
 };
 
-// ========== UPDATE PROFILE PIC ==========
-
+// ✅ UPDATE PROFILE PIC
 export const updateProfilePic = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -140,8 +137,8 @@ export const updateProfilePic = async (req, res) => {
     }
 
     const uploadResponse = await cloudinary.uploader.upload(req.body.profilePic, {
-      folder: "profilePics", // Optional folder in Cloudinary
-      upload_preset: "default_preset", // Optional if you use upload presets
+      folder: "profilePics",
+      upload_preset: "default_preset",
     });
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -164,4 +161,62 @@ export const updateProfilePic = async (req, res) => {
   }
 };
 
+// ✅ FORGOT PASSWORD
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "No user with this email found" });
+    }
 
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    user.resetToken = resetToken;
+    user.resetTokenExpiry = Date.now() + 3600000;
+    await user.save();
+
+    const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
+
+    try {
+      await sendResetEmail(user.email, resetLink); // ✅ email send
+    } catch (emailErr) {
+      console.error("❌ Error sending email:", emailErr.message);
+      return res.status(500).json({ message: "Failed to send reset email." });
+    }
+
+    return res.status(200).json({ message: "Password reset link has been sent to your email." });
+  } catch (err) {
+    console.error("❌ Forgot password error:", err.message, err.stack);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
+// ✅ RESET PASSWORD
+export const resetPassword = async (req, res) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  try {
+    const user = await User.findOne({
+      resetToken: token,
+      resetTokenExpiry: { $gt: Date.now() },
+    });
+
+    if (!user) return res.status(400).json("Token invalid or expired");
+
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(newPassword, salt);
+
+    user.password = hashedPassword;
+    user.resetToken = undefined;
+    user.resetTokenExpiry = undefined;
+    await user.save();
+
+    res.status(200).json("Password has been successfully updated.");
+  } catch (err) {
+    console.error("❌ Reset password error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
