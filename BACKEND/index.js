@@ -42,6 +42,7 @@ const loginLimiter = rateLimit({
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
+  "https://skill-sync-admin.onrender.com",
   "https://skill-sync-frontend.onrender.com",
   "https://alumni.sistec.ac.in",
 ];

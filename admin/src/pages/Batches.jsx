@@ -182,7 +182,10 @@ const Batches = () => {
       formData.append("batch", selectedBatch);
       formData.append("branch", selectedBranch);
 
-      const response = await axios.post("http://localhost:8800/API_B/admin/upload", formData, {
+      const API_BASE_URL = window.location.hostname === "localhost"
+        ? "http://localhost:8800"
+        : "https://skill-sync-backend-522o.onrender.com";
+      const response = await axios.post(`${API_BASE_URL}/API_B/admin/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -205,9 +208,13 @@ const Batches = () => {
 
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:8800/API_B/admin/students", {
+      const API_BASE_URL = window.location.hostname === "localhost"
+        ? "http://localhost:8800"
+        : "https://skill-sync-backend-522o.onrender.com";
+      const response = await axios.get(`${API_BASE_URL}/API_B/admin/students`, {
         params: { batch: selectedBatch, branch: selectedBranch },
       });
+
 
       if (response.data.length === 0) {
         Swal.fire("No Students", "No students found for this batch and branch.", "info");

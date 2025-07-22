@@ -3,12 +3,18 @@ import axios from "axios";
 import "./createAdmin.scss";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
+// Auto-detect base URL
+const API_BASE_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:8800"
+    : "https://skill-sync-backend-522o.onrender.com";
+
 const CreateAdmin = ({ onClose }) => {
   const [inputs, setInputs] = useState({
     username: "",
     name: "",
     email: "",
-    password: ""
+    password: "",
   });
 
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -18,7 +24,7 @@ const CreateAdmin = ({ onClose }) => {
   const handleChange = (e) => {
     setInputs((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -30,21 +36,24 @@ const CreateAdmin = ({ onClose }) => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
-        "http://localhost:8800/API_B/create",
+        `${API_BASE_URL}/API_B/create`,
         inputs,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
-      setMessage({ type: "success", text: res.data.message || "Admin created successfully" });
+      setMessage({
+        type: "success",
+        text: res.data.message || "Admin created successfully",
+      });
       setInputs({ username: "", name: "", email: "", password: "" });
     } catch (err) {
       setMessage({
         type: "error",
-        text: err.response?.data?.message || "Error creating admin"
+        text: err.response?.data?.message || "Error creating admin",
       });
     } finally {
       setLoading(false);
@@ -54,7 +63,9 @@ const CreateAdmin = ({ onClose }) => {
   return (
     <div className="modal-backdrop">
       <div className="create-admin-container">
-        <button className="close-btn" onClick={onClose}>✖</button>
+        <button className="close-btn" onClick={onClose}>
+          ✖
+        </button>
         <h2 className="center-heading">Create New Admin</h2>
         <form onSubmit={handleSubmit} className="create-admin-form">
           <input
@@ -104,9 +115,7 @@ const CreateAdmin = ({ onClose }) => {
           </button>
 
           {message.text && (
-            <p className={`message ${message.type}`}>
-              {message.text}
-            </p>
+            <p className={`message ${message.type}`}>{message.text}</p>
           )}
         </form>
       </div>
