@@ -103,6 +103,31 @@
           }
         }
 
+        .password-wrapper {
+          position: relative;
+          display: flex;
+          align-items: center;
+
+          input {
+            width: 100%;
+            padding-right: 40px; // Space for eye icon
+          }
+
+          .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #999;
+            font-size: 1.3rem;
+
+            &:hover {
+              color: #6a57e2;
+            }
+          }
+        }
+
         .form-footer {
           display: flex;
           justify-content: space-between;
@@ -276,6 +301,12 @@
               padding: 14px 0;
             }
           }
+        }
+      }
+
+      .password-wrapper {
+        .toggle-password {
+          font-size: 1.2rem;
         }
       }
     }

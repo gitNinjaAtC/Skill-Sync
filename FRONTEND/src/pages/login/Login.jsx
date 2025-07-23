@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // 👈 Add this
 import "./login.scss";
 
 const Login = () => {
@@ -9,6 +10,7 @@ const Login = () => {
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false); // 👈 State for toggling password visibility
   const [err, setErr] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -26,7 +28,6 @@ const Login = () => {
 
     try {
       const user = await login(inputs);
-
       if (!user?.isActive) {
         setErr("Your account is not yet approved by admin.");
         return;
@@ -84,14 +85,22 @@ const Login = () => {
               value={inputs.username}
               required
             />
-            <input
-              type="password"
-              placeholder="Password"
-              name="password"
-              onChange={handleChange}
-              value={inputs.password}
-              required
-            />
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                name="password"
+                onChange={handleChange}
+                value={inputs.password}
+                required
+              />
+              <span
+                className="toggle-password"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+              </span>
+            </div>
 
             <div className="form-footer">
               <span>
