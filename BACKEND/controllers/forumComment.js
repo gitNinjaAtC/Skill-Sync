@@ -1,4 +1,4 @@
-import ForumComment from "../models/ForumComment.js";
+import ForumComment from "../models/forumComment.js";
 
 export const getCommentsForForum = async (req, res) => {
   try {
