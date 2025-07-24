@@ -21,11 +21,15 @@ const Form = () => {
     setErr(null);
 
     try {
-      const user = await login(inputs);
+      const res = await login(inputs); // ✅ get full Axios response
+      const user = res.data;           // ✅ extract actual user object
+
       if (!user?.isActive) {
         setErr('Your account is not yet approved by admin.');
         return;
       }
+
+      // successful login; redirect happens in useEffect
     } catch (err) {
       const errorMessage =
         typeof err === 'string'
