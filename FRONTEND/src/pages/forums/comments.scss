@@ -1,0 +1,110 @@
+/* C:\Users\Dell\Desktop\Skill-Sync\FRONTEND\src\pages\forums\comments.scss */
+
+.comments-container {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  max-width: 800px;
+  margin-inline: auto;
+  background-color: #fdfdfd;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.forum-details h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.forum-details p {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.author {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.comments-section {
+  margin-top: 2rem;
+}
+
+.comments-section h3 {
+  font-size: 1.4rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.no-comments {
+  font-style: italic;
+  color: #888;
+}
+
+.comment {
+  background-color: #f1f5f9;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.comment-author {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  display: block;
+  color: #0f172a;
+}
+
+.comment-text {
+  font-size: 0.95rem;
+  color: #334155;
+  white-space: pre-wrap;    // Preserve line breaks and spacing
+  word-wrap: break-word;
+}
+
+.add-comment {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2rem;
+}
+
+.add-comment textarea {
+  min-height: 80px;
+  resize: vertical;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  padding: 0.75rem;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  outline: none;
+  font-family: inherit;
+
+  &:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  }
+}
+
+.add-comment button {
+  width: fit-content;
+  padding: 0.5rem 1.5rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #2563eb;
+  }
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+  margin-top: 1rem;
+}

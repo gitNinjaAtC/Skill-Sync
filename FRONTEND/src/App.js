@@ -1,3 +1,5 @@
+// C:\Users\Dell\Desktop\Skill-Sync\FRONTEND\src\App.js
+
 import "./style.scss";
 import { useContext, useEffect } from "react";
 import {
@@ -41,6 +43,9 @@ import ComingSoon from "./pages/Comingsoon/Comingsoon";
 import ForgotPassword from "./pages/Update Password/ForgotPassword";
 import ResetPassword from "./pages/Update Password/ResetPassword";
 
+// Comments Page
+import CommentPage from "./pages/forums/CommentPage"; // ✅ make sure this file exists
+
 function App() {
   const { currentUser } = useContext(AuthContext);
   const { darkMode } = useContext(DarkModeContext);
@@ -54,14 +59,14 @@ function App() {
         setCurrentUser(currentUser);
         connectSocket(currentUser._id);
       }
-    }, [currentUser]);
+    }, [currentUser, connectSocket, setCurrentUser]);
 
     return (
       <QueryClientProvider client={queryClient}>
         <div className={`theme-${darkMode ? "dark" : "light"}`}>
           <Navbar />
           <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+          <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
               <LeftBar />
               <div style={{ flex: 6, overflowY: "auto" }}>
                 <Outlet />
@@ -92,6 +97,7 @@ function App() {
         { path: "/profile/:id", element: <ProfilePage /> },
         { path: "/edit-profile/:id", element: <EditProfile /> },
         { path: "/forums", element: <Forums /> },
+        { path: "/forums/:id/comments", element: <CommentPage /> }, // ✅ Route added
         { path: "/create-forum", element: <CreateForum /> },
         { path: "/job", element: <Jobs /> },
         { path: "/jobs/:id", element: <JobDescription /> },
