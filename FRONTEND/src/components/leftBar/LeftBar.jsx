@@ -54,7 +54,7 @@ const LeftBar = () => {
             </button>
           </div>
 
-          <div className={`item ${isActive("/") ? "active" : ""}`} onClick={() => navigate("/")}>
+          <div className={`item ${isActive("/home") ? "active" : ""}`} onClick={() => navigate("/home")}>
             <img src={home} alt="Home" />
             <span>Home</span>
           </div>

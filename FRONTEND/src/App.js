@@ -23,6 +23,7 @@ import LeftBar from "./components/leftBar/LeftBar";
 import Footer from "./components/footer/Footer";
 
 // Pages
+import LandingPage from "./pages/LandingPage/LandingPage";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import Home from "./pages/home/Home";
@@ -84,6 +85,7 @@ function App() {
   };
 
   const router = createBrowserRouter([
+    { path: "/", element: <LandingPage /> },
     {
       path: "/",
       element: (
@@ -93,7 +95,7 @@ function App() {
       ),
       errorElement: <ErrorPage />,
       children: [
-        { path: "/", element: <Home /> },
+        { path: "/home", element: <Home /> },
         { path: "/profile/:id", element: <ProfilePage /> },
         { path: "/edit-profile/:id", element: <EditProfile /> },
         { path: "/forums", element: <Forums /> },

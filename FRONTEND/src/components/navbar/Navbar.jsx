@@ -87,7 +87,7 @@ const Navbar = () => {
             {mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
           </div>
 
-          <Link to="/" className="logo">SISTec</Link>
+          <Link to="/home" className="logo">SISTec</Link>
 
           <div className="mobileSearchIcon" onClick={() => setMobileSearchOpen(true)}>
             <SearchOutlinedIcon />
@@ -102,7 +102,7 @@ const Navbar = () => {
         </div>
 
         <div className="right">
-          <Link to="/" className={`homeIconWrapper ${isActive("/") ? "active" : ""}`}>
+          <Link to="/home" className={`homeIconWrapper ${isActive("/home") ? "active" : ""}`}>
             <HomeOutlinedIcon className="homeIcon" />
           </Link>
 
@@ -203,7 +203,7 @@ const Navbar = () => {
                   <span>{currentUser?.name}</span>
                 </button>
               </div>
-              <div className={`item ${isActive("/") ? "active" : ""}`} onClick={() => navigate("/")}>
+              <div className={`item ${isActive("/home") ? "active" : ""}`} onClick={() => navigate("/home")}>
                 <img src={home} alt="Home" />
                 <span>Home</span>
               </div>

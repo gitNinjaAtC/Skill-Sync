@@ -1,0 +1,442 @@
+:root {
+  --background: #F7F7FF;
+  --text-dark: rgba(19, 17, 18, 1);
+  --accent-primary: #279AF1;
+  --accent-secondary: #E3B9B1;
+  --accent-muted: #A0A4AC;
+}
+
+// Global Styles
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom, #f9f9f9, #0e1628); 
+  color: var(--text-dark);
+  scroll-behavior: smooth;
+}
+
+a {
+  text-decoration: none;
+  color: var(--accent-primary);
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: var(--accent-primary);
+}
+
+.btn-login {
+  background-color: var(--accent-primary);
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  &:hover {
+      color: var(--text-dark);
+    }
+}
+
+.btn-register {
+  background-color: var(--accent-primary);
+  color: #fff;
+  margin-right: 4rem;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  &:hover {
+      color: var(--text-dark);
+    }
+}
+
+// Buttons
+button.btn {
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+
+  &.gold {
+    background-color: var(--accent-primary);
+    color: var(--background);
+    margin-top: 20px;
+
+    &:hover {
+      background-color: var(--background);
+      color: var(--accent-primary);
+    }
+  }
+}
+
+// Hero Section
+.hero {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: background-image 1s ease-in-out;
+
+  .header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--accent-primary);
+      padding-left: 40px;
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 15px;
+    }
+  }
+
+  .hero-overlay {
+    background-color: rgba(19, 17, 18, 0.8);
+    padding: 100px 80px 60px;
+    border-radius: 16px;
+    text-align: center;
+    color: #F7F7FF;
+
+    h1 {
+      font-size: 3rem;
+      font-weight: bold;
+      color: var(--accent-primary);
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.2rem;
+    }
+  }
+
+  .login-popup {
+  position: absolute;
+  top: 30%;
+  left: 75%;
+  transform: translate(-50%, -50%);
+  z-index: 2000;
+}
+
+  .registration-popup {
+  position: absolute;
+  top: 40%;
+  left: 75%;
+  transform: translate(-50%, -50%);
+  z-index: 2000;
+}
+
+.close-btn {
+  position: absolute;
+  top: 2.5rem;
+  right: 2rem;
+  font-size: 1.5rem;
+  font-weight: 1000;
+  background: none;
+  border: none;
+  color:  #1089d3;
+  cursor: pointer;
+}
+
+
+  .animated-text {
+    animation: fadeInDown 1.5s ease-in-out;
+  }
+
+  @keyframes fadeInDown {
+    0% {
+      opacity: 0;
+      transform: translateY(-40px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+// Gallery
+.gallery {
+  padding: 60px 40px;
+  text-align: center;
+
+  .typewriter-heading {
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 0 auto;
+    letter-spacing: 0.1em;
+    width: fit-content;
+  }
+
+  .typewriter-heading.animate {
+    animation:
+      typing 5s steps(40, end),
+      blink-caret 1s step-end infinite;
+  }
+
+  @keyframes typing {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  @keyframes blink-caret {
+    from, to {
+      border-color: transparent;
+    }
+    50% {
+      border-color: var(--accent-primary);
+    }
+  }
+
+  .img-group-container {
+    height: 500vh;
+    position: relative;
+  }
+
+  .img-group-container > div {
+    position: sticky;
+    top: 0;
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  .img-group {
+    display: flex;
+  }
+
+  .img-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    img {
+      width: 700px;
+      height: 500px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 50px;
+      font-weight: 700;
+      letter-spacing: -3px;
+      position: relative;
+      bottom: 30px;
+    }
+  }
+
+  .progress {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: var(--accent-primary);
+  bottom: 50px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.progress.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+}
+
+
+
+// About Section
+.about {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 60px 40px;
+  align-items: center;
+  justify-content: space-between;
+
+  .about-text,
+  .about-image {
+    color: var(--background);
+    flex: 1;
+    padding: 20px;
+  }
+
+  .about-image img {
+    width: 100%;
+    border-radius: 10px;
+  }
+  .about-image {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 10px;
+  scroll-snap-type: x mandatory;
+
+  img {
+    min-width: 300px;
+    height: auto;
+    border-radius: 10px;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  // Optional scrollbar styling (modern browsers)
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--accent-primary);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+}
+
+}
+
+.animation {
+  view-timeline: --subjectReveal block;
+  animation-timeline: --subjectReveal;
+  animation-name: appear;
+  animation-range: entry 10% contain 25%;
+  animation-fill-mode: both;
+  animation-duration: 1ms; /* Firefox requires this to apply the animation */
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+// Distinguished Alumni
+.distinguished {
+  padding: 60px 40px;
+  text-align: center;
+
+  .alumni-cards-wrapper {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+
+  .alumni-cards {
+    display: flex;
+    gap: 20px;
+    width: max-content;
+    animation: scroll-left 40s linear infinite;
+    will-change: transform;
+  }
+
+  .alumni-cards.paused {
+    animation-play-state: paused;
+  }
+
+  .card {
+    flex: 0 0 auto;
+    background: #ffffff;
+    border: 2px solid var(--accent-secondary);
+    border-radius: 10px;
+    padding: 20px;
+    width: 250px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    &:hover {
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  // Scroll animation keyframes
+  @keyframes scroll-left {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+
+
+
+// Footer
+footer {
+  background-color: var(--background);
+  color: var(--text-dark);
+  text-align: center;
+  padding: 20px;
+  border-top: 1px solid var(--accent-muted);
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .about {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .img-group-container,
+  .alumni-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero .hero-overlay {
+    padding: 40px 20px;
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+  }
+}

@@ -11,7 +11,7 @@ import { sendResetEmail } from "../lib/sendEmail.js";
 export const register = async (req, res) => {
   console.log("Register route hit, body:", req.body);
   try {
-    const { username, email, password, name, role, enrollmentNo } = req.body;
+    const { email, password, name, role, enrollmentNo } = req.body;
 
     if (role === "admin") {
       return res.status(403).json("Admin registration is not allowed");
@@ -21,18 +21,18 @@ export const register = async (req, res) => {
       EnrollmentNo: enrollmentNo,
       EmailId: email,
     });
+
     if (!student) {
       return res.status(400).json("Email and enrollment number do not match");
     }
 
-    const existingUser = await User.findOne({ username });
+    const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(409).json("User already exists");
 
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
     const newUser = new User({
-      username,
       email,
       password: hashedPassword,
       name,
@@ -51,12 +51,13 @@ export const register = async (req, res) => {
   }
 };
 
+
 // ✅ LOGIN
 export const login = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
     if (!user) return res.status(404).json("User not found");
 
     if (!user.isActive) {
@@ -65,7 +66,7 @@ export const login = async (req, res) => {
 
     const validPassword = bcrypt.compareSync(password, user.password);
     if (!validPassword) {
-      return res.status(400).json("Wrong password or username");
+      return res.status(400).json("Wrong email or password");
     }
 
     const token = jwt.sign(
@@ -89,6 +90,7 @@ export const login = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
 
 // ✅ VERIFY TOKEN
 export const verifyToken = async (req, res) => {
