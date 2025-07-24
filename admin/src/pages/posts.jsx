@@ -16,12 +16,12 @@ const Posts = () => {
     setLoading(true);
     try {
       const [approvedRes, pendingRes] = await Promise.all([
-        axios.get("http://localhost:8800/API_B/posts", {
+        axios.get("https://skill-sync-backend-522o.onrender.com/API_B/posts", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }),
-        axios.get("http://localhost:8800/API_B/posts/pending-posts", {
+        axios.get("https://skill-sync-backend-522o.onrender.com/API_B/posts/pending-posts", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -50,7 +50,7 @@ const Posts = () => {
     if (confirmResult.isConfirmed) {
       try {
         await axios.post(
-          "http://localhost:8800/API_B/posts/review",
+          "https://skill-sync-backend-522o.onrender.com/API_B/posts/review",
           { postId, action },
           {
             headers: {
@@ -79,7 +79,7 @@ const Posts = () => {
 
     if (confirmResult.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:8800/API_B/posts/${postId}`, {
+        await axios.delete(`https://skill-sync-backend-522o.onrender.com/API_B/posts/${postId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
