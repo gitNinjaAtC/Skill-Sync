@@ -55,6 +55,7 @@ const Form = () => {
   }, [currentUser, navigate]);
 
   return (
+  <div className="login-page">
     <div className="login-wrapper">
       <div className="container">
         <button className="close-btn" onClick={handleClose}>×</button>
@@ -96,7 +97,9 @@ const Form = () => {
         </form>
       </div>
     </div>
-  );
+  </div>
+);
 };
+
 
 export default Form;

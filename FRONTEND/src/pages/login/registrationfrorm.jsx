@@ -67,7 +67,9 @@ const RegisterForm = () => {
   };
 
   return (
+  <div className="login-page">
     <div className="login-wrapper">
+
       <div className="container">
         <button className="close-btn" onClick={handleClose}>×</button>
         <div className="heading">Register</div>
@@ -135,7 +137,8 @@ const RegisterForm = () => {
         </form>
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default RegisterForm;
