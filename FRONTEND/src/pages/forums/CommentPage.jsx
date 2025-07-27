@@ -18,11 +18,13 @@ const CommentPage = () => {
     try {
       setLoading(true);
 
-      const forumRes = await axios.get(`http://localhost:8800/API_B/forums/${id}`);
+      const forumRes = await axios.get(
+        `https://skill-sync-backend-522o.onrender.com/API_B/forums/${id}`
+      );
       setForum(forumRes.data);
 
       const commentsRes = await axios.get(
-        `http://localhost:8800/API_B/forums/${id}/comments`
+        `https://skill-sync-backend-522o.onrender.com/API_B/forums/${id}/comments`
       );
       setComments(commentsRes.data || []);
     } catch (err) {
@@ -43,10 +45,10 @@ const CommentPage = () => {
 
     try {
       const res = await axios.post(
-        `http://localhost:8800/API_B/forums/${id}/comments`,
+        `https://skill-sync-backend-522o.onrender.com/API_B/forums/${id}/comments`,
         {
           text: newComment,
-          userId: currentUser._id, // ✅ Send userId directly in body
+          userId: currentUser._id,
         }
       );
 
