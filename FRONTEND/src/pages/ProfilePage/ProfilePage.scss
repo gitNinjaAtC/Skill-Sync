@@ -126,7 +126,7 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-      padding: 16px;
+      padding: 2px;
 
       .profile-info {
         width: 100%;
@@ -157,7 +157,8 @@
             }
 
             .edit-btn {
-              background-color: themed(bgSoft);
+              background-color: themed(btn);
+              color: themed(bg);
               border: none;
               padding: 8px 16px;
               border-radius: 8px;
@@ -172,7 +173,7 @@
 
           .description {
             margin: 15px 0;
-            padding: 12px 16px;
+            padding: 12px 0;
             background-color: themed(bgSoft);
             border-radius: 8px;
             font-size: 15px;
@@ -189,14 +190,33 @@
             flex-wrap: wrap;
             gap: 20px;
 
-            .social-links {
+            .social-links{
               display: flex;
-              gap: 10px;
+              justify-content: center;
+              flex-wrap: wrap;
+              gap: 0.8rem;
 
               a {
-                color: inherit;
                 display: flex;
                 align-items: center;
+                justify-content: center;
+                width: 42px;
+                height: 42px;
+                background: transparent;
+                border: 2px solid #4169E1;
+                border-radius: 50%;
+                color: #4169E1;
+                transition: all 0.3s;
+
+                svg {
+                  font-size: 28px;
+                }
+
+                &:hover {
+                  background: #4169E1;
+                  color: white;
+                  transform: scale(1.1);
+                }
               }
             }
 
@@ -271,7 +291,7 @@
 
     @include tablet {
       .profile-main {
-        padding: 12px;
+        padding: 2px;
       }
 
       .profile-info-header {

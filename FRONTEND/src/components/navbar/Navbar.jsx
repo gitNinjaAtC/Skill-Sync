@@ -38,6 +38,7 @@ const Navbar = () => {
 
   const dropdownRef = useRef(null);
   const avatarRef = useRef(null);
+  const sidebarRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -56,18 +57,45 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+    const closedropdownAndNavigate = (path) => {
+    navigate(path);
+    setUserDropdownOpen(false);
+  }
+
+    useEffect(() => {
+    const handleClickOutsideSidebar = (event) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target) &&
+        mobileMenuOpen
+      ) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutsideSidebar);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutsideSidebar);
+    };
+  }, [mobileMenuOpen]);
+
+  // 👇 For mobile menu items: navigate & close sidebar
+  const closeSidebarAndNavigate = (path) => {
+    navigate(path);
+    setMobileMenuOpen(false);
+  }
 
   const handleLogout = async () => {
     try {
       await logout();
-      navigate("/login");
+      navigate("/");
     } catch (err) {
       console.error("Logout error:", err.response?.data || err.message);
     }
   };
 
   const handleProfile = () => {
-    navigate(`/profile/${currentUser?.id}`);
+    closedropdownAndNavigate(`/profile/${currentUser?.id}`) ;
   };
 
   const isActive = (path) => location.pathname === path;
@@ -154,11 +182,11 @@ const Navbar = () => {
                   />
                   <span>{currentUser?.name}</span>
                 </div>
-                <div className="dropdown-item" onClick={handleProfile}>
+                <div className="dropdown-item" onClick={handleProfile} >
                   <PersonOutlinedIcon />
                   <span>Your Profile</span>
                 </div>
-                <div className="dropdown-item">
+                <div className="dropdown-item" onClick={handleProfile}>
                   <SettingsIcon />
                   <span>Settings</span>
                 </div>
@@ -187,7 +215,7 @@ const Navbar = () => {
       )}
 
       {mobileMenuOpen && (
-        <div className="mobileSidebar">
+        <div className="mobileSidebar" ref={sidebarRef}>
           <div className="container">
             <div className="menu">
               <div className="user">
@@ -203,31 +231,31 @@ const Navbar = () => {
                   <span>{currentUser?.name}</span>
                 </button>
               </div>
-              <div className={`item ${isActive("/home") ? "active" : ""}`} onClick={() => navigate("/home")}>
+              <div className={`item ${isActive("/home") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/home")}>
                 <img src={home} alt="Home" />
                 <span>Home</span>
               </div>
-              <div className={`item ${isActive("/people") ? "active" : ""}`} onClick={() => navigate("/people")}>
+              <div className={`item ${isActive("/people") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/people")}>
                 <img src={Friends} alt="Friends" />
                 <span>Peoples</span>
               </div>
-              <div className={`item ${isActive("/forums") ? "active" : ""}`} onClick={() => navigate("/forums")}>
+              <div className={`item ${isActive("/forums") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/forums")}>
                 <img src={Forums} alt="Forums" />
                 <span>Forums</span>
               </div>
-              <div className={`item ${isActive("/job") ? "active" : ""}`} onClick={() => navigate("/job")}>
+              <div className={`item ${isActive("/job") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/job")}>
                 <img src={Jobs} alt="Jobs" />
                 <span>Jobs</span>
               </div>
-              <div className={`item ${isActive("/events") ? "active" : ""}`} onClick={() => navigate("/events")}>
+              <div className={`item ${isActive("/events") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/events")}>
                 <img src={Events} alt="Events" />
                 <span>Events</span>
               </div>
-              <div className={`item ${isActive("/gallery") ? "active" : ""}`} onClick={() => navigate("/gallery")}>
+              <div className={`item ${isActive("/gallery") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/gallery")}>
                 <img src={Gallery} alt="Gallery" />
                 <span>Gallery</span>
               </div>
-              <div className={`item ${isActive("/messages") ? "active" : ""}`} onClick={() => navigate("/messages")}>
+              <div className={`item ${isActive("/messages") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/messages")}>
                 <img src={Messages} alt="Messages" />
                 <span>Messages</span>
               </div>
@@ -237,11 +265,11 @@ const Navbar = () => {
 
             <div className="menu">
               <span>Others</span>
-              <div className={`item ${isActive("/Fundraiser") ? "active" : ""}`} onClick={() => navigate("/Fundraiser")}>
+              <div className={`item ${isActive("/Fundraiser") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/Fundraiser")}>
                 <img src={Fund} alt="Fundraiser" />
                 <span>Fundraiser</span>
               </div>
-              <div className={`item ${isActive("/resume-builder") ? "active" : ""}`} onClick={() => navigate("/resume-builder")}>
+              <div className={`item ${isActive("/resume-builder") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/resume-builder")}>
                 <img src={Resume} alt="Resume Builder" />
                 <span>Resume Builder</span>
               </div>

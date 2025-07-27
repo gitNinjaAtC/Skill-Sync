@@ -3,7 +3,6 @@ import "./LandingPage.scss";
 import { useNavigate } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { animate, scroll } from "@motionone/dom";
 import WavyText from "../../components/WavyText";
 import Footer from "../../components/footer/Footer";
 import useTilt from "../../customHooks/useTilt";
@@ -15,6 +14,7 @@ import image4 from "./about-image/4.jpg";
 import image5 from "./about-image/5.jpg"; 
 import image6 from "./about-image/6.jpg"; 
 import image7 from "./about-image/7.jpg"; // Import the image for the about section
+import { animate, scroll } from "@motionone/dom";
 import Form from "../login/loginform";
 import RegisterForm from "../login/registrationfrorm";
 
@@ -106,40 +106,44 @@ const LandingPage = () => {
   useTilt(cardRef);
 
 useEffect(() => {
-  
   AOS.init({ duration: 1000, once: true });
 
+  // Scroll visibility tracking for hero section
   const handleScroll = () => {
     const heroSection = document.querySelector(".hero");
     const heroBottom = heroSection?.getBoundingClientRect().bottom || 0;
     setIsHeroVisible(heroBottom > 100);
   };
-
-
   window.addEventListener("scroll", handleScroll);
 
+  // Auto image change
   const imageInterval = setInterval(() => {
     setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
   }, 3000);
 
-  // Animate gallery scroll
-  const items = document.querySelectorAll(".img-container");
+  // Animate horizontal scroll of gallery
+  const scrollLength = (heroImages.length - 1) * 100;
 
   scroll(
     animate(".img-group", {
-      transform: ["none", `translateX(-${(items.length - 1) * 100}vw)`],
+      transform: ["none", `translateX(-${scrollLength}vw)`],
     }),
-    { target: document.querySelector(".img-group-container") }
-  );
-
-  scroll(
-    animate(".progress", { scaleX: [0, 1] }),
     {
-      target: document.querySelector(".img-group-container"),
+      target: galleryRef.current,
+      axis: "y",
+      offset: ["start start", "end start"],
     }
   );
 
-  // Animate heading when in view
+  // Animate progress bar
+  scroll(
+    animate(".progress", { scaleX: [0, 1] }),
+    {
+      target: galleryRef.current,
+    }
+  );
+
+  // IntersectionObserver for heading animation
   const headingObserver = new IntersectionObserver(
     ([entry]) => {
       if (entry.isIntersecting) {
@@ -149,12 +153,11 @@ useEffect(() => {
     },
     { threshold: 0.6 }
   );
-
   if (headingRef.current) {
     headingObserver.observe(headingRef.current);
   }
 
-  // Hide progress bar when out of gallery section
+  // Show/hide progress bar on gallery in/out
   const galleryObserver = new IntersectionObserver(
     ([entry]) => {
       if (progressRef.current) {
@@ -163,7 +166,6 @@ useEffect(() => {
     },
     { threshold: 0.1 }
   );
-
   if (galleryRef.current) {
     galleryObserver.observe(galleryRef.current);
   }
@@ -176,6 +178,7 @@ useEffect(() => {
     galleryObserver.disconnect();
   };
 }, []);
+
 
 
   return (
@@ -223,15 +226,13 @@ useEffect(() => {
         )}
 
         {showLoginForm && (
-          <div className="login-popup">
-            <button className="close-btn" onClick={() => setShowLoginForm(false)}>×</button>
+          <div className="login-popup">            
             <Form />
           </div>
         )}
 
         {showRegisterForm && (
           <div className="registration-popup">
-            <button className="close-btn" onClick={() => setShowRegisterForm(false)}>×</button>
             <RegisterForm />
           </div>
         )}
@@ -244,21 +245,20 @@ useEffect(() => {
           className={`typewriter-heading ${animateHeading ? "animate" : ""}`}
         >
           Our Community in Action
-        </h2>
-        <section className="img-group-container">
-          <div ref={cardRef}>
-            <ul className="img-group" >
+        </h2>        
+          <div className="sticky-container">
+            <ul className="img-group">
               {heroImages.map((src, index) => (
-                <li className="img-container " key={index} >                  
-                  <img src={src} alt={`Event ${index + 1}`}  />
+                <li className="img-container" key={index}>
+                  <img src={src} alt={`Event ${index + 1}`} />
                   <h3>#{String(index + 1).padStart(3, "0")}</h3>
                 </li>
               ))}
             </ul>
           </div>
-        </section>
         <div className="progress" ref={progressRef}></div>
       </section>
+
 
       <section className="about" id="about">
         <div className="about-text animation">

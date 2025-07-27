@@ -1,5 +1,5 @@
 /* C:\Users\Dell\Desktop\Skill-Sync\FRONTEND\src\pages\forums\comments.scss */
-
+@import "../../style.scss";
 .comments-container {
   margin-top: 2rem;
   margin-bottom: 2rem;
@@ -13,6 +13,9 @@
 }
 
 .forum-details h2 {
+  @include themify($themes) {
+      color: themed("textColor");
+    }
   font-size: 1.8rem;
   margin-bottom: 0.25rem;
 }

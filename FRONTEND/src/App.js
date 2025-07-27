@@ -24,8 +24,6 @@ import Footer from "./components/footer/Footer";
 
 // Pages
 import LandingPage from "./pages/LandingPage/LandingPage";
-import Login from "./pages/login/Login";
-import Register from "./pages/register/Register";
 import Home from "./pages/home/Home";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import EditProfile from "./pages/ProfilePage/EditProfile";
@@ -81,7 +79,7 @@ function App() {
   };
 
   const ProtectedRoute = ({ children }) => {
-    return currentUser ? children : <Navigate to="/login" replace />;
+    return currentUser ? children : <Navigate to="/" replace />;
   };
 
   const router = createBrowserRouter([
@@ -112,8 +110,6 @@ function App() {
         { path: "/resume-builder", element: <ComingSoon /> },
       ],
     },
-    { path: "/login", element: <Login /> },
-    { path: "/register", element: <Register /> },
     { path: "/forgot-password", element: <ForgotPassword /> },
     { path: "/reset-password/:token", element: <ResetPassword /> },
     { path: "*", element: <ErrorPage /> },

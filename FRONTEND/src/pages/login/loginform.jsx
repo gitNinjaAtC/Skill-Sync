@@ -15,6 +15,11 @@ const Form = () => {
     setErr(null);
   };
 
+  const handleClose = () => {
+    navigate('/', { replace: true });
+    window.location.reload(); 
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -45,13 +50,14 @@ const Form = () => {
 
   useEffect(() => {
     if (currentUser?.isActive) {
-      navigate('/');
+      navigate('/home');
     }
   }, [currentUser, navigate]);
 
   return (
     <div className="login-wrapper">
       <div className="container">
+        <button className="close-btn" onClick={handleClose}>×</button>
         <div className="heading">Sign In</div>
         <form className="form" onSubmit={handleLogin}>
           <input

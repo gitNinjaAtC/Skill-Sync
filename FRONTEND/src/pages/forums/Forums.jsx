@@ -89,14 +89,15 @@ const Forums = () => {
               ))}
             </div>
 
-            <div className="interview-section">
+
+
+            <div className="comment-actions">
+              {/* <p className="comment-count">💬 0 Comments so far</p> */}
+                          <div className="interview-section">
               <p className="interview-name">
                 Created by {post.created_by?.name}
               </p>
             </div>
-
-            <div className="comment-actions">
-              <p className="comment-count">💬 0 Comments so far</p>
 
               <div className="comment-buttons">
                 <button

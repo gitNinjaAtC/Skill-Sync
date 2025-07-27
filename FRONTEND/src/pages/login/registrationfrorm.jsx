@@ -26,6 +26,11 @@ const RegisterForm = () => {
     setSuccess(null);
   };
 
+    const handleClose = () => {
+    navigate('/', { replace: true });
+    window.location.reload(); 
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -64,6 +69,7 @@ const RegisterForm = () => {
   return (
     <div className="login-wrapper">
       <div className="container">
+        <button className="close-btn" onClick={handleClose}>×</button>
         <div className="heading">Register</div>
 
         <form className="form" onSubmit={handleSubmit}>

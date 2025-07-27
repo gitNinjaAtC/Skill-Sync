@@ -133,13 +133,21 @@ const Post = ({ post }) => {
               alt="User"
             />
             <div className="details">
-              <Link
-                to={`/profile/${post.userId}`}
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <span className="name">{post.name || "User"}</span>
-              </Link>
-              <span className="date">{new Date(post.createdAt).toLocaleString()}</span>
+              {post.userId ? (
+                <Link
+                  to={`/profile/${post.userId}`}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <span className="name">{post.name || "User"}</span>
+                </Link>
+              ) : (
+                <span className="name" style={{ color: "gray", fontStyle: "italic" }}>
+                  User not found
+                </span>
+              )}
+              <span className="date">
+                {new Date(post.createdAt).toLocaleString()}
+              </span>
             </div>
           </div>
 
