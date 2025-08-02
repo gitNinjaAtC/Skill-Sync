@@ -52,7 +52,7 @@ const RegisterForm = () => {
         role: 'student',
       });
 
-      setTimeout(() => navigate('/login'), 3000);
+      setTimeout(() => navigate('/'), 3000);
     } catch (err) {
       const message =
         typeof err?.response?.data === 'string'

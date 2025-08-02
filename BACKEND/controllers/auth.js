@@ -51,6 +51,8 @@ export const register = async (req, res) => {
   }
 };
 
+//register-faculty
+
 
 // ✅ LOGIN
 export const login = async (req, res) => {
