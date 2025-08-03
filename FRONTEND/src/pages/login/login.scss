@@ -215,7 +215,7 @@
   @media (max-width: 1024px) {
     .card {
       flex-direction: column;
-      min-height: auto;
+      min-height: 600px;
 
       .left,
       .right {
