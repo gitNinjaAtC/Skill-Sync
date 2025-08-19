@@ -95,15 +95,31 @@ button.btn {
 
 // Hero Section
 .hero {
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  position: relative;
   height: 100vh;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  transition: background-image 1s ease-in-out;
+
+  .hero-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transform: scale(1.05);
+    transition: opacity 1s ease-in-out, transform 4s ease;
+  }
+
+  .hero-image.active {
+    opacity: 1;
+    transform: scale(1);
+  }
+
 
   .header {
     position: absolute;
@@ -111,11 +127,11 @@ button.btn {
     left: 0;
     width: 100%;
     z-index: 1000;
-    background-color: transparent;
+    background-color: rgba(19, 17, 18, 0.8);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 40px;
+    padding: 20px 40px 5px 40px;
 
     .logo {
       font-size: 1.5rem;
@@ -129,24 +145,24 @@ button.btn {
     }
   }
 
-  .hero-overlay {
-    background-color: rgba(19, 17, 18, 0.8);
-    padding: 100px 80px 60px;
-    border-radius: 16px;
-    text-align: center;
-    color: #F7F7FF;
+.hero-overlay {
+  background-color: rgba(19, 17, 18, 0.8);
+  padding: 60px 80px;
+  border-radius: 16px;
+  text-align: center;
+  color: #F7F7FF;
 
-    h1 {
-      font-size: 3rem;
-      font-weight: bold;
-      color: var(--accent-primary);
-      margin-bottom: 10px;
-    }
-
-    p {
-      font-size: 1.2rem;
-    }
+  h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--accent-primary);
+    margin-bottom: 10px;
   }
+
+  p {
+    font-size: 1.2rem;
+  }
+}
 
   .login-popup,
   .registration-popup {

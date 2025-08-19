@@ -4,12 +4,15 @@
   align-items: center;
   padding: 40px 20px;
 
-
   .container {
     position: relative;
     width: 100%;
     max-width: 350px;
-    background: linear-gradient(0deg, rgba(255, 255, 255, 0.8), rgba(244, 247, 251, 0.8));
+    background: linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.8),
+      rgba(244, 247, 251, 0.8)
+    );
     border-radius: 40px;
     padding: 25px 35px;
     border: 5px solid #fff;
@@ -25,22 +28,21 @@
   }
 
   .close-btn {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  font-weight: bold;
-  cursor: pointer;
-  color: #1089d3;
-  transition: color 0.2s ease;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #1089d3;
+    transition: color 0.2s ease;
 
-  &:hover {
-    color: #000;
+    &:hover {
+      color: #000;
+    }
   }
-}
-
 
   .form {
     margin-top: 20px;
@@ -62,6 +64,38 @@
       &:focus {
         outline: none;
         border-inline: 2px solid #12b1d1;
+      }
+    }
+
+    .enrollment-input {
+  transition: transform 2s ease, opacity 0.5s ease;
+  transform: translateX(0);
+  opacity: 1;
+  position: relative; // ensure normal flow for input
+  pointer-events: auto;
+}
+.hide-enrollment {
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none; // disable interaction
+  position: relative; // keep layout consistent
+  max-width: 0;       // shrink width without breaking layout
+  overflow: hidden;   // hide overflowing content
+  padding: 0;         // remove padding for complete hide
+  margin: 0;          // remove margin so it collapses smoothly
+  border: none;       // remove border when hidden
+}
+
+
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
 

@@ -3,18 +3,31 @@
 .alumni-card {
   width: 240px;
   background: white;
-  padding-bottom: 20px;
   border-radius: 1.25rem;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   margin: 0 20px;
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+
+  .badge {
+    background: #facc15;
+    color: #1e3a8a;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+    box-shadow: 0 0 8px rgba(250, 204, 21, 0.6);
+  }
 
   .image-container {
     position: relative;
     width: 100%;
     height: 160px;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
 
     img {
       width: 100%;
@@ -54,35 +67,115 @@
         transition: background-color 0.3s ease;
 
         &:hover {
-          background-color: #279AF1;
+          background-color: #279af1;
         }
       }
     }
 
-    // 👇 FIXED: Hover state correctly scoped to image-container
     &:hover .social-overlay {
       opacity: 1;
       pointer-events: auto;
     }
   }
 
-  h3 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 10px 0 5px;
-    background: linear-gradient(90deg, #1e3a8a, #3b82f6);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
+  .alumni-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0rem;
 
-  p {
-    font-size: 0.9rem;
-    color: #555;
-    margin: 0;
+    h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      background: linear-gradient(90deg, #1e3a8a, rgb(61, 183, 183));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .city {
+      font-size: 0.8rem;
+      color: #6b7280; // gray-500
+      margin-bottom: 1rem;
+    }
+
+    .company-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px; // spacing between "UNIQUE" and "STARTUP"
+      margin-bottom: 1rem;
+
+      .company-logo{
+        width: 50%;
+        height: 50%;
+      }
+
+      .unique {
+        background: linear-gradient(180deg, #1e3a8a, rgb(59, 218, 218));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-size: 1.3rem;
+        font-weight: 900;
+        letter-spacing: 1px;
+      }
+
+      .startup-word {
+        font-size: 0.6rem;
+        font-weight: 600;
+        margin-top: 0px;
+        letter-spacing: 1px;
+        display: inline-block;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #fc796c 20%, #c66bf9 90%);
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(252, 121, 108, 0.14);
+        padding: 0rem 0.3rem;
+      }
+    }
+
+    .lpa-box {
+      background-color: #1363df;
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 600;
+      padding: 0.3rem 0.8rem;
+      letter-spacing: 1px;
+      box-shadow: 0 1px 6px rgba(19, 99, 223, 0.07);
+      display: flex;
+      align-items: center;
+      justify-content: center; // Center content horizontally by default
+      width: 100%;
+      max-width: 260px;
+      margin: 0 auto;
+
+      &:has(.valuation-label) {
+        justify-content: space-between;
+      }
+
+      .valuation-label,
+      .valuation-amount {
+        text-align: center;
+        display: inline-block;
+      }
+
+      .valuation-label {
+        font-size: 0.8rem;
+        font-weight: 500;
+        width: auto;
+      }
+
+      .valuation-amount {
+        font-size: 1.2rem;
+        font-weight: 600;
+        width: auto;
+      }
+    }
   }
 
   &:hover {
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    transform: translateY(-8px);
   }
 }

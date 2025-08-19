@@ -7,13 +7,24 @@ import Footer from "../../components/footer/Footer";
 import Form from "../login/loginform";
 import RegisterForm from "../login/registrationfrorm";
 import AlumniMarquee from "./AlumniMarquee";
-import EventCarousel from "./EventCarousel"
+import EventCarousel from "./EventCarousel";
+import alumniimage1 from "./about-image/a1.jpg";
+import alumniimage2 from "./about-image/a2.jpg";
+import alumniimage3 from "./about-image/a3.jpg";
+import alumniimage4 from "./about-image/a4.jpg";
+import alumniimage5 from "./about-image/a5.jpg";
+import alumniimage8 from "./about-image/a8.jpg";
+import alumniimage9 from "./about-image/a9.jpg";
+import logo from "./about-image/logo.png";
 
 const heroImages = [
-  "https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg",
-  "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg",
-  "https://images.pexels.com/photos/1181289/pexels-photo-1181289.jpeg",
-  "https://images.pexels.com/photos/1181396/pexels-photo-1181396.jpeg"
+  alumniimage1,
+  alumniimage2,
+  alumniimage3,
+  alumniimage4,
+  alumniimage5,
+  alumniimage8,
+  alumniimage9,
 ];
 
 const LandingPage = () => {
@@ -24,23 +35,39 @@ const LandingPage = () => {
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
 
-    // Auto image change
     const imageInterval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
     }, 3000);
+
+    return () => clearInterval(imageInterval);
   }, []);
 
   return (
     <div className="landingPage">
-      <section
-        className="hero"
-        style={{
-          backgroundImage: `url(${heroImages[currentImageIndex]})`,
-          transition: "background-image 1s ease-in-out"
-        }}
-      >
+      <section className="hero">
+        {heroImages.map((img, index) => (
+          <div
+            key={index}
+            className={`hero-image ${
+              index === currentImageIndex ? "active" : ""
+            }`}
+            style={{ backgroundImage: `url(${img})` }}
+          />
+        ))}
+
         <nav className="header">
-          <div className="logo" data-aos="fade-left">Alumni Portal</div>
+          <div className="logo" data-aos="fade-left">
+            <img
+              src={logo}
+              alt="SISTec Alumni Portal Logo"
+              style={{
+                height: "30%",
+                width: "30%",
+                objectFit: "contain",
+                filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.12))",
+              }}
+            />
+          </div>
           {!showLoginForm && !showRegisterForm && (
             <div className="auth-buttons" data-aos="fade-right">
               <button
@@ -86,15 +113,23 @@ const LandingPage = () => {
           </div>
         )}
       </section>
+
       <section className="about" id="about">
         <div className="about-text animation">
-          <h2 data-aos="fade-right"
+          <h2
+            data-aos="fade-right"
             data-aos-offset="300"
-            data-aos-easing="ease-in-sine">What is Skill-Sync?</h2>
+            data-aos-easing="ease-in-sine"
+          >
+            What is Skill-Sync?
+          </h2>
           <p>
-            Skill-Sync is more than just a platform—it's a thriving ecosystem for alumni, students, and faculty to connect and grow together.
-            From sharing job opportunities and mentorship to collaborating on projects and hosting events, Skill-Sync helps bridge generations and spark innovation.
-            Whether you're seeking guidance or looking to give back, this is your space to make an impact.
+            Skill-Sync is more than just a platform—it's a thriving ecosystem
+            for alumni, students, and faculty to connect and grow together. From
+            sharing job opportunities and mentorship to collaborating on
+            projects and hosting events, Skill-Sync helps bridge generations and
+            spark innovation. Whether you're seeking guidance or looking to give
+            back, this is your space to make an impact.
           </p>
           <button className="btn gold">Join the Network</button>
         </div>
@@ -102,6 +137,7 @@ const LandingPage = () => {
           <EventCarousel />
         </div>
       </section>
+
       <AlumniMarquee />
       <Footer />
     </div>
@@ -109,8 +145,3 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
-
-
-
-
-

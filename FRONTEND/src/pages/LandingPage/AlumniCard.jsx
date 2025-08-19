@@ -1,27 +1,60 @@
-// src/components/AlumniCard.jsx
 import React from "react";
 import "./AlumniCard.scss";
 import "aos/dist/aos.css";
-import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaInstagram,
+  FaLinkedinIn,
+} from "react-icons/fa";
 
-const AlumniCard = ({ name, role, image, isFeatured }) => (
-  <div className={`alumni-card ${isFeatured ? "featured" : ""}`}>
-    {isFeatured && <div className="badge">★ Featured</div>}
+const AlumniCard = ({
+  name,
+  city,
+  company,
+  companylogo,
+  packageText,
+  VALUATION,
+  image,
+  isStartup, // boolean, true for startups
+}) => (
+  <div className="alumni-card">
     <div className="image-container">
       <img src={image} alt={name} />
-      <div className="social-overlay" >
-        <a href="#"><FaFacebookF data-aos="fade-up"
-     data-aos-duration="3000" /></a>
-        <a href="#"><FaTwitter data-aos="fade-up"
-     data-aos-duration="3000"/></a>
-        <a href="#"><FaInstagram data-aos="fade-up"
-     data-aos-duration="3000"/></a>
-        <a href="#"><FaLinkedinIn data-aos="fade-up"
-     data-aos-duration="3000"/></a>
+      <div className="social-overlay">
+        <a href="#">
+          <FaFacebookF />
+        </a>
+        <a href="#">
+          <FaTwitter />
+        </a>
+        <a href="#">
+          <FaInstagram />
+        </a>
+        <a href="#">
+          <FaLinkedinIn />
+        </a>
       </div>
     </div>
-    <h3>{name}</h3>
-    <p>{role}</p>
+    <div className="alumni-info">
+      <h3>{name}</h3>
+      {city && <p className="city">{city}</p>}
+      <div className="company-row">
+        {companylogo && (
+          <img src={companylogo} alt="company logo" className="company-logo" />
+        )}
+        {company && <span className="unique">{company}</span>}
+        {isStartup && <span className="startup-word">STARTUP</span>}
+      </div>
+
+      {isStartup && (
+        <div className="lpa-box">
+          <span className="valuation-label">VALUATION &nbsp; </span>
+          {VALUATION && <span className="valuation-amount">{VALUATION}</span>}
+        </div>
+      )}
+      {packageText && <div className="lpa-box">{packageText}</div>}
+    </div>
   </div>
 );
 

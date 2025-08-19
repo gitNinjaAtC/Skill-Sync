@@ -78,7 +78,6 @@ const ManageUsers = () => {
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Username</th>
                 <th>Email</th>
                 <th>Role</th>
                 <th>Action</th>
@@ -89,7 +88,6 @@ const ManageUsers = () => {
                 pendingUsers.map((user) => (
                   <tr key={user._id}>
                     <td>{user.name}</td>
-                    <td>{user.username}</td>
                     <td>{user.email}</td>
                     <td>{user.role}</td>
                     <td>
@@ -117,7 +115,6 @@ const ManageUsers = () => {
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Username</th>
                 <th>Email</th>
                 <th>Role</th>
                 <th>Status</th>
@@ -128,7 +125,6 @@ const ManageUsers = () => {
                 approvedUsers.map((user) => (
                   <tr key={user._id}>
                     <td>{user.name}</td>
-                    <td>{user.username}</td>
                     <td>{user.email}</td>
                     <td>{user.role}</td>
                     <td>

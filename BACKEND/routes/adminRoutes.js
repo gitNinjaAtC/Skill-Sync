@@ -155,12 +155,12 @@ router.post("/upload", upload.single("file"), importFile);
       if (!user) return res.status(404).json({ message: "User not found" });
 
       // Send approval email
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: user.email,
-        subject: "SISTec Alumni Portal – Account Approved",
-        text: `Hi ${user.name},\n\nYour account has been approved. You can now login to the portal.\n\nRegards,\nSISTec Admin`,
-      });
+      // await transporter.sendMail({
+      //   from: process.env.EMAIL_USER,
+      //   to: user.email,
+      //   subject: "SISTec Alumni Portal – Account Approved",
+      //   text: `Hi ${user.name},\n\nYour account has been approved. You can now login to the portal.\n\nRegards,\nSISTec Admin`,
+      // });
 
       res.status(200).json({ message: "User approved and notified", user });
     } catch (err) {
