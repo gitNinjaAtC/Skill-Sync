@@ -3,10 +3,12 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import User from "../models/Users.js";
+import Student from "../models/Student.js";
 import {
   getUsers,
   approveUser,
   importFile,
+  createAdmin,
 } from "../controllers/adminControllers.js";
 import { validateToken } from "../middleware/validateTokenHandler.js";
 import jwt from "jsonwebtoken";
@@ -16,6 +18,7 @@ const router = express.Router();
 
 router.post("/approve-user", validateToken, approveUser);
 router.get("/users", getUsers);
+router.post("/create", validateToken, createAdmin);
 
 // Nodemailer transporter (make sure env vars are set)
 // const transporter = nodemailer.createTransport({
@@ -146,29 +149,18 @@ router.delete("/user/:id", async (req, res) => {
   }
 });
 
-// ✅ Approve user (activate + email)
-router.put("/approve/:id", async (req, res) => {
+// ✅ Get all students in a batch and branch
+router.get("/students", async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { isActive: true },
-      { new: true }
-    ).select("-password");
-
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    // Send approval email
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: user.email,
-      subject: "SISTec Alumni Portal – Account Approved",
-      text: `Hi ${user.name},\n\nYour account has been approved. You can now login to the portal.\n\nRegards,\nSISTec Admin`,
-    });
-
-    res.status(200).json({ message: "User approved and notified", user });
-  } catch (err) {
-    console.error("Approval error:", err);
-    res.status(500).json({ message: "Approval failed" });
+    const { batch, branch } = req.query;
+    if (!batch || !branch) {
+      return res.status(400).json({ error: "Batch and Branch are required" });
+    }
+    const students = await Student.find({ batch, branch });
+    res.status(200).json(students);
+  } catch (error) {
+    console.error("Error fetching students:", error);
+    res.status(500).json({ error: "Error fetching students" });
   }
 });
 

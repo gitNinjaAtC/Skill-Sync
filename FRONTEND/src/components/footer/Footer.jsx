@@ -14,14 +14,23 @@ const Footer = () => {
       <div className="footer-top">
         <div className="footer-section">
           <h2>Sagar Institute of Science and Technology</h2>
-          <p>Empowering future leaders with quality education and innovation-driven learning.</p>
+          <p>Your journey started here — now help shape someone else’s.</p>
           <div className="contact-item">
             <LocationOnIcon />
-            <span>Bhopal, Madhya Pradesh</span>
+            <span>
+              <a
+                href="https://maps.app.goo.gl/FvtwKLptBhqttvAC8"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Sagar Institute of Science and Technology, Bhopal
+              </a>
+            </span>            
+
           </div>
           <div className="contact-item">
             <MailIcon />
-            <span><a href="mailto:sagaralumni@sistec.ac.in">sagaralumni@sistec.ac.in</a></span>
+            <span><a href="mailto:alumni@sistec.ac.in" target="_blank">alumni@sistec.ac.in</a></span>
           </div>
           <div className="contact-item">
             <PhoneIcon />
@@ -31,8 +40,8 @@ const Footer = () => {
 
         <div className="footer-section">
           <h3>Quick Links</h3>
-          <Link to="/" className="quick-link">About Us</Link>
-          <Link to="/"className="quick-link">Careers</Link>
+          <Link to="https://www.sistec.ac.in/sagar-group" target="blank" className="quick-link">About Us</Link>
+          <Link to="https://www.sistec.ac.in/careers" target="_blank"  className="quick-link">Careers</Link>
           <Link to="https://www.sistec.ac.in/contact" target="_blank"className="quick-link">Contact</Link>
         </div>
 

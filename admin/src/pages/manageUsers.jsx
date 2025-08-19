@@ -2,6 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./manageUsers.scss";
 
+const API_BASE_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:8800"
+    : "https://skill-sync-backend-522o.onrender.com";
+
 const ManageUsers = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
   const [approvedUsers, setApprovedUsers] = useState([]);
@@ -17,10 +22,10 @@ const ManageUsers = () => {
     setLoading(true);
     try {
       const [pendingRes, approvedRes] = await Promise.all([
-        axios.get("http://localhost:8800/API_B/admin/users?active=false", {
+        axios.get(`${API_BASE_URL}/API_B/admin/users?active=false`, {
           withCredentials: true,
         }),
-        axios.get("http://localhost:8800/API_B/admin/users?active=true", {
+        axios.get(`${API_BASE_URL}/API_B/admin/users?active=true`, {
           withCredentials: true,
         }),
       ]);
@@ -37,7 +42,7 @@ const ManageUsers = () => {
 
   const handleApprove = async (id) => {
     try {
-      await axios.put(`http://localhost:8800/API_B/admin/approve/${id}`, {}, {
+      await axios.put(`${API_BASE_URL}/API_B/admin/approve/${id}`, {}, {
         withCredentials: true,
       });
       fetchAllUsers();

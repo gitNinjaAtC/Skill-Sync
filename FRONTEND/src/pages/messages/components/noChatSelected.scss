@@ -1,53 +1,60 @@
 .no-chat-container {
   width: 100%;
   flex: 1;
+  min-height: 100vh; // Ensures vertical centering even if parent is short
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4rem;
-  background-color: rgba(255, 255, 255, 0.5); // base-100/50
+  background-color: rgba(255, 255, 255, 0.5);
+
+  // Hide on screens smaller than 1024px (mobile & tab)
+  @media (max-width: 1023px) {
+    display: none;
+  }
 }
 
 .no-chat-content {
-  max-width: 28rem;
-  text-align: center;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 1.5rem;
+  max-width: 28rem;
+  text-align: center;
+  margin-top: 0rem; // ensures it's centered if not filling parent
+}
 
-  .icon-wrapper {
+.icon-wrapper {
+  display: flex;
+  justify-content: center;
+
+  .icon-bounce {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 1rem;
+    background-color: rgba(59, 130, 246, 0.1);
     display: flex;
+    align-items: center;
     justify-content: center;
-    margin-bottom: 1rem;
+    animation: bounce 1.5s infinite;
 
-    .icon-bounce {
-      width: 4rem;
-      height: 4rem;
-      border-radius: 1rem;
-      background-color: rgba(59, 130, 246, 0.1); // primary/10
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: bounce 1.5s infinite;
-
-      .chat-icon {
-        width: 2rem;
-        height: 2rem;
-        color: #3b82f6; // Tailwind's primary
-      }
+    .chat-icon {
+      width: 2rem;
+      height: 2rem;
+      color: #3b82f6;
     }
   }
+}
 
-  .welcome-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
+.welcome-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
 
-  .welcome-subtitle {
-    color: rgba(0, 0, 0, 0.6); // text-base-content/60
-    font-size: 1rem;
-  }
+.welcome-subtitle {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 1rem;
 }
 
 @keyframes bounce {

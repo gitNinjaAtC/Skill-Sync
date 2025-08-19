@@ -17,6 +17,13 @@
     display: flex;
     flex-direction: column;
 
+      &.chat-start .chat-avatar {
+      margin-right: 0.5rem;
+    }
+
+  &.chat-end .chat-avatar {
+    margin-left: 0.5rem;
+  }
     &.chat-start .chat-content,
     &.chat-end .chat-content {
       display: flex;
@@ -147,4 +154,11 @@
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
     }
   }
+}
+.chat-date-heading {
+  text-align: center;
+  font-weight: 600;
+  color: var(--text-muted, #666);
+  margin: 1rem 0 0.5rem;
+  font-size: 0.9rem;
 }

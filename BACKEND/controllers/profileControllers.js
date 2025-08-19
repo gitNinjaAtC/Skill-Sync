@@ -1,57 +1,74 @@
+// C:\Users\Dell\Desktop\Skill-Sync\BACKEND\controllers\profileControllers.js
+
 import User from "../models/Users.js";
+import Student from "../models/Student.js"; // ✅ Add this line
 import multer from "multer";
 import fs from "fs";
 import path from "path";
+import cloudinary from "../lib/cloudinary.js";
 
-// Ensure the upload directory exists
-const uploadDir = path.join(process.cwd(), "uploads/coverPhotos");
+// ====== Ensure temp directory exists ======
+const uploadDir = path.resolve("uploads/tempImages");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
-  console.log("Created upload directory:", uploadDir);
+  console.log("✅ Created upload directory:", uploadDir);
 }
 
-// Ensure the profile pictures upload directory exists
-const profilePicDir = path.join(process.cwd(), "uploads/profilePics");
-if (!fs.existsSync(profilePicDir)) {
-  fs.mkdirSync(profilePicDir, { recursive: true });
-  console.log("Created profile pictures upload directory:", profilePicDir);
-}
+// ========== MULTER CONFIG ==========
+const storage = multer.diskStorage({
+  destination: (_, __, cb) => cb(null, uploadDir),
+  filename: (_, file, cb) =>
+    cb(null, `${Date.now()}${path.extname(file.originalname)}`),
+});
+
+const fileFilter = (_, file, cb) => {
+  const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+  if (allowedTypes.includes(file.mimetype)) cb(null, true);
+  else cb(new Error("Only .jpeg, .jpg, and .png files are allowed"));
+};
+
+export const uploadImageMiddleware = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // Max 5MB
+}).single("image");
 
 // ========== GET PROFILE INFO ==========
 export const getProfileInfo = async (req, res) => {
   const userId = req.params.id;
-
-  if (!userId) {
-    return res.status(400).json({ message: "User ID is required" });
-  }
+  if (!userId) return res.status(400).json({ message: "User ID is required" });
 
   try {
     const user = await User.findById(userId).select(
-      "name about facebook instagram twitter linkedin skills education experience others coverPhoto profilePic"
+      "name email about facebook instagram twitter linkedin skills education experience others profilePic coverPhoto"
     );
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    // ✅ Match student by email (case-insensitive)
+    const student = await Student.findOne({
+      EmailId: user.email?.toLowerCase(),
+    });
 
     const profileData = {
-      name: user.name,
-      description: user.about,
-      facebook: user.facebook,
-      instagram: user.instagram,
-      twitter: user.twitter,
-      linkedin: user.linkedin,
-      skills: user.skills,
-      education: user.education,
-      experience: user.experience,
-      others: user.others,
-      coverPhoto: user.coverPhoto,
-      profilePic: user.profilePic,
+      name: user.name || "",
+      description: user.about || "",
+      facebook: user.facebook || "",
+      instagram: user.instagram || "",
+      twitter: user.twitter || "",
+      linkedin: user.linkedin || "",
+      skills: user.skills || [],
+      education: user.education || [],
+      experience: user.experience || [],
+      others: user.others || "",
+      profilePic: user.profilePic || null,
+      coverPhoto: user.coverPhoto || null,
+      branch: student?.branch || "N/A", // ✅ added
+      batch: student?.batch || "N/A", // ✅ added
     };
 
     res.status(200).json(profileData);
   } catch (error) {
-    console.error("Error fetching profile info:", error);
+    console.error("❌ Error fetching profile info:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -59,161 +76,154 @@ export const getProfileInfo = async (req, res) => {
 // ========== UPDATE PROFILE ==========
 export const updateProfile = async (req, res) => {
   const userId = req.params.id;
-  const {
-    name,
-    description,
-    socialLinks,
-    skills,
-    education,
-    experience,
-    others,
-  } = req.body;
-
-  if (!userId) {
-    return res.status(400).json({ message: "User ID is required" });
-  }
+  if (!userId) return res.status(400).json({ message: "User ID is required" });
 
   try {
+    const {
+      name,
+      description,
+      skills,
+      education,
+      experience,
+      others,
+      socialLinks = {},
+    } = req.body;
+
     const updateFields = {
       ...(name && { name }),
       ...(description && { about: description }),
-      ...(skills && { skills }),
-      ...(education && { education }),
-      ...(experience && { experience }),
       ...(others && { others }),
-      ...(socialLinks?.facebook && { facebook: socialLinks.facebook }),
-      ...(socialLinks?.instagram && { instagram: socialLinks.instagram }),
-      ...(socialLinks?.twitter && { twitter: socialLinks.twitter }),
-      ...(socialLinks?.linkedin && { linkedin: socialLinks.linkedin }),
+      ...(socialLinks.facebook !== undefined && {
+        facebook: socialLinks.facebook,
+      }),
+      ...(socialLinks.instagram !== undefined && {
+        instagram: socialLinks.instagram,
+      }),
+      ...(socialLinks.twitter !== undefined && {
+        twitter: socialLinks.twitter,
+      }),
+      ...(socialLinks.linkedin !== undefined && {
+        linkedin: socialLinks.linkedin,
+      }),
     };
+
+    // ✅ Update logic to allow both strings and arrays
+    if (skills !== undefined) updateFields.skills = skills;
+    if (education !== undefined) updateFields.education = education;
+    if (experience !== undefined) updateFields.experience = experience;
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { $set: updateFields },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
-    if (!updatedUser) {
+    if (!updatedUser)
       return res.status(404).json({ message: "User not found" });
-    }
 
-    res.status(200).json({ message: "Profile updated successfully" });
+    res
+      .status(200)
+      .json({ message: "Profile updated successfully", user: updatedUser });
   } catch (error) {
-    console.error("Error updating profile:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error("❌ Error updating profile:", error);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
-
-// ========== MULTER STORAGE CONFIGURATION FOR COVER PHOTO ==========
-const coverStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/coverPhotos/");
-  },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    const filename = Date.now() + ext;
-    cb(null, filename);
-  },
-});
-
-const coverFileFilter = (req, file, cb) => {
-  const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-  if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Only .jpeg, .jpg, and .png files are allowed"));
-  }
-};
-
-export const uploadCoverPhotoMiddleware = multer({
-  storage: coverStorage,
-  fileFilter: coverFileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-}).single("cover");
-
-// ========== MULTER STORAGE CONFIGURATION FOR PROFILE PICTURE ==========
-const profilePicStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/profilePics/");
-  },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    const filename = Date.now() + ext;
-    cb(null, filename);
-  },
-});
-
-const profilePicFileFilter = (req, file, cb) => {
-  const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-  if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Only .jpeg, .jpg, and .png files are allowed"));
-  }
-};
-
-export const uploadProfilePicMiddleware = multer({
-  storage: profilePicStorage,
-  fileFilter: profilePicFileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-}).single("profilePic");
 
 // ========== UPDATE COVER PHOTO ==========
 export const updateCoverPhoto = async (req, res) => {
   const userId = req.params.id;
-
-  if (!req.file || !userId) {
+  if (!req.file || !userId)
     return res.status(400).json({ message: "File and user ID are required" });
-  }
-
-  const filePath = `/uploads/coverPhotos/${req.file.filename}`;
 
   try {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "skill-sync/coverPhotos",
+    });
+
+    fs.unlinkSync(req.file.path); // Delete temp file
+
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { coverPhoto: filePath },
+      { coverPhoto: result.secure_url },
       { new: true }
     );
 
-    if (!updatedUser) {
+    if (!updatedUser)
       return res.status(404).json({ message: "User not found" });
-    }
 
-    return res
+    res
       .status(200)
-      .json({ message: "Cover photo updated", path: filePath });
+      .json({ message: "Cover photo updated", url: result.secure_url });
   } catch (error) {
-    console.error("Error updating cover photo:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error("❌ Error updating cover photo:", error);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
 
 // ========== UPDATE PROFILE PICTURE ==========
 export const updateProfilePic = async (req, res) => {
   const userId = req.params.id;
-
-  if (!req.file || !userId) {
+  if (!req.file || !userId)
     return res.status(400).json({ message: "File and user ID are required" });
-  }
-
-  const filePath = `/uploads/profilePics/${req.file.filename}`;
 
   try {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "skill-sync/profilePics",
+    });
+
+    fs.unlinkSync(req.file.path); // Delete temp file
+
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { profilePic: filePath },
+      { profilePic: result.secure_url },
       { new: true }
     );
 
-    if (!updatedUser) {
+    if (!updatedUser)
       return res.status(404).json({ message: "User not found" });
-    }
 
-    return res
+    res
       .status(200)
-      .json({ message: "Profile picture updated", path: filePath });
+      .json({ message: "Profile picture updated", url: result.secure_url });
   } catch (error) {
-    console.error("Error updating profile picture:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error("❌ Error uploading profile picture:", error);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
+
+// ========== UPDATE PROFILE PICTURE ==========
+// export const updateProfilePic = async (req, res) => {
+//   const userId = req.params.id;
+
+//   if (!req.file || !userId) {
+//     return res.status(400).json({ message: "File and user ID are required" });
+//   }
+
+//   const filePath = `/uploads/profilePics/${req.file.filename}`;
+
+//   try {
+//     const updatedUser = await User.findByIdAndUpdate(
+//       userId,
+//       { profilePic: filePath },
+//       { new: true }
+//     );
+
+//     if (!updatedUser) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     return res
+//       .status(200)
+//       .json({ message: "Profile picture updated", path: filePath });
+//   } catch (error) {
+//     console.error("Error updating profile picture:", error);
+//     res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };

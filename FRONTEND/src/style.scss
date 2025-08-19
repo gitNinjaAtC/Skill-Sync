@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 $themes: (
   light: (
     textColor: #000,
@@ -6,6 +8,7 @@ $themes: (
     bgSoft: #f6f3f3,
     textColorSoft: #555,
     border: lightgray,
+    btn:#4169E1,
   ),
   dark: (
     textColor: whitesmoke,

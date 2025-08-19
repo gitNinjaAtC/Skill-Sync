@@ -1,19 +1,18 @@
 .sidebar {
   height: 100%;
-  width: 4.5rem;
-
-  @media (min-width: 1024px) {
-    width: 18rem;
-  }
-
+  width: 100%; // Full width on mobile & tab by default
   border-right: 1px solid #d1d5db;
   display: flex;
   flex-direction: column;
   transition: all 0.2s ease-in-out;
+
+  @media (min-width: 1024px) {
+    width: 22rem; // Fixed width on desktop
+  }
 }
 
 .sidebar-header {
-  padding: 1.25rem;
+  padding: 1rem;
   padding-bottom: 0.75rem;
 
   .header-top {
@@ -27,13 +26,15 @@
     }
 
     .title {
-      font-weight: 500;
+      font-weight: 600;
+      font-size: 1rem;
     }
   }
 
   .filter-row {
     margin-top: 0.75rem;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem;
 
@@ -56,7 +57,26 @@
     }
   }
 
-  // Only line with controlled width:
+  // ✅ Search bar style
+  .search-bar {
+    margin-top: 0.75rem;
+    margin-right: 0.45rem;
+
+    input {
+      width: 80%;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+
+      &:focus {
+        border-color: #3b82f6;
+      }
+    }
+  }
+
   border-bottom: 1px solid #d1d5db;
   margin: 0 1rem;
 }

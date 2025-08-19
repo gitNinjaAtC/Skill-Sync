@@ -5,7 +5,6 @@ import { AuthContext } from "../../../context/authContext";
 import Sidebar from "../components/Sidebar";
 import NoChatSelected from "../components/NoChatSelected";
 import ChatContainer from "../components/ChatContainer";
-import { ArrowLeft } from "lucide-react";
 import "./home.scss";
 
 const HomePage = () => {
@@ -27,6 +26,9 @@ const HomePage = () => {
 
   return (
     <div className="home">
+      <div className="home-header">
+        <h1>Messages</h1>
+      </div>
       <div className="home-wrapper">
         <div className="home-content">
           <div className="chat-wrapper">
@@ -37,14 +39,6 @@ const HomePage = () => {
 
             {/* Chat Area */}
             <main className="chat-main">
-              {isChatOpen && (
-                <div className="mobile-header">
-                  <button onClick={() => setSelectedUser(null)} className="back-btn">
-                    <ArrowLeft className="back-icon" />
-                  </button>
-                  <span className="back-text">Back</span>
-                </div>
-              )}
 
               <div className="chat-body">
                 {isChatOpen ? <ChatContainer /> : <NoChatSelected />}

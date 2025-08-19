@@ -9,15 +9,17 @@ export const getPosts = async (req, res) => {
       .populate("userId", "name profilePic")
       .sort({ createdAt: -1 });
 
-    // Map to flatten user info on top level for frontend convenience
     const formattedPosts = posts.map((post) => {
-      const postObj = post.toObject(); // convert mongoose doc to plain JS object
+      const postObj = post.toObject();
       return {
         ...postObj,
         id: postObj._id,
         name: postObj.userId?.name || "User",
-        profilePic: postObj.userId?.profilePic || "/default-avatar.png",
-        userId: postObj.userId?._id || null, // keep userId for link routing
+        profilePic:
+          postObj.userId?.profilePic && postObj.userId.profilePic.trim() !== ""
+            ? postObj.userId.profilePic
+            : null,
+        userId: postObj.userId?._id || null,
       };
     });
 
@@ -27,6 +29,7 @@ export const getPosts = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // ADD NEW POST
 export const addPost = async (req, res) => {
@@ -67,43 +70,53 @@ export const addPost = async (req, res) => {
   }
 };
 
-// ADMIN REVIEW POST
+
+
+// APPROVE or REJECT post
 export const reviewPost = async (req, res) => {
-  const userId = req.user.id;
   const { postId, action } = req.body;
 
-  if (!postId || !["approved", "declined"].includes(action)) {
-    return res.status(400).json({ message: "Invalid request" });
-  }
-
   try {
-    const user = await User.findById(userId);
-    if (!user || user.role !== "Admin")
-      return res.status(403).json({ message: "Access denied: Admins only" });
-
     const pendingPost = await PendingPost.findById(postId);
-    if (!pendingPost)
-      return res.status(404).json({ message: "Pending post not found" });
+    if (!pendingPost) {
+      return res.status(404).json({ message: "Post not found" });
+    }
 
     if (action === "approved") {
-      const approvedPost = new Post({
-        userId: pendingPost.userId,
-        desc: pendingPost.desc,
-        createdAt: pendingPost.createdAt,
-        status: "approved",
-      });
-      await approvedPost.save();
+      try {
+        const approvedPost = new Post({
+          userId: pendingPost.userId,
+          desc: pendingPost.desc,
+          createdAt: pendingPost.createdAt ? new Date(pendingPost.createdAt) : new Date(),
+          status: "approved",
+        });
+
+        await approvedPost.save();
+      } catch (saveError) {
+        console.error("🔥 Error saving approved post:", saveError.message);
+        console.error("📦 Failing post data:", {
+          userId: pendingPost.userId,
+          desc: pendingPost.desc,
+          createdAt: pendingPost.createdAt,
+          status: "approved",
+        });
+
+        return res.status(500).json({
+          error: "Failed to approve post",
+          reason: saveError.message,
+        });
+      }
     }
 
     await PendingPost.findByIdAndDelete(postId);
-    return res
-      .status(200)
-      .json({ success: true, message: `Post ${action} successfully` });
-  } catch (err) {
-    console.error("Error reviewing post:", err);
-    res.status(500).json({ error: err.message });
+    res.status(200).json({ message: `Post ${action} successfully` });
+
+  } catch (error) {
+    console.error("🔥 Error in reviewPost controller:", error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 // DELETE POST
 export const deletePost = async (req, res) => {
@@ -119,7 +132,7 @@ export const deletePost = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (user.role !== "Admin" && post.userId.toString() !== userId) {
+    if (user.role !== "admin" && post.userId.toString() !== userId) {
       return res
         .status(403)
         .json({ message: "Access denied: You cannot delete this post" });
@@ -131,6 +144,33 @@ export const deletePost = async (req, res) => {
       .json({ success: true, message: "Post deleted successfully" });
   } catch (err) {
     console.error("Error deleting post:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const getPendingPosts = async (req, res) => {
+  try {
+    const pendingPosts = await PendingPost.find({})
+      .populate("userId", "name profilePic")
+      .sort({ createdAt: -1 });
+
+    const formattedPosts = pendingPosts.map((post) => {
+      const postObj = post.toObject();
+      return {
+        ...postObj,
+        id: postObj._id,
+        name: postObj.userId?.name || "User",
+        profilePic:
+          postObj.userId?.profilePic && postObj.userId.profilePic.trim() !== ""
+            ? postObj.userId.profilePic
+            : null,
+        userId: postObj.userId?._id || null,
+      };
+    });
+
+    res.status(200).json(formattedPosts);
+  } catch (err) {
+    console.error("Error fetching pending posts:", err);
     res.status(500).json({ error: err.message });
   }
 };

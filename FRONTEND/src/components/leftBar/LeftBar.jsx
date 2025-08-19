@@ -7,7 +7,7 @@ import GalleryIcon from "../../assets/gallery.png";
 import Messages from "../../assets/message.png";
 import Resume from "../../assets/11.png";
 import Fund from "../../assets/13.png";
-import profilePic from "../../assets/profile.jpg";
+import defaultAvatar from "../../assets/profile.jpg";
 import home from "../../assets/home.png";
 import { AuthContext } from "../../context/authContext";
 import { useContext } from "react";
@@ -26,6 +26,13 @@ const LeftBar = () => {
     }
   };
 
+  const getProfilePic = () => {
+    if (!currentUser?.profilePic || currentUser.profilePic.trim() === "") return defaultAvatar;
+    return currentUser.profilePic.startsWith("http")
+      ? currentUser.profilePic
+      : `https://skill-sync-backend-522o.onrender.com${currentUser.profilePic}`;
+  };
+
   return (
     <div className="leftBar">
       <div className="container">
@@ -35,11 +42,19 @@ const LeftBar = () => {
               className={`profile-button ${isActive(`/profile/${currentUser?.id}`) ? "active" : ""}`}
               onClick={handleProfile}
             >
-              <img src={currentUser?.profilePic || profilePic} alt="User" />
+              <img
+                src={getProfilePic()}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = defaultAvatar;
+                }}
+                alt="User"
+              />
               <span>{currentUser?.name}</span>
             </button>
           </div>
-          <div className={`item ${isActive("/") ? "active" : ""}`} onClick={() => navigate("/")}>
+
+          <div className={`item ${isActive("/home") ? "active" : ""}`} onClick={() => navigate("/home")}>
             <img src={home} alt="Home" />
             <span>Home</span>
           </div>
@@ -59,7 +74,7 @@ const LeftBar = () => {
             <img src={Events} alt="Events" />
             <span>Events</span>
           </div>
-          <div className={`item ${isActive("#") ? "active" : ""}`} onClick={() => navigate("#")}>
+          <div className={`item ${isActive("/gallery") ? "active" : ""}`} onClick={() => navigate("/gallery")}>
             <img src={GalleryIcon} alt="Gallery" />
             <span>Gallery</span>
           </div>
@@ -73,11 +88,11 @@ const LeftBar = () => {
 
         <div className="menu">
           <span>Others</span>
-          <div className={`item ${isActive("#") ? "active" : ""}`} onClick={() => navigate("#")}>
+          <div className={`item ${isActive("/Fundraiser") ? "active" : ""}`} onClick={() => navigate("/Fundraiser")}>
             <img src={Fund} alt="Fundraiser" />
             <span>Fundraiser</span>
           </div>
-          <div className={`item ${isActive("#") ? "active" : ""}`} onClick={() => navigate("#")}>
+          <div className={`item ${isActive("/resume-builder") ? "active" : ""}`} onClick={() => navigate("/resume-builder")}>
             <img src={Resume} alt="Resume Builder" />
             <span>Resume Builder</span>
           </div>

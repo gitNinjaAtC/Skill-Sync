@@ -6,7 +6,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import profilePic from "../../assets/profile.jpg";
+import fallbackAvatar from "../../assets/profile.jpg";
 
 const Share = () => {
   const { currentUser } = useContext(AuthContext);
@@ -32,17 +32,15 @@ const Share = () => {
 
     try {
       console.log("Sending POST /API_B/posts with desc:", desc);
-      console.log("Current user:", currentUser);
       const res = await axios.post(
         "https://skill-sync-backend-522o.onrender.com/API_B/posts",
         { desc },
         { withCredentials: true }
       );
-      console.log("Post response:", res.data);
       setSuccess(res.data.message);
       setError(null);
       setDesc(""); // Clear input
-      setTimeout(() => setSuccess(null), 3000); // Clear success message
+      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       console.error("Post error:", {
         message: err.message,
@@ -52,8 +50,7 @@ const Share = () => {
       const errorMessage =
         err.response?.status === 401
           ? "Session expired. Please log in again."
-          : err.response?.data?.message ||
-            "Failed to share post. Please try again.";
+          : err.response?.data?.message || "Failed to share post. Please try again.";
       setError(errorMessage);
       setSuccess(null);
       if (err.response?.status === 401) {
@@ -63,11 +60,25 @@ const Share = () => {
     }
   };
 
+  const resolvedProfilePic =
+    currentUser?.profilePic && currentUser.profilePic.trim() !== ""
+      ? currentUser.profilePic.startsWith("http")
+        ? currentUser.profilePic
+        : `https://skill-sync-backend-522o.onrender.com${currentUser.profilePic}`
+      : fallbackAvatar;
+
   return (
     <div className="share">
       <div className="container">
         <div className="top">
-          <img src={currentUser?.profilePic || profilePic} alt="" />
+          <img
+            src={resolvedProfilePic}
+            alt="User"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = fallbackAvatar;
+            }}
+          />
           <input
             type="text"
             placeholder={`What's on your mind ${currentUser?.name || "User"}?`}

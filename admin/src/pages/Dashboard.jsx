@@ -3,6 +3,11 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import "./dashboard.scss";
 
+const API_BASE_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:8800"
+    : "https://skill-sync-backend-522o.onrender.com";
+
 const Dashboard = () => {
   const [stats, setStats] = useState({ total: 0, students: 0, alumni: 0, admins: 0 });
   const [recentUsers, setRecentUsers] = useState([]);
@@ -14,7 +19,7 @@ const Dashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await axios.get("http://localhost:8800/API_B/admin/stats", {
+      const res = await axios.get(`${API_BASE_URL}/API_B/admin/stats`, {
         withCredentials: true,
       });
       setStats(res.data);
@@ -25,7 +30,7 @@ const Dashboard = () => {
 
   const fetchRecentUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:8800/API_B/admin/users", {
+      const res = await axios.get(`${API_BASE_URL}/API_B/admin/users`, {
         withCredentials: true,
       });
       const latest = res.data.slice(-5).reverse(); // Last 5 users

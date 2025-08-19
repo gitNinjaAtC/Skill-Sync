@@ -1,3 +1,4 @@
+// src/pages/forums/Forums.jsx
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
@@ -17,18 +18,14 @@ const Forums = () => {
     const fetchForums = async () => {
       setLoading(true);
       try {
-        console.log("Fetching forums...");
-        const res = await axios.get("https://skill-sync-backend-522o.onrender.com/API_B/forums", {
-          withCredentials: true,
-        });
-        console.log("Fetched forums:", res.data);
+        const res = await axios.get(
+          "https://skill-sync-backend-522o.onrender.com/API_B/forums",
+          { withCredentials: true }
+        );
         setForums(res.data);
         setError(null);
       } catch (err) {
-        console.error(
-          "Error fetching forums:",
-          err.response?.data || err.message
-        );
+        console.error("Error fetching forums:", err.response?.data || err.message);
         setError(err.response?.data?.message || "Failed to load forums.");
       } finally {
         setLoading(false);
@@ -45,12 +42,11 @@ const Forums = () => {
     if (!window.confirm("Are you sure you want to delete this forum?")) return;
 
     try {
-      console.log("Deleting forum, id:", forumId);
-      await axios.delete(`https://skill-sync-backend-522o.onrender.com/API_B/forums/${forumId}`, {
-        withCredentials: true,
-      });
-      console.log("Forum deleted, id:", forumId);
-      setForums(forums.filter((forum) => forum.id !== forumId));
+      await axios.delete(
+        `https://skill-sync-backend-522o.onrender.com/API_B/forums/${forumId}`,
+        { withCredentials: true }
+      );
+      setForums(forums.filter((forum) => forum._id !== forumId));
       setError(null);
     } catch (err) {
       console.error("Error deleting forum:", err.response?.data || err.message);
@@ -64,57 +60,70 @@ const Forums = () => {
 
   return (
     <div className="forum-container">
-      {/* Always show this item */}
       <div className="item">
         <img src={Forum} alt="Forums" />
         <span>Forums</span>
       </div>
 
-      {/* Show skeletons only during loading */}
       {authLoading || loading ? (
         <>
           {[...Array(3)].map((_, index) => (
-            <ForumSkeleton key={index} />
+            <ForumSkeleton key={`skeleton-${index}`} />
           ))}
         </>
       ) : forums.length === 0 ? (
         <p>No forums available.</p>
       ) : (
         forums.map((post) => (
-          <div key={post.id} className="forum-card">
+          <div key={post._id} className="forum-card">
             <div className="forum-header">
               <p className="timestamp">{post.createdAgo}</p>
-              {currentUser && currentUser.id === post.created_by && (
-                <button
-                  className="delete-btn"
-                  onClick={() => handleDeleteForum(post.id)}
-                >
-                  Delete
-                </button>
-              )}
             </div>
+
             <h2 className="title">{post.title}</h2>
             <p className="description">{post.description}</p>
 
             <div className="tags">
-              {post.tags.map((tag, idx) => (
-                <span key={idx}>{tag}</span>
+              {post.tags.map((tag, index) => (
+                <span key={`${tag}-${index}`}>{tag}</span>
               ))}
             </div>
 
-            <div className="interview-section">
+
+
+            <div className="comment-actions">
+              {/* <p className="comment-count">💬 0 Comments so far</p> */}
+                          <div className="interview-section">
               <p className="interview-name">
                 Created by {post.created_by?.name}
               </p>
             </div>
 
-            <div className="comment-count">💬 0 Comments so far</div>
+              <div className="comment-buttons">
+                <button
+                  className="comment-btn"
+                  onClick={() => {
+                    navigate(`/forums/${post._id}/comments`);
+                  }}
+                >
+                  Post Reply
+                </button>
+
+                {currentUser && currentUser._id === post.created_by?._id && (
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDeleteForum(post._id)}
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         ))
       )}
 
-      {/* Always show Create Forum button if user is Admin or Alumni */}
-      {currentUser && ["Admin", "Alumni"].includes(currentUser.role) && (
+      {currentUser && ["admin", "alumni"].includes(currentUser.role) && (
         <button
           className="create-forum-btn"
           onClick={handleCreateForum}

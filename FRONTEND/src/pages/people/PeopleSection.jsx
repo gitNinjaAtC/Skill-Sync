@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react";
 import "./people.scss";
 import defaultPic from "../../assets/profile.jpg";
 import { useChatStore } from "../messages/store/useChatStore";
-import { useNavigate } from "react-router-dom"; // ✅ New import
+import { useNavigate } from "react-router-dom";
+import {
+  FacebookTwoTone as FacebookTwoToneIcon,
+  LinkedIn as LinkedInIcon,
+  Instagram as InstagramIcon,
+  Twitter as TwitterIcon,
+  Message as MessageIcon,
+} from "@mui/icons-material";
 
 const SkeletonCard = () => (
   <div className="user-card skeleton-card">
@@ -25,8 +32,9 @@ const PeopleSection = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [skeletonCount, setSkeletonCount] = useState(12);
+  const [searchTerm, setSearchTerm] = useState("");
   const { setSelectedUser: openChatWithUser } = useChatStore();
-  const navigate = useNavigate(); // ✅ Hook
+  const navigate = useNavigate();
 
   useEffect(() => {
     preloadSkeletonCount();
@@ -34,11 +42,10 @@ const PeopleSection = () => {
 
   const preloadSkeletonCount = async () => {
     try {
-      const res = await fetch("http://localhost:8800/API_B/users/users", {
+      const res = await fetch("https://skill-sync-backend-522o.onrender.com/API_B/users/users", {
         credentials: "include",
       });
       const data = await res.json();
-
       setSkeletonCount(data.length || 12);
       setTimeout(() => {
         setUsers(data);
@@ -52,28 +59,62 @@ const PeopleSection = () => {
 
   const handleView = (user) => setSelectedUser(user);
   const closePopup = () => setSelectedUser(null);
-
-  const handleMessage = (user) => {
-    openChatWithUser(user);        // ✅ Set selected user in chat store
-    navigate("/messages");         // ✅ Navigate to messages route
+  const handleViewProfile = (user) => {
+    closePopup();
+    navigate(`/profile/${user._id}`);
   };
+  const handleMessage = (user) => {
+    openChatWithUser(user);
+    navigate("/messages");
+  };
+  const getProfilePic = (pic) => {
+    if (pic && pic.trim() !== "") {
+      return pic.startsWith("http")
+        ? pic
+        : `https://skill-sync-backend-522o.onrender.com${pic}`;
+    }
+    return defaultPic;
+  };
+
+  // Combine name, branch, and batch into one searchable string
+  const filteredUsers = users.filter((user) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      user.name?.toLowerCase().includes(term) ||
+      user.branch?.toLowerCase().includes(term) ||
+      user.batch?.toString().toLowerCase().includes(term)
+    );
+  });
 
   return (
     <div className="people-section">
-      <h2>People</h2>
+      <div className="people-header">
+        <h2>People</h2>
+        <input
+          type="text"
+          placeholder="Search by name, branch or batch..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
+      </div>
+
       <div className="user-grid">
         {loading
           ? Array.from({ length: skeletonCount }).map((_, idx) => (
               <SkeletonCard key={idx} />
             ))
-          : users.map((user) => (
+          : filteredUsers.map((user) => (
               <div className="user-card" key={user._id}>
                 <div className="card-left">
                   <img
-                    src={user.profilePic || defaultPic}
+                    src={getProfilePic(user.profilePic)}
                     alt="Profile"
                     className="profile-pic"
-                    onError={(e) => (e.target.src = defaultPic)}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = defaultPic;
+                    }}
                   />
                 </div>
                 <div className="card-right">
@@ -81,7 +122,10 @@ const PeopleSection = () => {
                     <strong>Name:</strong> {user.name}
                   </p>
                   <p>
-                    <strong>Role:</strong> {user.role}
+                    <strong>Branch:</strong> {user.branch}
+                  </p>
+                  <p>
+                    <strong>Batch:</strong> {user.batch}
                   </p>
                   <div className="card-buttons">
                     <button onClick={() => handleView(user)}>View</button>
@@ -95,24 +139,30 @@ const PeopleSection = () => {
       {selectedUser && (
         <div className="popup-overlay">
           <div className="popup-card">
+            <button className="close-btn" onClick={closePopup}>
+              ✖
+            </button>
             <img
-              src={selectedUser.profilePic || defaultPic}
+              src={getProfilePic(selectedUser.profilePic)}
               alt="Profile"
               className="popup-profile-pic"
-              onError={(e) => (e.target.src = defaultPic)}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = defaultPic;
+              }}
             />
             <h3>{selectedUser.name}</h3>
-            <p>
-              <strong>Email:</strong> {selectedUser.email}
-            </p>
-            <p>
-              <strong>Role:</strong> {selectedUser.role}
-            </p>
-            {selectedUser.about && (
-              <p>
-                <strong>About:</strong> {selectedUser.about}
+            <div className="popup-row">
+              <p className="left">
+                <strong>Email:</strong> {selectedUser.email}
               </p>
-            )}
+              <p className="right">
+                <strong>Branch:</strong> {selectedUser.branch}
+              </p>
+            </div>
+            <p>
+              <strong>Batch:</strong> {selectedUser.batch}
+            </p>
             {selectedUser.skills && (
               <p>
                 <strong>Skills:</strong>{" "}
@@ -131,33 +181,51 @@ const PeopleSection = () => {
                 <strong>Experience:</strong> {selectedUser.experience}
               </p>
             )}
-
             <div className="popup-links">
               {selectedUser.linkedin && (
-                <a href={selectedUser.linkedin} target="_blank" rel="noreferrer">
-                  LinkedIn
+                <a
+                  href={selectedUser.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <LinkedInIcon fontSize="large" />
                 </a>
               )}
               {selectedUser.facebook && (
-                <a href={selectedUser.facebook} target="_blank" rel="noreferrer">
-                  Facebook
+                <a
+                  href={selectedUser.facebook}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <FacebookTwoToneIcon fontSize="large" />
                 </a>
               )}
               {selectedUser.instagram && (
-                <a href={selectedUser.instagram} target="_blank" rel="noreferrer">
-                  Instagram
+                <a
+                  href={selectedUser.instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <InstagramIcon fontSize="large" />
                 </a>
               )}
               {selectedUser.twitter && (
-                <a href={selectedUser.twitter} target="_blank" rel="noreferrer">
-                  Twitter
+                <a
+                  href={selectedUser.twitter}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <TwitterIcon fontSize="large" />
                 </a>
               )}
+              <button className="btn" onClick={() => handleMessage(selectedUser)}>
+                <MessageIcon fontSize="large" />
+              </button>
             </div>
-
             <div className="popup-buttons">
-              <button onClick={() => handleMessage(selectedUser)}>Message</button>
-              <button onClick={closePopup}>Close</button>
+              <button onClick={() => handleViewProfile(selectedUser)}>
+                View Profile
+              </button>
             </div>
           </div>
         </div>

@@ -1,25 +1,26 @@
+// C:\Users\Dell\Desktop\Skill-Sync\BACKEND\routes\profile.js
+
 import express from "express";
 import {
   getProfileInfo,
   updateProfile,
-  uploadCoverPhotoMiddleware,
+  uploadImageMiddleware,
   updateCoverPhoto,
-  uploadProfilePicMiddleware,
   updateProfilePic,
 } from "../controllers/profileControllers.js";
 
 const router = express.Router();
 
-// GET /API_B/profile/:id
+// Get user profile info
 router.get("/:id", getProfileInfo);
 
-// PUT /API_B/profile/update/:id
+// Update user profile fields (bio, skills, etc.)
 router.put("/update/:id", updateProfile);
 
-// PUT /API_B/profile/cover/:id
-router.put("/cover/:id", uploadCoverPhotoMiddleware, updateCoverPhoto);
+// Update cover photo
+router.put("/cover/:id", uploadImageMiddleware, updateCoverPhoto);
 
-// PUT /API_B/profile/profilePic/:id
-router.put("/profilePic/:id", uploadProfilePicMiddleware, updateProfilePic);
+// Update profile picture
+router.put("/profile-pic/:id", uploadImageMiddleware, updateProfilePic);
 
 export default router;

@@ -46,39 +46,6 @@
           display: flex;
           flex-direction: column;
 
-          .mobile-header {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem;
-            border-bottom: 1px solid #d1d5db;
-
-            @media (min-width: 1024px) {
-              display: none;
-            }
-
-            .back-btn {
-              background: none;
-              border: none;
-              padding: 0;
-              cursor: pointer;
-              display: flex;
-              align-items: center;
-
-              .back-icon {
-                width: 1.5rem;
-                height: 1.5rem;
-                color: #1f2937;
-              }
-            }
-
-            .back-text {
-              font-weight: 600;
-              font-size: 1rem;
-              color: #1f2937;
-            }
-          }
-
           .chat-body {
             flex: 1;
             height: 100%;

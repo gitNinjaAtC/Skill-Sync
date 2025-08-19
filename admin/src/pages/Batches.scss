@@ -1,0 +1,244 @@
+.batches-page {
+  padding: 40px;
+  max-width: auto;
+  margin: auto;
+  background-color: #fff;
+  border-radius: 10px;
+  min-height: 100vh;
+}
+
+.center-heading {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+select,
+input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #fff;
+}
+
+.custom-branch {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+
+  input {
+    flex: 1;
+  }
+
+  button {
+    padding: 8px 12px;
+    border: none;
+    background-color: #2563eb;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:disabled {
+      background: #ccc;
+    }
+  }
+}
+
+.drop-area {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 15px;
+  background-color: #f9fafb;
+
+  &:hover {
+    background: #f1f5f9;
+    border-color: #2563eb;
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+}
+
+.progress-bar {
+  width: 100%;
+  background-color: #eee;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  height: 8px;
+  overflow: hidden;
+
+  .progress {
+    height: 100%;
+    background-color: #2563eb;
+    transition: width 0.3s ease-in-out;
+  }
+}
+
+.file-stats {
+  margin-bottom: 15px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #28a745;
+}
+
+.preview-table {
+  margin-bottom: 15px;
+
+  // Ensure no overflow or scrollbars
+  overflow: visible;
+  max-height: none;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    table-layout: auto; // Allows columns to auto-size based on content
+  }
+
+  th,
+  td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+    word-break: break-word; // Prevents layout break with long text
+  }
+
+  th {
+    background: #f4f4f4;
+    font-weight: bold;
+  }
+
+  p {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #6b7280;
+    text-align: right;
+  }
+}
+
+// If you are wrapping the table in another div
+.table-wrapper {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+
+.btn-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+
+  .delete-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #dc3545;
+    color: white;
+    cursor: pointer;
+
+    &:hover {
+      background: #c82333;
+    }
+
+    &:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+  }
+
+  .submit-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #28a745;
+    color: white;
+    cursor: pointer;
+
+    &:hover {
+      background: #218838;
+    }
+
+    &:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+  }
+
+  .cancel-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    margin-left: 10px;
+    border: none;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    background-color: #ccc;
+    color: #fff;
+    cursor: not-allowed;
+
+    &.active {
+      background-color: #e53935;
+      cursor: pointer;
+    }
+
+    &.disabled {
+      background-color: #eee;
+      color: #aaa;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.response-details {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 4px;
+  background: #f9f9f9;
+
+  h3 {
+    margin-top: 0;
+    font-size: 1.2em;
+    color: #333;
+  }
+
+  p {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .non-imported-rows {
+    h4 {
+      font-size: 1em;
+      margin: 5px 0;
+    }
+
+    ul {
+      padding-left: 20px;
+      font-size: 14px;
+    }
+  }
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 20px 0;
+}

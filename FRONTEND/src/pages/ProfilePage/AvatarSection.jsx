@@ -1,11 +1,40 @@
-import { useRef, useState, useEffect } from "react";
-import axios from "axios";
-import cameraIcon from "../../assets/camera-icon.png"; // Adjust path if needed
-import profilePic from "../../assets/profile.jpg"; // Default fallback image
+import { useRef, useState, useContext, useEffect } from "react";
+import cameraIcon from "../../assets/camera-icon.png";
+import defaultProfilePic from "../../assets/profile.jpg";
+import { AuthContext } from "../../context/authContext";
 
 const AvatarSection = ({ userId }) => {
-  const [avatarSrc, setAvatarSrc] = useState(profilePic); // Default to local image
+  const [avatarSrc, setAvatarSrc] = useState(defaultProfilePic);
   const fileInputRef = useRef(null);
+  const { currentUser } = useContext(AuthContext);
+  const [uploading, setUploading] = useState(false);
+
+  const BACKEND_URL =
+    process.env.NODE_ENV === "production"
+      ? process.env.REACT_APP_API_BASE_URL_PROD
+      : process.env.REACT_APP_API_BASE_URL_LOCAL;
+
+  useEffect(() => {
+    const fetchProfilePic = async () => {
+      try {
+        const res = await fetch(`${BACKEND_URL}/API_B/profile/${userId}`, {
+          credentials: "include",
+        });
+        const data = await res.json();
+
+        if (data.profilePic && data.profilePic.trim() !== "") {
+          setAvatarSrc(`${data.profilePic}?t=${Date.now()}`);
+        } else {
+          setAvatarSrc(defaultProfilePic);
+        }
+      } catch (err) {
+        console.error("Failed to load profile picture", err);
+        setAvatarSrc(defaultProfilePic);
+      }
+    };
+
+    if (userId) fetchProfilePic();
+  }, [userId, BACKEND_URL]);
 
   // Fetch profile picture on component mount
   useEffect(() => {
@@ -33,45 +62,47 @@ const AvatarSection = ({ userId }) => {
   }, [userId]);
 
   const handleEditClick = () => {
-    fileInputRef.current.click();
+    if (currentUser?._id === userId) {
+      fileInputRef.current.click();
+    } else {
+      alert("You can only edit your own profile picture.");
+    }
   };
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      // Preview the image locally before upload
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarSrc(reader.result); // Temporarily show the selected image
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
 
-      // Upload the image to the server
-      const formData = new FormData();
-      formData.append("profilePic", file);
+    const formData = new FormData();
+    formData.append("image", file);
 
-      try {
-        const response = await axios.put(
-          `http://localhost:3000/API_B/profile/profilePic/${userId}`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        // Update avatarSrc with the server-returned path
-        setAvatarSrc(`http://localhost:3000${response.data.path}`);
-      } catch (error) {
-        console.error("Error uploading profile picture:", error);
-        // Revert to default or previous image on error
-        setAvatarSrc(profilePic);
+    try {
+      setUploading(true);
+      const response = await fetch(
+        `${BACKEND_URL}/API_B/profile/profile-pic/${userId}`,
+        {
+          method: "PUT",
+          body: formData,
+          credentials: "include",
+        }
+      );
+
+      const data = await response.json();
+      if (response.ok) {
+        setAvatarSrc(`${data.url}?t=${Date.now()}`);
+      } else {
+        alert("Upload failed: " + data.message);
       }
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("Error uploading profile picture.");
+    } finally {
+      setUploading(false);
     }
   };
 
   const handleImageError = () => {
-    setAvatarSrc(profilePic); // Fallback to default image if the server image fails to load
+    setAvatarSrc(defaultProfilePic);
   };
 
   return (
@@ -82,10 +113,21 @@ const AvatarSection = ({ userId }) => {
           src={avatarSrc}
           alt="Avatar"
           onError={handleImageError}
+          loading="lazy"
         />
-        <button className="edit-avatar" onClick={handleEditClick}>
-          <img src={cameraIcon} alt="Edit" className="edit-icon" />
-        </button>
+        {currentUser?._id === userId && (
+          <button
+            className="edit-avatar"
+            onClick={handleEditClick}
+            disabled={uploading}
+          >
+            {uploading ? (
+              <div className="loader" />
+            ) : (
+              <img src={cameraIcon} alt="Edit" className="edit-icon" />
+            )}
+          </button>
+        )}
       </div>
       <input
         type="file"

@@ -37,15 +37,32 @@
   }
 
   .input-form {
+    padding-right: 2.5rem; // space for the send button
     display: flex;
     align-items: center;
     gap: 0.5rem;
 
+    .image-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #a1a1aa;
+
+      &.active {
+        color: #10b981;
+      }
+
+      svg {
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+    }
+
     .input-group {
       flex: 1;
       display: flex;
-      gap: 0.5rem;
       align-items: center;
+      gap: 0.5rem;
 
       input[type="text"] {
         flex: 1;
@@ -62,22 +79,6 @@
 
       .file-input {
         display: none;
-      }
-
-      .image-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: #a1a1aa;
-
-        &.active {
-          color: #10b981;
-        }
-
-        svg {
-          width: 1.25rem;
-          height: 1.25rem;
-        }
       }
     }
 

@@ -24,10 +24,16 @@ const Sidebar = () => {
             <Link to="/jobs" className={isActive("/jobs") ? "active" : ""}>Job</Link>
           </li>
           <li>
+            <Link to="/posts" className={isActive("/posts") ? "active" : ""}>Posts</Link>
+          </li>
+          <li>
             <Link to="/events" className={isActive("/events") ? "active" : ""}>Events</Link>
           </li>
           <li>
             <Link to="/gallery" className={isActive("/gallery") ? "active" : ""}>Gallery</Link>
+          </li>
+          <li>
+            <Link to="/batches" className={isActive("/batches") ? "active" : ""}>Batches</Link>
           </li>
           <li>
             <Link to="/manageUsers" className={isActive("/manageUsers") ? "active" : ""}>Registration Approval</Link>

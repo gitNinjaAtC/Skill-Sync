@@ -5,17 +5,20 @@ import Navbar from "./components/Navbar";
 import Events from "./pages/Events";
 import Dashboard from "./pages/Dashboard";
 import JobsDashboard from "./pages/Jobs";
-import Gallery from "./pages/Gallery";
+import Gallery from "./pages/Gallery.jsx";
+import Batches from "./pages/Batches";
 import ManageUsers from "./pages/manageUsers";
 import Users from "./pages/Users";
 import AdminLogin from "./pages/adminLogin/adminLogin";
+import CreateAdmin from "./createAdmin/createAdmin";
+import Posts from "./pages/posts"; // ✅ Correct import
 
 const App = () => {
   const [admin, setAdmin] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
-    if (token) setAdmin(true); // You can decode and validate token if needed
+    if (token) setAdmin(true);
   }, []);
 
   const handleLogin = (adminData) => {
@@ -25,7 +28,7 @@ const App = () => {
   const handleLogout = () => {
     localStorage.removeItem("adminToken");
     localStorage.removeItem("adminData");
-    setAdmin(null); // <== this will trigger re-render and redirect
+    setAdmin(null);
   };
 
   return (
@@ -48,8 +51,11 @@ const App = () => {
                       <Route path="/" element={<Dashboard />} />
                       <Route path="/users" element={<Users />} />
                       <Route path="/jobs" element={<JobsDashboard />} />
-                      <Route path="/gallery" element={<Gallery />} />
+                      <Route path="/posts" element={<Posts />} /> {/* ✅ Added Posts route */}
                       <Route path="/events" element={<Events />} />
+                      <Route path="/gallery" element={<Gallery />} />
+                      <Route path="/batches" element={<Batches />} />
+                      <Route path="/create-admin" element={<CreateAdmin />} />
                       <Route path="/manageUsers" element={<ManageUsers />} />
                     </Routes>
                   </main>

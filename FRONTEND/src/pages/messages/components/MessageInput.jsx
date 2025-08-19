@@ -3,26 +3,38 @@ import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { Image, Send, X } from "lucide-react";
 import toast from "react-hot-toast";
+import imageCompression from "browser-image-compression";
 import "./messageInput.scss";
 
 const MessageInput = () => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
+  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
 
-  const { authUser } = useAuthStore(); // ✅ Get sender
-  const { selectedUser, sendMessage } = useChatStore(); // ✅ Get receiver
+  const { authUser } = useAuthStore();
+  const { selectedUser, sendMessage } = useChatStore();
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file?.type?.startsWith("image/")) {
       toast.error("Please select an image file");
       return;
     }
 
-    const reader = new FileReader();
-    reader.onloadend = () => setImagePreview(reader.result);
-    reader.readAsDataURL(file);
+    try {
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1024,
+        useWebWorker: true,
+      });
+
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(compressedFile);
+    } catch (err) {
+      toast.error("Image compression failed");
+    }
   };
 
   const removeImage = () => {
@@ -35,7 +47,7 @@ const MessageInput = () => {
     if (!text.trim() && !imagePreview) return;
 
     try {
-      // ✅ Include senderId explicitly
+      setLoading(true);
       await sendMessage({
         text: text.trim(),
         image: imagePreview,
@@ -47,6 +59,8 @@ const MessageInput = () => {
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error) {
       console.error("Failed to send message:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -64,12 +78,21 @@ const MessageInput = () => {
       )}
 
       <form className="input-form" onSubmit={handleSendMessage}>
+        <button
+          type="button"
+          className={`image-btn ${imagePreview ? "active" : ""}`}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <Image size={20} />
+        </button>
+
         <div className="input-group">
           <input
             type="text"
-            placeholder="Type a message..."
+            placeholder={loading ? "Sending..." : "Type a message..."}
             value={text}
             onChange={(e) => setText(e.target.value)}
+            disabled={loading}
           />
           <input
             type="file"
@@ -77,19 +100,26 @@ const MessageInput = () => {
             className="file-input"
             ref={fileInputRef}
             onChange={handleImageChange}
+            disabled={loading}
           />
           <button
             type="button"
             className={`image-btn ${imagePreview ? "active" : ""}`}
             onClick={() => fileInputRef.current?.click()}
+            disabled={loading}
           >
             <Image size={20} />
           </button>
         </div>
-        <button type="submit" className="send-btn" disabled={!text.trim() && !imagePreview}>
-          <Send size={20} />
+        <button type="submit" className="send-btn" disabled={loading || (!text.trim() && !imagePreview)}>
+          {loading ? (
+            <span className="loader" />
+          ) : (
+            <Send size={20} />
+          )}
         </button>
       </form>
+
     </div>
   );
 };

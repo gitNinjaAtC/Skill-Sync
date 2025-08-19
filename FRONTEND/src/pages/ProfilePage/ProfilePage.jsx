@@ -10,9 +10,9 @@ const ProfilePage = () => {
 
   return (
     <div className="profile-page">
-      <CoverPhoto />
+      <CoverPhoto userId={id} />
       <div className="profile-main">
-        <AvatarSection />
+        <AvatarSection userId={id} />
         <ProfileInfo userId={id} />
       </div>
     </div>
