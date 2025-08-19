@@ -66,6 +66,7 @@
   },
   "devDependencies": {
     "eslint-config-react-app": "^7.0.1",
+    "postcss-loader": "^8.1.1",
     "react-scripts": "^5.0.1",
     "sass": "^1.89.2",
     "sass-loader": "^16.0.5"
