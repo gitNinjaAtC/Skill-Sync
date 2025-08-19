@@ -9,6 +9,14 @@ import deloitte from "./about-image/deloitte.png";
 import MindRuby from "./about-image/MindRuby.png";
 import GlobalLogic from "./about-image/GlobalLogic.png";
 import NIQ from "./about-image/NIQ.png";
+import Adity from "./about-image/adity-I.jpg";
+import Muniraj from "./about-image/muniraj.jpg";
+import Aruna from "./about-image/aruna.jpg";
+import Sonu from "./about-image/sonu.jpg";
+import Aman from "./about-image/aman.jpg";
+import Aditya from "./about-image/aditya-gl.jpg";
+import Pankaj from "./about-image/pankaj.jpg";
+
 
 const alumniData = [
   {
@@ -17,7 +25,7 @@ const alumniData = [
     companylogo: ibotix,
     isStartup: true,
     VALUATION: "₹50 CRORE",
-    image: "IMAGE_URL_1",
+    image: Adity,
   },
   {
     name: "MUNIRAJ CHOURE",
@@ -25,42 +33,42 @@ const alumniData = [
     company: "UNIQUE",
     isStartup: true,
     VALUATION: "₹1.5 CRORE",
-    image: "IMAGE_URL",
+    image: Muniraj,
   },
   {
     name: "ARUNA RAJPUT",
     city: "Bengaluru",
     companylogo: mercedes,
     packageText: "₹25 LPA",
-    image: "IMAGE_URL_2",
+    image: Aruna,
   },
   {
     name: "SONU VERMAN",
     city: "Bokaro, Jharkhand",
     companylogo: deloitte,
     packageText: "₹24 LPA",
-    image: "IMAGE_URL_3",
+    image: Sonu,
   },
   {
     name: "AMAN GUPTA",
     city: "Jabalpur",
     companylogo: MindRuby,
     packageText: "₹22 LPA",
-    image: "IMAGE_URL_4",
+    image: Aman,
   },
   {
-    name: "SHEKHAR YADAV",
+    name: "Aditya Singh",
     city: "Bhopal",
     companylogo: GlobalLogic,
     packageText: "₹35 LPA",
-    image: "IMAGE_URL_5",
+    image: Aditya,
   },
   {
     name: "PANKAJ LAL",
     city: "Bhopal",
     companylogo: NIQ,
     packageText: "₹20 LPA",
-    image: "IMAGE_URL_7",
+    image: Pankaj,
   },
 ];
 
