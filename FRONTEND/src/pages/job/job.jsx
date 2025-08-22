@@ -167,7 +167,7 @@ const Job = () => {
           ))}
       </section>
 
-      {currentUser && ["admin", "alumni"].includes(currentUser.role) && (
+      {currentUser && ["admin", "alumni", "faculty"].includes(currentUser.role) && (
         <button
           className="create-forum-btn"
           onClick={handleCreateJob}

@@ -68,22 +68,50 @@
     }
 
     .enrollment-input {
+      padding: 15px 20px;
+      font-size: 1rem;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 20px;
+      box-shadow: #cff0ff 0px 10px 10px -5px;
+      border-inline: 2px solid transparent;
+      margin-top: 15px;
+      background: white;
       transition: transform 0.5s ease, opacity 0.5s ease;
-      transform: translateX(0);
-      opacity: 1;
-      position: relative; // ensure normal flow for input
+      position: relative;
       pointer-events: auto;
     }
+
+    // Responsive adjustments to match other inputs exactly:
+    @media (max-width: 960px) {
+      .enrollment-input {
+        padding: 12px 16px;
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .enrollment-input {
+        padding: 10px 14px;
+        font-size: 13px;
+      }
+    }
+
     .hide-enrollment {
       transform: translateX(100%);
       opacity: 0;
-      pointer-events: none; // disable interaction
-      position: relative; // keep layout consistent
-      max-width: 0; // shrink width without breaking layout
-      overflow: hidden; // hide overflowing content
-      padding: 0; // remove padding for complete hide
-      margin: 0; // remove margin so it collapses smoothly
-      border: none; // remove border when hidden
+      pointer-events: none;
+      position: relative;
+      max-width: 0;
+      max-height: 0;
+      height: 0 !important;
+      overflow: hidden;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      transition: transform 0.5s ease, opacity 0.5s ease, max-width 0.5s ease,
+        max-height 0.5s ease, height 0.5s ease, padding 0.5s ease,
+        margin 0.5s ease;
     }
 
     .forgot-link {

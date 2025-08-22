@@ -19,7 +19,7 @@ const Home = () => {
         </div>
 
         <div className="home">
-        {currentUser && ["admin", "alumni"].includes(currentUser.role) && (
+        {currentUser && ["admin", "alumni", "faculty"].includes(currentUser.role) && (
         <Share />
       )}      
          

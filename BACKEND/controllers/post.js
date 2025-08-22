@@ -51,6 +51,14 @@ export const addPost = async (req, res) => {
         message: "Post created successfully",
         postId: newPost._id,
       });
+    } else if (user.role === "faculty") {
+      const newPost = new Post({ userId, desc, status: "approved" });
+      await newPost.save();
+      return res.status(201).json({
+        success: true,
+        message: "Post created successfully",
+        postId: newPost._id,
+      });
     } else if (user.role === "alumni") {
       const pendingPost = new PendingPost({ userId, desc });
       await pendingPost.save();
