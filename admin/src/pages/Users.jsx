@@ -11,7 +11,7 @@ const Users = () => {
   const [users, setUsers] = useState([]);
   const [originalUsers, setOriginalUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ total: 0, students: 0, alumni: 0, admins: 0 });
+  const [stats, setStats] = useState({ total: 0, students: 0, alumni: 0, admins: 0, faculty: 0 });
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all"); // all, approved, pending
 
@@ -92,6 +92,7 @@ const Users = () => {
         <div className="stat"><h3>Students</h3><p>{stats.students}</p></div>
         <div className="stat"><h3>Alumni</h3><p>{stats.alumni}</p></div>
         <div className="stat"><h3>Admins</h3><p>{stats.admins}</p></div>
+        <div className="stat"><h3>Faculty</h3><p>{stats.faculty}</p></div>
       </div>
 
       <div className="filter-buttons">
@@ -135,6 +136,7 @@ const Users = () => {
                     <option value="student">Student</option>
                     <option value="alumni">Alumni</option>
                     <option value="admin">Admin</option>
+                    <option value="faculty">Faculty</option>
                   </select>
                 </td>
                 <td>

@@ -9,7 +9,7 @@ const API_BASE_URL =
     : "https://skill-sync-backend-522o.onrender.com";
 
 const Dashboard = () => {
-  const [stats, setStats] = useState({ total: 0, students: 0, alumni: 0, admins: 0 });
+  const [stats, setStats] = useState({ total: 0, students: 0, alumni: 0, admins: 0, faculty: 0 });
   const [recentUsers, setRecentUsers] = useState([]);
 
   useEffect(() => {
@@ -60,6 +60,10 @@ const Dashboard = () => {
         <div className="card admins">
           <h3>Admins</h3>
           <p>{stats.admins}</p>
+        </div>
+        <div className="card faculty">
+          <h3>Faculty</h3>
+          <p>{stats.faculty}</p>
         </div>
       </div>
 

@@ -18,6 +18,7 @@ const ManageUsers = () => {
     fetchAllUsers();
   }, []);
 
+  // ✅ Unified fetch function
   const fetchAllUsers = async () => {
     setLoading(true);
     try {
@@ -40,20 +41,41 @@ const ManageUsers = () => {
     }
   };
 
+  // ✅ Approve user
   const handleApprove = async (id) => {
     try {
-      await axios.put(`${API_BASE_URL}/API_B/admin/approve/${id}`, {}, {
-        withCredentials: true,
-      });
-      fetchAllUsers();
+      await axios.put(
+        `${API_BASE_URL}/API_B/admin/approve/${id}`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      fetchAllUsers(); // refresh
     } catch (err) {
       console.error("❌ Error approving user:", err);
       setError("Failed to approve user.");
     }
   };
 
+  // ✅ Delete/Reject user
+  const handleDelete = async (userId) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      try {
+        await axios.delete(`${API_BASE_URL}/API_B/admin/user/${userId}`, {
+          withCredentials: true,
+        });
+        fetchAllUsers(); // refresh updated user list
+      } catch (err) {
+        console.error("❌ Error deleting user:", err);
+        setError("Failed to delete user.");
+      }
+    }
+  };
+
   return (
     <div className="manage-users">
+      {/* Tabs */}
       <div className="tabs">
         <button
           className={activeTab === "pending" ? "tab active" : "tab"}
@@ -69,79 +91,81 @@ const ManageUsers = () => {
         </button>
       </div>
 
+      {/* Loading and Error messages */}
       {loading && <p>Loading...</p>}
       {error && <p className="error-message">{error}</p>}
 
+      {/* Pending Users Table */}
       {activeTab === "pending" && (
-        <>
-          <table className="user-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pendingUsers.length > 0 ? (
-                pendingUsers.map((user) => (
-                  <tr key={user._id}>
-                    <td>{user.name}</td>
-                    <td>{user.email}</td>
-                    <td>{user.role}</td>
-                    <td>
-                      <button onClick={() => handleApprove(user._id)}>
-                        Approve
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5" style={{ textAlign: "center" }}>
-                    No pending users.
+        <table className="user-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pendingUsers.length > 0 ? (
+              pendingUsers.map((user) => (
+                <tr key={user._id}>
+                  <td>{user.name}</td>
+                  <td>{user.email}</td>
+                  <td>{user.role}</td>
+                  <td>
+                    <button onClick={() => handleApprove(user._id)}>
+                      Approve
+                    </button>
+                    <button onClick={() => handleDelete(user._id)}>
+                      Reject
+                    </button>
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" style={{ textAlign: "center" }}>
+                  No pending users.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       )}
 
+      {/* Approved Users Table */}
       {activeTab === "approved" && (
-        <>
-          <table className="user-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {approvedUsers.length > 0 ? (
-                approvedUsers.map((user) => (
-                  <tr key={user._id}>
-                    <td>{user.name}</td>
-                    <td>{user.email}</td>
-                    <td>{user.role}</td>
-                    <td>
-                      <span className="approved-label">✔ Approved</span>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5" style={{ textAlign: "center" }}>
-                    No approved users found.
+        <table className="user-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {approvedUsers.length > 0 ? (
+              approvedUsers.map((user) => (
+                <tr key={user._id}>
+                  <td>{user.name}</td>
+                  <td>{user.email}</td>
+                  <td>{user.role}</td>
+                  <td>
+                    <span className="approved-label">✔ Approved</span>
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" style={{ textAlign: "center" }}>
+                  No approved users found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       )}
     </div>
   );
