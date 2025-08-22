@@ -114,7 +114,7 @@ export const RegisterForm = () => {
         { ...inputs }
       );
 
-      setSuccess("Registration successful. Account activated.");
+      setSuccess("Registration successful. Waiting for Admin Approval.");
       setInputs({
         email: "",
         enrollmentNo: "",
@@ -180,9 +180,12 @@ export const RegisterForm = () => {
               value={inputs.enrollmentNo}
               onChange={handleChange}
             />
-            <Link to="/forgot-Enrollment" className="forgot-link">
-              Forgot Enrollment Number?
-            </Link>
+            {inputs.role !== "faculty" && (
+              <Link to="/forgot-Enrollment" className="forgot-link">
+                Forgot Enrollment Number?
+              </Link>
+            )}
+
             <input
               required
               className="input"

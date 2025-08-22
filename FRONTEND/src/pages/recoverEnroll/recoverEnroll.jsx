@@ -20,7 +20,7 @@ const RecoverEnrollment = () => {
         console.log("Fetching enrollment with token:", token);
         const res = await axios.get(
           `http://localhost:8800/API_B/auth/recover-enrollment/${token}`,
-          //`https://skill-sync-backend-522o.onrender.com/API_B/auth/recover-enrollment/${token}`,
+          `https://skill-sync-backend-522o.onrender.com/API_B/auth/recover-enrollment/${token}`,
           { withCredentials: true }
         );
         setEnrollmentNo(res.data.enrollmentNo);
