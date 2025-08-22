@@ -114,7 +114,7 @@ export const RegisterForm = () => {
         { ...inputs }
       );
 
-      setSuccess("Registration successful. Account activated.");
+      setSuccess("Registration successful. Waiting for Admin Approval.");
       setInputs({
         email: "",
         enrollmentNo: "",
