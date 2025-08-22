@@ -23,9 +23,9 @@ const userSchema = new mongoose.Schema({
   isActive: { type: Boolean, default: false },
   resetToken: { type: String, default: null },
   resetTokenExpiry: { type: Date, default: null },
-
 });
 
+userSchema.add({ isActive: { type: Boolean, default: false } }); // 👈 added
 
 const User = mongoose.model("User", userSchema);
 

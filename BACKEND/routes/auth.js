@@ -7,6 +7,8 @@ import {
   updateProfilePic,
   forgotPassword,
   resetPassword,
+  forgotEnrollmentNo,
+  recoverEnrollmentNo,
 } from "../controllers/auth.js";
 import { validateToken } from "../middleware/validateTokenHandler.js";
 
@@ -22,5 +24,9 @@ router.put("/update-profile", validateToken, updateProfilePic);
 // ✅ Password Reset Routes
 router.post("/forgot-password", forgotPassword); // Step 1: Send reset email
 router.post("/reset-password/:token", resetPassword); // Step 2: Update password via token
+
+//forgot enroll
+router.post("/forgot-enrollment", forgotEnrollmentNo);
+router.get("/recover-enrollment/:token", recoverEnrollmentNo);
 
 export default router;

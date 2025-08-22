@@ -62,8 +62,8 @@ export const getProfileInfo = async (req, res) => {
       others: user.others || "",
       profilePic: user.profilePic || null,
       coverPhoto: user.coverPhoto || null,
-      branch: student?.branch || "N/A",  // ✅ added
-      batch: student?.batch || "N/A",    // ✅ added
+      branch: student?.branch || "N/A", // ✅ added
+      batch: student?.batch || "N/A", // ✅ added
     };
 
     res.status(200).json(profileData);
@@ -126,7 +126,9 @@ export const updateProfile = async (req, res) => {
       .json({ message: "Profile updated successfully", user: updatedUser });
   } catch (error) {
     console.error("❌ Error updating profile:", error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
 
@@ -157,7 +159,9 @@ export const updateCoverPhoto = async (req, res) => {
       .json({ message: "Cover photo updated", url: result.secure_url });
   } catch (error) {
     console.error("❌ Error updating cover photo:", error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
 
@@ -188,6 +192,38 @@ export const updateProfilePic = async (req, res) => {
       .json({ message: "Profile picture updated", url: result.secure_url });
   } catch (error) {
     console.error("❌ Error uploading profile picture:", error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
+
+// ========== UPDATE PROFILE PICTURE ==========
+// export const updateProfilePic = async (req, res) => {
+//   const userId = req.params.id;
+
+//   if (!req.file || !userId) {
+//     return res.status(400).json({ message: "File and user ID are required" });
+//   }
+
+//   const filePath = `/uploads/profilePics/${req.file.filename}`;
+
+//   try {
+//     const updatedUser = await User.findByIdAndUpdate(
+//       userId,
+//       { profilePic: filePath },
+//       { new: true }
+//     );
+
+//     if (!updatedUser) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     return res
+//       .status(200)
+//       .json({ message: "Profile picture updated", path: filePath });
+//   } catch (error) {
+//     console.error("Error updating profile picture:", error);
+//     res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };

@@ -42,6 +42,10 @@ import ComingSoon from "./pages/Comingsoon/Comingsoon";
 import ForgotPassword from "./pages/Update Password/ForgotPassword";
 import ResetPassword from "./pages/Update Password/ResetPassword";
 
+//forgot enroll
+import ForgotEnrollment from "./pages/recoverEnroll/forgotEnroll";
+import RecoverEnrollment from "./pages/recoverEnroll/recoverEnroll";
+
 // Comments Page
 import CommentPage from "./pages/forums/CommentPage"; // ✅ make sure this file exists
 
@@ -64,8 +68,14 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <div className={`theme-${darkMode ? "dark" : "light"}`}>
           <Navbar />
-          <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-          <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              minHeight: "100vh",
+            }}
+          >
+            <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
               <LeftBar />
               <div style={{ flex: 6, overflowY: "auto" }}>
                 <Outlet />
@@ -113,9 +123,13 @@ function App() {
     { path: "/forgot-password", element: <ForgotPassword /> },
     { path: "/reset-password/:token", element: <ResetPassword /> },
     { path: "*", element: <ErrorPage /> },
+    { path: "/forgot-enrollment", element: <ForgotEnrollment /> },
+    { path: "/recover-enrollment/:token", element: <RecoverEnrollment /> },
   ]);
 
-  return <RouterProvider router={router} future={{ v7_startTransition: true }} />;
+  return (
+    <RouterProvider router={router} future={{ v7_startTransition: true }} />
+  );
 }
 
 export default App;

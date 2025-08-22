@@ -21,7 +21,9 @@ export const validateToken = async (req, res, next) => {
 
     if (!token) {
       console.log("❌ No token found in cookies or Authorization header.");
-      return res.status(401).json({ message: "Unauthorized: No token provided" });
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: No token provided" });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET, {
@@ -41,7 +43,9 @@ export const validateToken = async (req, res, next) => {
     next();
   } catch (error) {
     console.error("❌ validateToken error:", error.message);
-    return res.status(403).json({ message: "Forbidden: Invalid or expired token" });
+    return res
+      .status(403)
+      .json({ message: "Forbidden: Invalid or expired token" });
   }
 };
 

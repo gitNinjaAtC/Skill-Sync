@@ -4,8 +4,7 @@ import crypto from "crypto";
 import User from "../models/Users.js";
 import Student from "../models/Student.js";
 import cloudinary from "../lib/cloudinary.js";
-import { sendResetEmail } from "../lib/sendEmail.js";
-
+import { sendResetEmail, sendRecoveryEmail } from "../lib/sendEmail.js";
 
 // ✅ REGISTER
 export const register = async (req, res) => {
@@ -13,24 +12,58 @@ export const register = async (req, res) => {
   try {
     const { email, password, name, role, enrollmentNo } = req.body;
 
+    // Prevent admin registration
     if (role === "admin") {
       return res.status(403).json("Admin registration is not allowed");
+    }
+
+    // Check for existing user
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(409).json("User already exists");
+
+    // Hash the password
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
+
+    // Handle Faculty registration
+    if (role === "faculty") {
+      if (enrollmentNo) {
+        return res
+          .status(400)
+          .json("Enrollment number is not required for faculty registration");
+      }
+      const newUser = new User({
+        email,
+        password: hashedPassword,
+        name,
+        role: "faculty",
+        isActive: false, // Faculty requires admin approval
+      });
+      await newUser.save();
+      console.log(
+        "✅ Faculty user created successfully, awaiting admin approval!"
+      );
+      return res
+        .status(200)
+        .json("Registration successful. Awaiting admin approval.");
+    }
+
+    // Handle Student/Alumni registration
+    if (!enrollmentNo) {
+      return res
+        .status(400)
+        .json(
+          "Enrollment number is required for student or alumni registration"
+        );
     }
 
     const student = await Student.findOne({
       EnrollmentNo: enrollmentNo,
       EmailId: email,
     });
-
     if (!student) {
       return res.status(400).json("Email and enrollment number do not match");
     }
-
-    const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(409).json("User already exists");
-
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(password, salt);
 
     const newUser = new User({
       email,
@@ -38,13 +71,12 @@ export const register = async (req, res) => {
       name,
       role: role || "student",
       enrollmentNo,
+      isActive: true, // Auto-approve for student/alumni
     });
 
     await newUser.save();
     console.log("✅ User created successfully!");
-    return res
-      .status(200)
-      .json("Registration successful. Awaiting admin approval.");
+    return res.status(200).json("Registration successful. Account activated.");
   } catch (err) {
     console.error("❌ Registration error:", err);
     return res.status(500).json({ error: err.message });
@@ -52,7 +84,6 @@ export const register = async (req, res) => {
 };
 
 //register-faculty
-
 
 // ✅ LOGIN
 export const login = async (req, res) => {
@@ -93,7 +124,6 @@ export const login = async (req, res) => {
   }
 };
 
-
 // ✅ VERIFY TOKEN
 export const verifyToken = async (req, res) => {
   const token = req.cookies.accessToken;
@@ -127,7 +157,9 @@ export const logout = (req, res) => {
     });
     return res.status(200).json({ message: "Successfully logged out." });
   } catch (err) {
-    return res.status(500).json({ message: "Logout failed", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Logout failed", error: err.message });
   }
 };
 
@@ -140,10 +172,13 @@ export const updateProfilePic = async (req, res) => {
       return res.status(400).json({ message: "Profile picture is required" });
     }
 
-    const uploadResponse = await cloudinary.uploader.upload(req.body.profilePic, {
-      folder: "profilePics",
-      upload_preset: "default_preset",
-    });
+    const uploadResponse = await cloudinary.uploader.upload(
+      req.body.profilePic,
+      {
+        folder: "profilePics",
+        upload_preset: "default_preset",
+      }
+    );
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
@@ -187,7 +222,6 @@ export const forgotPassword = async (req, res) => {
 
     const resetLink = `${CLIENT_URL}/reset-password/${resetToken}`;
 
-
     try {
       await sendResetEmail(user.email, resetLink); // ✅ email send
     } catch (emailErr) {
@@ -195,14 +229,14 @@ export const forgotPassword = async (req, res) => {
       return res.status(500).json({ message: "Failed to send reset email." });
     }
 
-    return res.status(200).json({ message: "Password reset link has been sent to your email." });
+    return res
+      .status(200)
+      .json({ message: "Password reset link has been sent to your email." });
   } catch (err) {
     console.error("❌ Forgot password error:", err.message, err.stack);
     return res.status(500).json({ message: "Server error" });
   }
 };
-
-
 
 // ✅ RESET PASSWORD
 export const resetPassword = async (req, res) => {
@@ -229,5 +263,85 @@ export const resetPassword = async (req, res) => {
   } catch (err) {
     console.error("❌ Reset password error:", err);
     res.status(500).json({ error: "Server error" });
+  }
+};
+
+// Secret for HMAC (store in .env in production)
+const TOKEN_SECRET = process.env.TOKEN_SECRET || "my-secret-key";
+
+//forgot Enrollment
+export const forgotEnrollmentNo = async (req, res) => {
+  const { email } = req.body;
+  console.log("POST /API_B/auth/forgot-enrollment, email:", email);
+  try {
+    const student = await Student.findOne({ EmailId: email });
+    if (!student) {
+      return res.status(404).json({ message: "No student with this email" });
+    }
+    // Create token: Base64(email:expiry) + HMAC
+    const expiry = Date.now() + 3600000; // 1 hour
+    const payload = Buffer.from(`${email}:${expiry}`).toString("base64");
+    const hmac = crypto
+      .createHmac("sha256", TOKEN_SECRET)
+      .update(payload)
+      .digest("hex");
+    const token = `${payload}.${hmac}`;
+    console.log("Generated token:", token);
+    const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
+    const recoveryLink = `${CLIENT_URL}/recover-enrollment/${token}`;
+    await sendRecoveryEmail(email, recoveryLink);
+    return res
+      .status(200)
+      .json({ message: "Recovery link sent to your email" });
+  } catch (err) {
+    console.error("❌ Forgot enrollment error:", err.message);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+//recover enrollment
+export const recoverEnrollmentNo = async (req, res) => {
+  const { token } = req.params;
+  console.log("GET /API_B/auth/recover-enrollment/", token);
+  try {
+    // Split token: payload.hmac
+    const [payload, hmac] = token.split(".");
+    if (!payload || !hmac) {
+      return res.status(400).json({ message: "Invalid token format" });
+    }
+    // Verify HMAC
+    const expectedHmac = crypto
+      .createHmac("sha256", TOKEN_SECRET)
+      .update(payload)
+      .digest("hex");
+    if (hmac !== expectedHmac) {
+      return res.status(400).json({ message: "Invalid token signature" });
+    }
+    // Decode payload
+    const decoded = Buffer.from(payload, "base64").toString();
+    const [email, expiry] = decoded.split(":");
+    if (!email || !expiry) {
+      return res.status(400).json({ message: "Invalid token payload" });
+    }
+    console.log("Decoded email:", email, "Expiry:", expiry);
+    // Check expiry
+    if (parseInt(expiry) < Date.now()) {
+      return res.status(400).json({ message: "Token expired" });
+    }
+    // Query Student
+    const student = await Student.findOne({ EmailId: email });
+    if (!student) {
+      return res
+        .status(404)
+        .json({ message: "No student found for this email" });
+    }
+    console.log("Student EnrollmentNo:", student.EnrollmentNo);
+    return res.status(200).json({
+      message: "Enrollment number retrieved",
+      enrollmentNo: student.EnrollmentNo,
+    });
+  } catch (err) {
+    console.error("❌ Recover enrollment error:", err.message);
+    return res.status(500).json({ message: "Server error" });
   }
 };

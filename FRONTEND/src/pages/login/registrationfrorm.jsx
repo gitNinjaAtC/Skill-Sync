@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Select from "react-select"; // Import react-select
 import "./loginform.scss";
 import axios from "axios";
@@ -111,12 +111,10 @@ export const RegisterForm = () => {
     try {
       await axios.post(
         "https://skill-sync-backend-522o.onrender.com/API_B/auth/register",
-        {
-          ...inputs,
-        }
+        { ...inputs }
       );
 
-      setSuccess("Registration successful. Awaiting admin approval.");
+      setSuccess("Registration successful. Account activated.");
       setInputs({
         email: "",
         enrollmentNo: "",
@@ -182,6 +180,9 @@ export const RegisterForm = () => {
               value={inputs.enrollmentNo}
               onChange={handleChange}
             />
+            <Link to="/forgot-Enrollment" className="forgot-link">
+              Forgot Enrollment Number?
+            </Link>
             <input
               required
               className="input"
