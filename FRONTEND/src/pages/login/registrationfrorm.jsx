@@ -180,11 +180,6 @@ export const RegisterForm = () => {
               value={inputs.enrollmentNo}
               onChange={handleChange}
             />
-            {inputs.role !== "faculty" && (
-              <Link to="/forgot-Enrollment" className="forgot-link">
-                Forgot Enrollment Number?
-              </Link>
-            )}
 
             <input
               required
@@ -194,7 +189,7 @@ export const RegisterForm = () => {
               placeholder="Password"
               value={inputs.password}
               onChange={handleChange}
-            />
+              />
 
             <Select
               options={options}
@@ -206,6 +201,11 @@ export const RegisterForm = () => {
               name="role"
               classNamePrefix="custom-select"
             />
+            {inputs.role !== "faculty" && (
+              <Link to="/forgot-Enrollment" className="forgot-link">
+                Forgot Enrollment Number?
+              </Link>
+            )}
 
             {err && <p className="error">{err}</p>}
             {success && <p className="success">{success}</p>}
@@ -215,7 +215,7 @@ export const RegisterForm = () => {
               type="submit"
               value={loading ? "Registering..." : "Register"}
               disabled={loading}
-            />
+              />
           </form>
         </div>
       </div>
