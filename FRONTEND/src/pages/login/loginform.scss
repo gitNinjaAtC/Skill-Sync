@@ -68,25 +68,32 @@
     }
 
     .enrollment-input {
-  transition: transform 0.5s ease, opacity 0.5s ease;
-  transform: translateX(0);
-  opacity: 1;
-  position: relative; // ensure normal flow for input
-  pointer-events: auto;
-}
-.hide-enrollment {
-  transform: translateX(100%);
-  opacity: 0;
-  pointer-events: none; // disable interaction
-  position: relative; // keep layout consistent
-  max-width: 0;       // shrink width without breaking layout
-  overflow: hidden;   // hide overflowing content
-  padding: 0;         // remove padding for complete hide
-  margin: 0;          // remove margin so it collapses smoothly
-  border: none;       // remove border when hidden
-}
+      transition: transform 0.5s ease, opacity 0.5s ease;
+      transform: translateX(0);
+      opacity: 1;
+      position: relative; // ensure normal flow for input
+      pointer-events: auto;
+    }
+    .hide-enrollment {
+      transform: translateX(100%);
+      opacity: 0;
+      pointer-events: none; // disable interaction
+      position: relative; // keep layout consistent
+      max-width: 0; // shrink width without breaking layout
+      overflow: hidden; // hide overflowing content
+      padding: 0; // remove padding for complete hide
+      margin: 0; // remove margin so it collapses smoothly
+      border: none; // remove border when hidden
+    }
 
-
+    .forgot-link {
+      padding-left: 1rem;
+      font-size: 0.8rem;
+      margin-top: 10px;
+      color: #0099ff;
+      text-decoration: none;
+      display: block;
+    }
 
     @keyframes fadeInDown {
       from {
@@ -118,7 +125,7 @@
       background: linear-gradient(45deg, #1089d3 0%, #12b1d1 100%);
       color: white;
       padding-block: 15px;
-      margin: 20px auto 0;
+      margin: 10px auto 0;
       border-radius: 20px;
       box-shadow: rgba(133, 189, 215, 0.88) 0px 20px 10px -15px;
       border: none;
