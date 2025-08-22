@@ -19,7 +19,7 @@ const ForgotEnrollment = () => {
     try {
       console.log("Sending recovery request with email:", email);
       const res = await axios.post(
-        // "https://skill-sync-backend-522o.onrender.com/API_B/auth/forgot-enrollment",
+         "https://skill-sync-backend-522o.onrender.com/API_B/auth/forgot-enrollment",
         "http://localhost:8800/API_B/auth/forgot-enrollment",
         { email }
       );
