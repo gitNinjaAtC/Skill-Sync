@@ -60,12 +60,7 @@ const LandingPage = () => {
             <img
               src={logo}
               alt="SISTec Alumni Portal Logo"
-              style={{
-                height: "30%",
-                width: "30%",
-                objectFit: "contain",
-                filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.12))",
-              }}
+              
             />
           </div>
           {!showLoginForm && !showRegisterForm && (

@@ -61,13 +61,22 @@ a {
   }
 }
 
+@media (max-width: 960px)
+{
+  .btn-login,
+  .btn-register {
+    width: 100%;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}
 @media (max-width: 480px) {
 
   .btn-login,
   .btn-register {
     width: 100%;
-    padding: 12px;
-    font-size: 1rem;
+    padding: 5px 10px;
+    font-size: 0.8rem;
   }
 }
 
@@ -126,17 +135,23 @@ button.btn {
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1000;
+    z-index: 100000;
     background-color: rgba(19, 17, 18, 0.8);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 40px 5px 40px;
+    padding: 15px 40px 5px 40px;
 
     .logo {
       font-size: 1.5rem;
       font-weight: bold;
       color: var(--accent-primary);
+      img {
+      height: 50px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.12));
+    }
     }
 
     .auth-buttons {
@@ -167,7 +182,7 @@ button.btn {
   .login-popup,
   .registration-popup {
     position: absolute;
-    top: 1.5rem;
+    top: 2rem;
     right: 5rem;
     z-index: 2000;
   }
@@ -175,11 +190,10 @@ button.btn {
   // Tablet (≤960px)
   @media (max-width: 960px) {
     .header {
-      padding: 20px 40px;
+      padding: 15px 40px 5px 40px;
 
-      .logo {
-        font-size: 1.3rem;
-        padding: 0;
+      .logo img {
+        height: 45px;
       }
 
       .auth-buttons {
@@ -212,10 +226,10 @@ button.btn {
   // Mobile (≤480px)
   @media (max-width: 480px) {
     .header {
-      padding: 15px 20px;
+      padding: 15px 20px 5px 20px;
 
-      .logo {
-        font-size: 1.2rem;
+      .logo img {
+        height: 40px;
       }
 
       .auth-buttons {

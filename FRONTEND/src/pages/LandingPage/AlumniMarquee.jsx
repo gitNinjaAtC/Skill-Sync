@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Marquee from "react-fast-marquee";
 import AlumniCard from "./AlumniCard";
 import "./AlumniMarquee.scss";
@@ -16,7 +16,6 @@ import Sonu from "./about-image/sonu.jpg";
 import Aman from "./about-image/aman.jpg";
 import Aditya from "./about-image/aditya-gl.jpg";
 import Pankaj from "./about-image/pankaj.jpg";
-
 
 const alumniData = [
   {
@@ -72,46 +71,67 @@ const alumniData = [
   },
 ];
 
-// Repeat the data list as needed
+// Repeat data for scrolling
 const repeatedData = [...alumniData, ...alumniData, ...alumniData];
 
-const AlumniMarquee = () => (
-  <section className="alumni-marquee-section">
-    <div
-      className="triple-border-title"
-      data-aos="fade-right"
-      data-aos-offset="300"
-      data-aos-easing="ease-in-sine"
-    >
-      <div className="line-group left">
-        <span className="line thick"></span>
-        <span className="line medium"></span>
-        <span className="line thin"></span>
+const AlumniMarquee = () => {
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 960);
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth > 960);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return (
+    <section className="alumni-marquee-section">
+      <div
+        className="triple-border-title"
+        data-aos="fade-right"
+        data-aos-offset="300"
+        data-aos-easing="ease-in-sine"
+      >
+        <div className="line-group left">
+          <span className="line thick"></span>
+          <span className="line medium"></span>
+          <span className="line thin"></span>
+        </div>
+        <h2>Our Distinguished Alumni</h2>
+        <div className="line-group right">
+          <span className="line thin"></span>
+          <span className="line medium"></span>
+          <span className="line thick"></span>
+        </div>
       </div>
-      <h2>Our Distinguished Alumni</h2>
-      <div className="line-group right">
-        <span className="line thin"></span>
-        <span className="line medium"></span>
-        <span className="line thick"></span>
+
+      <div className="alumni-marquee-wrapper">
+        <div className="marquee-row">
+          <Marquee
+            gradient={isDesktop} // ✅ gradient only for desktop
+            gradientColor="#f6f3f3"
+            speed={40}
+          >
+            {repeatedData.map((alumnus, index) => (
+              <AlumniCard key={`forward-${index}`} {...alumnus} />
+            ))}
+          </Marquee>
+        </div>
+
+        <div className="marquee-row reverse">
+          <Marquee
+            gradient={isDesktop} // ✅ remove for mobile/tablet
+            gradientColor="#f6f3f3"
+            speed={40}
+            direction="right"
+          >
+            {repeatedData.map((alumnus, index) => (
+              <AlumniCard key={`reverse-${index}`} {...alumnus} />
+            ))}
+          </Marquee>
+        </div>
       </div>
-    </div>
-    <div className="alumni-marquee-wrapper">
-      <div className="marquee-row">
-        <Marquee gradient gradientColor="#f6f3f3" speed={40}>
-          {repeatedData.map((alumnus, index) => (
-            <AlumniCard key={`forward-${index}`} {...alumnus} />
-          ))}
-        </Marquee>
-      </div>
-      <div className="marquee-row reverse">
-        <Marquee gradient gradientColor="#f6f3f3" speed={40} direction="right">
-          {repeatedData.map((alumnus, index) => (
-            <AlumniCard key={`reverse-${index}`} {...alumnus} />
-          ))}
-        </Marquee>
-      </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default AlumniMarquee;
