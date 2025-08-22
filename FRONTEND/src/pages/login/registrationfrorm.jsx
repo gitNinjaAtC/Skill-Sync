@@ -114,7 +114,11 @@ export const RegisterForm = () => {
         { ...inputs }
       );
 
-      setSuccess("Registration successful. Waiting for Admin Approval.");
+      if (inputs.role === "faculty") {
+        setSuccess("Registration successful. Waiting for Admin Approval.");
+      } else {
+        setSuccess("Your registration is successful. Please proceed to login.");
+      }
       setInputs({
         email: "",
         enrollmentNo: "",
