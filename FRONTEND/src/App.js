@@ -81,7 +81,7 @@ function App() {
                 <Outlet />
               </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
           </div>
         </div>
       </QueryClientProvider>

@@ -121,12 +121,20 @@ const PeopleSection = () => {
                   <p>
                     <strong>Name:</strong> {user.name}
                   </p>
-                  <p>
-                    <strong>Branch:</strong> {user.branch}
-                  </p>
-                  <p>
-                    <strong>Batch:</strong> {user.batch}
-                  </p>
+
+                  {user.role === "faculty" ? (
+                    <span className="faculty-tag">Faculty</span>
+                  ) : (
+                    <>
+                      <p>
+                        <strong>Branch:</strong> {user.branch}
+                      </p>
+                      <p>
+                        <strong>Batch:</strong> {user.batch}
+                      </p>
+                    </>
+                  )}
+
                   <div className="card-buttons">
                     <button onClick={() => handleView(user)}>View</button>
                     <button onClick={() => handleMessage(user)}>Message</button>
@@ -156,13 +164,22 @@ const PeopleSection = () => {
               <p className="left">
                 <strong>Email:</strong> {selectedUser.email}
               </p>
-              <p className="right">
-                <strong>Branch:</strong> {selectedUser.branch}
-              </p>
+
+              {selectedUser.role === "faculty" ? (
+                <p className="right faculty-tag">Faculty</p>
+              ) : (
+                <p className="right">
+                  <strong>Branch:</strong> {selectedUser.branch}
+                </p>
+              )}
             </div>
-            <p>
-              <strong>Batch:</strong> {selectedUser.batch}
-            </p>
+
+            {selectedUser.role !== "faculty" && (
+              <p>
+                <strong>Batch:</strong> {selectedUser.batch}
+              </p>
+            )}
+
             {selectedUser.skills && (
               <p>
                 <strong>Skills:</strong>{" "}
