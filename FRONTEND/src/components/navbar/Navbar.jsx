@@ -228,11 +228,9 @@ const Navbar = () => {
                       e.target.src = defaultAvatar;
                     }}
                   />
-                  <div className={`profile-button ${isActive(`/profile/${currentUser?.id}`) ? "active" : ""}`}
-               onClick={() => closeSidebarAndNavigate({handleProfile})}>
-                <span>{currentUser?.name}</span>
-              </div>
-                  
+                <span className={`profile-button ${isActive(`/profile/${currentUser?.id}`) ? "active" : ""}`}
+               onClick={() => closeSidebarAndNavigate({handleProfile})}>{currentUser?.name}</span>
+              
                 </button>
               </div>
               <div className={`item ${isActive("/home") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/home")}>
