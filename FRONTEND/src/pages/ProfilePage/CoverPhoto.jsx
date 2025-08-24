@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import defaultCover from "../../assets/cover.png";
 
-const CoverPhoto = ({ userId }) => {
+const CoverPhoto = ({ userId, currentUserId }) => {
   const [coverImage, setCoverImage] = useState(defaultCover);
   const fileInputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
@@ -75,14 +75,19 @@ const CoverPhoto = ({ userId }) => {
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
       )}
-      <button
-        className="edit-cover"
-        onClick={handleEditClick}
-        disabled={uploading}
-        style={{ position: "absolute", top: 16, right: 16, zIndex: 10 }}
-      >
-        {uploading ? "Uploading..." : "Edit Cover Photo"}
-      </button>
+
+      {/* Only show edit button if it's the current user's own profile */}
+      {currentUserId === userId && (
+        <button
+          className="edit-cover"
+          onClick={handleEditClick}
+          disabled={uploading}
+          style={{ position: "absolute", top: 16, right: 16, zIndex: 10 }}
+        >
+          {uploading ? "Uploading..." : "Edit Cover Photo"}
+        </button>
+      )}
+
       <input
         type="file"
         accept="image/*"

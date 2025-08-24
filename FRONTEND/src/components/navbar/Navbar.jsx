@@ -228,7 +228,11 @@ const Navbar = () => {
                       e.target.src = defaultAvatar;
                     }}
                   />
-                  <span>{currentUser?.name}</span>
+                  <div className={`profile-button ${isActive(`/profile/${currentUser?.id}`) ? "active" : ""}`}
+               onClick={() => closeSidebarAndNavigate({handleProfile})}>
+                <span>{currentUser?.name}</span>
+              </div>
+                  
                 </button>
               </div>
               <div className={`item ${isActive("/home") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/home")}>
@@ -237,7 +241,7 @@ const Navbar = () => {
               </div>
               <div className={`item ${isActive("/people") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/people")}>
                 <img src={Friends} alt="Friends" />
-                <span>Peoples</span>
+                <span>People</span>
               </div>
               <div className={`item ${isActive("/forums") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/forums")}>
                 <img src={Forums} alt="Forums" />
@@ -267,7 +271,7 @@ const Navbar = () => {
               <span>Others</span>
               <div className={`item ${isActive("/Fundraiser") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/Fundraiser")}>
                 <img src={Fund} alt="Fundraiser" />
-                <span>Fundraiser</span>
+                <span>Collaborate</span>
               </div>
               <div className={`item ${isActive("/resume-builder") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/resume-builder")}>
                 <img src={Resume} alt="Resume Builder" />

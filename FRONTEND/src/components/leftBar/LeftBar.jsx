@@ -90,7 +90,7 @@ const LeftBar = () => {
           <span>Others</span>
           <div className={`item ${isActive("/Fundraiser") ? "active" : ""}`} onClick={() => navigate("/Fundraiser")}>
             <img src={Fund} alt="Fundraiser" />
-            <span>Fundraiser</span>
+            <span>Collaborate</span>
           </div>
           <div className={`item ${isActive("/resume-builder") ? "active" : ""}`} onClick={() => navigate("/resume-builder")}>
             <img src={Resume} alt="Resume Builder" />
