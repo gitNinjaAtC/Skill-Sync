@@ -174,32 +174,32 @@ router.post("/upload", upload.single("file"), importFile);
   });
 
   // ✅ Get all students in a batch and branch
-  router.get("/students", async (req, res) => {
-  try {
-    const admin = await User.findOne({ email, role: "admin" });
-    if (!admin) {
-      return res
-        .status(401)
-        .json({ message: "Admin not found or unauthorized" });
-    }
+//   router.get("/students", async (req, res) => {
+//   try {
+//     const admin = await User.findOne({ email, role: "admin" });
+//     if (!admin) {
+//       return res
+//         .status(401)
+//         .json({ message: "Admin not found or unauthorized" });
+//     }
 
-    const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+//     const isMatch = await bcrypt.compare(password, admin.password);
+//     if (!isMatch) {
+//       return res.status(401).json({ message: "Invalid credentials" });
+//     }
 
-    const token = jwt.sign(
-      { id: admin._id, isAdmin: true },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+//     const token = jwt.sign(
+//       { id: admin._id, isAdmin: true },
+//       process.env.JWT_SECRET,
+//       { expiresIn: "1d" }
+//     );
 
-    res.status(200).json({ token, admin });
-  } catch (err) {
-    console.error("Admin login error:", err);
-    res.status(500).json({ message: "Server error during login" });
-  }
-});
+//     res.status(200).json({ token, admin });
+//   } catch (err) {
+//     console.error("Admin login error:", err);
+//     res.status(500).json({ message: "Server error during login" });
+//   }
+// });
 
 // ✅ GET user stats
 router.get("/stats", async (req, res) => {
@@ -250,14 +250,19 @@ router.delete("/user/:id", async (req, res) => {
 });
 
 // ✅ Get all students in a batch and branch
+// ✅ Get all students in a batch and branch
 router.get("/students", async (req, res) => {
   try {
     const { batch, branch } = req.query;
+
     if (!batch || !branch) {
       return res.status(400).json({ error: "Batch and Branch are required" });
     }
-    const students = await Student.find({ batch, branch });
-    res.status(200).json(students);
+
+    const students = await Student.find({ batch, branch }).lean();
+
+    // Always return 200 with an array (even if empty)
+    return res.status(200).json(students);
   } catch (error) {
     console.error("Error fetching students:", error);
     res.status(500).json({ error: "Error fetching students" });

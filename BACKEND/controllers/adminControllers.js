@@ -299,3 +299,25 @@ export const importFile = async (req, res) => {
     });
   }
 };
+// Get students by batch and branch
+export const getStudents = async (req, res) => {
+  try {
+    const { batch, branch } = req.query;
+
+    if (!batch || !branch) {
+      return res
+        .status(400)
+        .json({ error: "Batch and Branch are required" });
+    }
+
+    const students = await Student.find({ batch, branch }).lean();
+
+    // Always return 200 with an array (even if empty)
+    return res.status(200).json(students);
+  } catch (err) {
+    console.error("❌ Error fetching students:", err);
+    return res
+      .status(500)
+      .json({ error: "Server error while fetching students" });
+  }
+};

@@ -35,6 +35,8 @@ const Batches = () => {
   const [customBatchYear, setCustomBatchYear] = useState("");
   const [customBatches, setCustomBatches] = useState([]);
   const [viewedStudents, setViewedStudents] = useState([]);
+  const [viewedBatch, setViewedBatch] = useState(""); // ✅ added
+  const [viewedBranch, setViewedBranch] = useState(""); // ✅ added
   const inputRef = useRef();
 
   const allowedTypes = ["csv", "xlsx"];
@@ -283,6 +285,8 @@ const Batches = () => {
       }
 
       setViewedStudents(response.data);
+      setViewedBatch(selectedBatch); // ✅ store context
+      setViewedBranch(selectedBranch); // ✅ store context
     } catch (err) {
       console.error("Error fetching students:", err);
       Swal.fire("Error", "Failed to fetch students. Try again later.", "error");
@@ -563,7 +567,7 @@ const Batches = () => {
       {viewedStudents.length > 0 && (
         <div className="preview-table">
           <h3>
-            Students in {selectedBatch} - {selectedBranch}
+            Students in {viewedBatch} - {viewedBranch}
           </h3>
           <table>
             <thead>
