@@ -10,6 +10,7 @@ import {
   Twitter as TwitterIcon,
   Message as MessageIcon,
 } from "@mui/icons-material";
+import people from "../../assets/peoples.png";
 
 const SkeletonCard = () => (
   <div className="user-card skeleton-card">
@@ -42,9 +43,12 @@ const PeopleSection = () => {
 
   const preloadSkeletonCount = async () => {
     try {
-      const res = await fetch("https://skill-sync-backend-522o.onrender.com/API_B/users/users", {
-        credentials: "include",
-      });
+      const res = await fetch(
+        "https://skill-sync-backend-522o.onrender.com/API_B/users/users",
+        {
+          credentials: "include",
+        }
+      );
       const data = await res.json();
       setSkeletonCount(data.length || 12);
       setTimeout(() => {
@@ -89,7 +93,11 @@ const PeopleSection = () => {
   return (
     <div className="people-section">
       <div className="people-header">
-        <h2>People</h2>
+        <div className="left-section">
+          <img src={people} alt="post" className="home-icon" />
+          <span className="home-title">People</span>
+        </div>
+
         <input
           type="text"
           placeholder="Search by name, branch or batch..."
@@ -227,15 +235,14 @@ const PeopleSection = () => {
                 </a>
               )}
               {selectedUser.twitter && (
-                <a
-                  href={selectedUser.twitter}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a href={selectedUser.twitter} target="_blank" rel="noreferrer">
                   <TwitterIcon fontSize="large" />
                 </a>
               )}
-              <button className="btn" onClick={() => handleMessage(selectedUser)}>
+              <button
+                className="btn"
+                onClick={() => handleMessage(selectedUser)}
+              >
                 <MessageIcon fontSize="large" />
               </button>
             </div>

@@ -111,13 +111,21 @@ const Navbar = () => {
     <>
       <div className="navbar">
         <div className="left">
-          <div className="hamburgerMenu" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <div
+            className="hamburgerMenu"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
             {mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
           </div>
 
-          <Link to="/home" className="logo">SISTec</Link>
+          <Link to="/home" className="logo">
+            SISTec
+          </Link>
 
-          <div className="mobileSearchIcon" onClick={() => setMobileSearchOpen(true)}>
+          <div
+            className="mobileSearchIcon"
+            onClick={() => setMobileSearchOpen(true)}
+          >
             <SearchOutlinedIcon />
           </div>
         </div>
@@ -130,7 +138,10 @@ const Navbar = () => {
         </div>
 
         <div className="right">
-          <Link to="/home" className={`homeIconWrapper ${isActive("/home") ? "active" : ""}`}>
+          <Link
+            to="/home"
+            className={`homeIconWrapper ${isActive("/home") ? "active" : ""}`}
+          >
             <HomeOutlinedIcon className="homeIcon" />
           </Link>
 
@@ -142,16 +153,24 @@ const Navbar = () => {
 
           <div className="rightIconsDesktop">
             <button
-              className={`profile-button ${isActive(`/profile/${currentUser?.id}`) ? "active" : ""}`}
+              className={`profile-button ${
+                isActive(`/profile/${currentUser?.id}`) ? "active" : ""
+              }`}
               onClick={handleProfile}
             >
               <PersonOutlinedIcon />
             </button>
-            <Link to="#" className={`iconWrapper ${isActive("#") ? "active" : ""}`}>
+            <Link
+              to="#"
+              className={`iconWrapper ${isActive("#") ? "active" : ""}`}
+            >
               <EmailOutlinedIcon className="mailIcon" />
             </Link>
 
-            <Link to="#" className={`iconWrapper ${isActive("#") ? "active" : ""}`}>
+            <Link
+              to="#"
+              className={`iconWrapper ${isActive("#") ? "active" : ""}`}
+            >
               <NotificationsOutlinedIcon className="notificationIcon" />
             </Link>
           </div>
@@ -182,7 +201,7 @@ const Navbar = () => {
                   />
                   <span>{currentUser?.name}</span>
                 </div>
-                <div className="dropdown-item" onClick={handleProfile} >
+                <div className="dropdown-item" onClick={handleProfile}>
                   <PersonOutlinedIcon />
                   <span>Your Profile</span>
                 </div>
@@ -217,47 +236,77 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="mobileSidebar" ref={sidebarRef}>
           <div className="container">
-            <div className="menu">
+            <div className="menu">              
               <div className="user">
-                <button className="profile-button" onClick={handleProfile}>
+                <button
+                  className={`profile-button ${
+                    isActive(`/profile/${currentUser?.id}`) ? "active" : ""
+                  }`}
+                  onClick={handleProfile}
+                >
                   <img
                     src={getProfilePicUrl()}
-                    alt="User"
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.src = defaultAvatar;
                     }}
+                    alt="User"
                   />
-                <span className={`profile-button ${isActive(`/profile/${currentUser?.id}`) ? "active" : ""}`}
-               onClick={() => closeSidebarAndNavigate({handleProfile})}>{currentUser?.name}</span>
-              
+                  <span className={`${isActive(`/profile/${currentUser?.id}`) ? "active" : ""}`}
+                    onClick={() => closeSidebarAndNavigate({ handleProfile })}>
+                    {currentUser?.name}
+                    <br />
+                    <span className="role">{currentUser?.role}</span>
+                  </span>
                 </button>
               </div>
-              <div className={`item ${isActive("/home") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/home")}>
+
+              <div
+                className={`item ${isActive("/home") ? "active" : ""}`}
+                onClick={() => closeSidebarAndNavigate("/home")}
+              >
                 <img src={home} alt="Home" />
                 <span>Home</span>
               </div>
-              <div className={`item ${isActive("/people") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/people")}>
+              <div
+                className={`item ${isActive("/people") ? "active" : ""}`}
+                onClick={() => closeSidebarAndNavigate("/people")}
+              >
                 <img src={Friends} alt="Friends" />
                 <span>People</span>
               </div>
-              <div className={`item ${isActive("/forums") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/forums")}>
+              <div
+                className={`item ${isActive("/forums") ? "active" : ""}`}
+                onClick={() => closeSidebarAndNavigate("/forums")}
+              >
                 <img src={Forums} alt="Forums" />
                 <span>Forums</span>
               </div>
-              <div className={`item ${isActive("/job") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/job")}>
+              <div
+                className={`item ${isActive("/job") ? "active" : ""}`}
+                onClick={() => closeSidebarAndNavigate("/job")}
+              >
                 <img src={Jobs} alt="Jobs" />
                 <span>Jobs</span>
               </div>
-              <div className={`item ${isActive("/events") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/events")}>
+              <div
+                className={`item ${isActive("/events") ? "active" : ""}`}
+                onClick={() => closeSidebarAndNavigate("/events")}
+              >
                 <img src={Events} alt="Events" />
                 <span>Events</span>
               </div>
-              <div className={`item ${isActive("/gallery") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/gallery")}>
+              <div
+                className={`item ${isActive("/gallery") ? "active" : ""}`}
+                onClick={() => closeSidebarAndNavigate("/gallery")}
+              >
                 <img src={Gallery} alt="Gallery" />
                 <span>Gallery</span>
               </div>
-              <div className={`item ${isActive("/messages") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/messages")}>
+              <div
+                className={`item ${isActive("/messages") ? "active" : ""}`}
+                onClick={() => closeSidebarAndNavigate("/messages")}
+              >
                 <img src={Messages} alt="Messages" />
                 <span>Messages</span>
               </div>
@@ -267,11 +316,19 @@ const Navbar = () => {
 
             <div className="menu">
               <span>Others</span>
-              <div className={`item ${isActive("/Fundraiser") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/Fundraiser")}>
+              <div
+                className={`item ${isActive("/Fundraiser") ? "active" : ""}`}
+                onClick={() => closeSidebarAndNavigate("/Fundraiser")}
+              >
                 <img src={Fund} alt="Fundraiser" />
                 <span>Collaborate</span>
               </div>
-              <div className={`item ${isActive("/resume-builder") ? "active" : ""}`} onClick={() => closeSidebarAndNavigate("/resume-builder")}>
+              <div
+                className={`item ${
+                  isActive("/resume-builder") ? "active" : ""
+                }`}
+                onClick={() => closeSidebarAndNavigate("/resume-builder")}
+              >
                 <img src={Resume} alt="Resume Builder" />
                 <span>Resume Builder</span>
               </div>

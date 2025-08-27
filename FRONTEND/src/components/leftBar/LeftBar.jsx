@@ -39,7 +39,9 @@ const LeftBar = () => {
         <div className="menu">
           <div className="user">
             <button
-              className={`profile-button ${isActive(`/profile/${currentUser?.id}`) ? "active" : ""}`}
+              className={`profile-button ${
+                isActive(`/profile/${currentUser?.id}`) ? "active" : ""
+              }`}
               onClick={handleProfile}
             >
               <img
@@ -50,35 +52,60 @@ const LeftBar = () => {
                 }}
                 alt="User"
               />
-              <span>{currentUser?.name}</span>
+              <span>
+                {currentUser?.name}
+                <br />
+                <span className="role">{currentUser?.role}</span>
+              </span>
             </button>
           </div>
 
-          <div className={`item ${isActive("/home") ? "active" : ""}`} onClick={() => navigate("/home")}>
+          <div
+            className={`item ${isActive("/home") ? "active" : ""}`}
+            onClick={() => navigate("/home")}
+          >
             <img src={home} alt="Home" />
             <span>Home</span>
           </div>
-          <div className={`item ${isActive("/people") ? "active" : ""}`} onClick={() => navigate("/people")}>
+          <div
+            className={`item ${isActive("/people") ? "active" : ""}`}
+            onClick={() => navigate("/people")}
+          >
             <img src={Friends} alt="Friends" />
             <span>People</span>
           </div>
-          <div className={`item ${isActive("/forums") ? "active" : ""}`} onClick={() => navigate("/forums")}>
+          <div
+            className={`item ${isActive("/forums") ? "active" : ""}`}
+            onClick={() => navigate("/forums")}
+          >
             <img src={Forums} alt="Forums" />
             <span>Forums</span>
           </div>
-          <div className={`item ${isActive("/job") ? "active" : ""}`} onClick={() => navigate("/job")}>
+          <div
+            className={`item ${isActive("/job") ? "active" : ""}`}
+            onClick={() => navigate("/job")}
+          >
             <img src={Jobs} alt="Jobs" />
             <span>Jobs</span>
           </div>
-          <div className={`item ${isActive("/events") ? "active" : ""}`} onClick={() => navigate("/events")}>
+          <div
+            className={`item ${isActive("/events") ? "active" : ""}`}
+            onClick={() => navigate("/events")}
+          >
             <img src={Events} alt="Events" />
             <span>Events</span>
           </div>
-          <div className={`item ${isActive("/gallery") ? "active" : ""}`} onClick={() => navigate("/gallery")}>
+          <div
+            className={`item ${isActive("/gallery") ? "active" : ""}`}
+            onClick={() => navigate("/gallery")}
+          >
             <img src={GalleryIcon} alt="Gallery" />
             <span>Gallery</span>
           </div>
-          <div className={`item ${isActive("/messages") ? "active" : ""}`} onClick={() => navigate("/messages")}>
+          <div
+            className={`item ${isActive("/messages") ? "active" : ""}`}
+            onClick={() => navigate("/messages")}
+          >
             <img src={Messages} alt="Messages" />
             <span>Messages</span>
           </div>
@@ -88,11 +115,17 @@ const LeftBar = () => {
 
         <div className="menu">
           <span>Others</span>
-          <div className={`item ${isActive("/Fundraiser") ? "active" : ""}`} onClick={() => navigate("/Fundraiser")}>
+          <div
+            className={`item ${isActive("/Fundraiser") ? "active" : ""}`}
+            onClick={() => navigate("/Fundraiser")}
+          >
             <img src={Fund} alt="Fundraiser" />
             <span>Collaborate</span>
           </div>
-          <div className={`item ${isActive("/resume-builder") ? "active" : ""}`} onClick={() => navigate("/resume-builder")}>
+          <div
+            className={`item ${isActive("/resume-builder") ? "active" : ""}`}
+            onClick={() => navigate("/resume-builder")}
+          >
             <img src={Resume} alt="Resume Builder" />
             <span>Resume Builder</span>
           </div>

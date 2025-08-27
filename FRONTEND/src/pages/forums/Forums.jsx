@@ -25,7 +25,10 @@ const Forums = () => {
         setForums(res.data);
         setError(null);
       } catch (err) {
-        console.error("Error fetching forums:", err.response?.data || err.message);
+        console.error(
+          "Error fetching forums:",
+          err.response?.data || err.message
+        );
         setError(err.response?.data?.message || "Failed to load forums.");
       } finally {
         setLoading(false);
@@ -60,9 +63,22 @@ const Forums = () => {
 
   return (
     <div className="forum-container">
-      <div className="item">
-        <img src={Forum} alt="Forums" />
-        <span>Forums</span>
+      <div className="form-header">
+        <div className="left-section">
+          <img src={Forum} alt="Forums" />
+          <span>Forums</span>
+        </div>
+
+        {currentUser &&
+          ["admin", "alumni", "faculty"].includes(currentUser.role) && (
+            <button
+              className="create-forum-btn"
+              onClick={handleCreateForum}
+              disabled={authLoading || loading}
+            >
+              Create Forum
+            </button>
+          )}
       </div>
 
       {authLoading || loading ? (
@@ -89,15 +105,13 @@ const Forums = () => {
               ))}
             </div>
 
-
-
             <div className="comment-actions">
               {/* <p className="comment-count">💬 0 Comments so far</p> */}
-                          <div className="interview-section">
-              <p className="interview-name">
-                Created by {post.created_by?.name}
-              </p>
-            </div>
+              <div className="interview-section">
+                <p className="interview-name">
+                  Created by {post.created_by?.name}
+                </p>
+              </div>
 
               <div className="comment-buttons">
                 <button
@@ -121,16 +135,6 @@ const Forums = () => {
             </div>
           </div>
         ))
-      )}
-
-      {currentUser && ["admin", "alumni", "faculty"].includes(currentUser.role) && (
-        <button
-          className="create-forum-btn"
-          onClick={handleCreateForum}
-          disabled={authLoading || loading}
-        >
-          Create Forum
-        </button>
       )}
     </div>
   );

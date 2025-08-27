@@ -1,13 +1,13 @@
 @import "../../style";
 
 .people-section {
-  padding: 2rem;
+  padding: 1.5rem;
 
   h2 {
     font-size: 2rem;
     margin-bottom: 1.5rem;
     @include themify($themes) {
-      color: themed(textColor)
+      color: themed(textColor);
     }
   }
 
@@ -19,14 +19,12 @@
 
   .user-card {
     display: flex;
-    background: white;
     border-radius: 12px;
     padding: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-
+    
     @include themify($themes) {
-      background: themed(bgSoft);
+      background-color: themed("bg");
       color: themed(textColor);
     }
 
@@ -44,7 +42,7 @@
         height: 70px;
         border-radius: 50%;
         object-fit: cover;
-        border: 2px solid #B0C4DE;
+        border: 2px solid #b0c4de;
       }
     }
 
@@ -67,7 +65,7 @@
           margin-right: 0.5rem;
           padding: 0.4rem 0.9rem;
           border: none;
-          background: #4169E1;
+          background: #4169e1;
           color: white;
           border-radius: 6px;
           font-weight: 600;
@@ -75,167 +73,166 @@
           transition: all 0.3s;
 
           &:hover {
-            background: #87CEFA;
+            background: #87cefa;
           }
         }
       }
     }
   }
 
-.popup-overlay {
-  position: fixed;
-  margin-top: 5rem;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
+  .popup-overlay {
+    position: fixed;
+    margin-top: 5rem;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
 
-  .popup-card {
-    position: relative;
-    border-radius: 20px;
-    padding: 2rem 1.5rem;
-    width: 90%;
-    max-width: 460px;
-    max-height: 85vh;
-    overflow-y: auto;
-    text-align: center;
+    .popup-card {
+      position: relative;
+      border-radius: 20px;
+      padding: 2rem 1.5rem;
+      width: 90%;
+      max-width: 460px;
+      max-height: 85vh;
+      overflow-y: auto;
+      text-align: center;
 
-    @include themify($themes) {
-      background: themed(bgSoft);
-      color: themed(textColor);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    .close-btn {
-  position: absolute;
-  top: 5px;
-  right: 10px;
-  background: transparent;
-  border: none;
-  font-size: 1.4rem;
-  cursor: pointer;
-  color: #353536c2;
-  transition: color 0.3s, transform 0.2s;
-
-  &:hover {
-    color: #f03030e6;
-    transform: scale(1.1);
-  }
-}
-
-
-    .popup-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  p {
-    &.left {
-      text-align: left;
-    }
-
-    &.right {
-      text-align: right;
-    }
-
-    strong {
       @include themify($themes) {
-        color: themed(textColorSoft);
+        background: themed(bgSoft);
+        color: themed(textColor);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       }
-    }
-  }
-}
 
-    .popup-profile-pic {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin: 0 auto 1rem auto;
-      border: 3px solid #B0C4DE;
-      box-shadow: 0 0 16px rgba(176, 196, 222, 0.8);
-    }
-
-    h3 {
-      font-size: 1.8rem;
-      margin-bottom: 0.5rem;
-      color: #4169E1;
-      font-weight: 700;
-    }
-
-    p {
-      margin: 0.4rem 0;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      text-align: left;
-      strong {
-        @include themify($themes) {
-          color: themed(textColorSoft);
-        }
-      }
-    }
-
-    .popup-links{
-      margin: 1.2rem 0 1rem 0;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-
-      a , button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 42px;
-        height: 42px;
+      .close-btn {
+        position: absolute;
+        top: 5px;
+        right: 10px;
         background: transparent;
-        border: 2px solid #4169E1;
-        border-radius: 50%;
-        color: #4169E1;
-        transition: all 0.3s;
-
-        svg {
-          font-size: 28px;
-        }
+        border: none;
+        font-size: 1.4rem;
+        cursor: pointer;
+        color: #353536c2;
+        transition: color 0.3s, transform 0.2s;
 
         &:hover {
-          background: #4169E1;
-          color: white;
+          color: #f03030e6;
           transform: scale(1.1);
         }
       }
-    }
 
-    .popup-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 1.5rem;
+      .popup-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 
-      button {
-        padding: 0.6rem 1.4rem;
-        border: none;
-        border-radius: 10px;
-        background: #4169E1;
-        color: white;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.3s, transform 0.2s;
+        p {
+          &.left {
+            text-align: left;
+          }
 
-        &:hover {
-          background: #87CEFA;
-          transform: translateY(-2px);
+          &.right {
+            text-align: right;
+          }
+
+          strong {
+            @include themify($themes) {
+              color: themed(textColorSoft);
+            }
+          }
+        }
+      }
+
+      .popup-profile-pic {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 1rem auto;
+        border: 3px solid #b0c4de;
+        box-shadow: 0 0 16px rgba(176, 196, 222, 0.8);
+      }
+
+      h3 {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+        color: #4169e1;
+        font-weight: 700;
+      }
+
+      p {
+        margin: 0.4rem 0;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        text-align: left;
+        strong {
+          @include themify($themes) {
+            color: themed(textColorSoft);
+          }
+        }
+      }
+
+      .popup-links {
+        margin: 1.2rem 0 1rem 0;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+
+        a,
+        button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 42px;
+          height: 42px;
+          background: transparent;
+          border: 2px solid #4169e1;
+          border-radius: 50%;
+          color: #4169e1;
+          transition: all 0.3s;
+
+          svg {
+            font-size: 28px;
+          }
+
+          &:hover {
+            background: #4169e1;
+            color: white;
+            transform: scale(1.1);
+          }
+        }
+      }
+
+      .popup-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1.5rem;
+
+        button {
+          padding: 0.6rem 1.4rem;
+          border: none;
+          border-radius: 10px;
+          background: #4169e1;
+          color: white;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.3s, transform 0.2s;
+
+          &:hover {
+            background: #87cefa;
+            transform: translateY(-2px);
+          }
         }
       }
     }
   }
-}
-
 
   // Skeleton styles
   .skeleton-card {
@@ -305,19 +302,31 @@
 }
 .people-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Left (title+icon) vs Right (search) */
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* allows stacking on small screens */
   gap: 1rem;
   margin-bottom: 1.5rem;
-  padding: 0 1rem;
 
-  h2 {
-    margin: 0;
+  .left-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* spacing between icon + title */
+
+    img {
+      width: 35px;
+      height: 35px;
+      object-fit: contain;
+      font-weight: 750;
+    }
+
+    .home-title {
+      font-size: 1.8rem;
+      font-weight: 750;
+    }
   }
 
   .search-input {
-    box-sizing: border-box;
     padding: 0.5rem 1rem;
     font-size: 1rem;
     height: 42px;
@@ -329,24 +338,30 @@
     transition: border 0.3s;
 
     &:focus {
-      border-color: #4169E1;
+      border-color: #4169e1;
     }
   }
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
-
-    h2,
+  @media (max-width: 550px) {
     .search-input {
-      width: 100%;
-    }
+      width: 50%;
+    }    
+  }
+  @media (max-width: 400px) {
+    .search-input {
+      width: 35%;
+    }    
   }
 }
+
 .faculty-tag {
   display: inline-block;
   position: relative;
-  background: linear-gradient(135deg, #141e30, #243b55); /* Dark stylish gradient */
+  background: linear-gradient(
+    135deg,
+    #141e30,
+    #243b55
+  ); /* Dark stylish gradient */
   color: #fff;
   padding: 8px 18px;
   margin-right: 22px;
@@ -358,8 +373,8 @@
   margin-top: 2px;
   text-transform: uppercase;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-  box-shadow: inset 0 0 8px rgba(255,255,255,0.1),
-              0 4px 12px rgba(0,0,0,0.4);
+  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.4);
   overflow: hidden;
 }
 
@@ -371,6 +386,6 @@
   left: -20%;
   width: 100%;
   height: 100%;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   transform: skewX(-20deg);
 }

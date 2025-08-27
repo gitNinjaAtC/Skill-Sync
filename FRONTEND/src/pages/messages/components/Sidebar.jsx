@@ -96,11 +96,6 @@ const Sidebar = () => {
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
-        <div className="header-top">
-          <Users className="icon" />
-          <span className="title">Contacts</span>
-        </div>
-
         <div className="filter-row">
           <label className="filter-toggle">
             <input
@@ -108,7 +103,7 @@ const Sidebar = () => {
               checked={showOnlineOnly}
               onChange={(e) => setShowOnlineOnly(e.target.checked)}
             />
-            <span>Show online only</span>
+            <span>Show online user</span>
           </label>
           <span className="online-count">({onlineUsers.length - 1} online)</span>
         </div>

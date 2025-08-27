@@ -72,29 +72,47 @@ const Job = () => {
 
   return (
     <div className="forum-container">
-      <div className="item">
-        <img src={Jobs} alt="Jobs" />
-        <span>Jobs</span>
-      </div>
-      <section className="job-main">
-        <div className="filter-container">
-          <label htmlFor="filter-select" className="filter-label">
-            Filter by Tag:
-          </label>
-          <select
-            id="filter-select"
-            value={filterTag}
-            onChange={(e) => setFilterTag(e.target.value)}
-          >
-            <option value="All">All</option>
-            {popularTags.map((tag) => (
-              <option key={tag} value={tag}>
-                {tag}
-              </option>
-            ))}
-          </select>
+      <div className="job-header">
+        {/* Left section: Logo + Title */}
+        <div className="left-section">
+          <img src={Jobs} alt="Jobs" />
+          <span>Jobs</span>
         </div>
 
+        {/* Right section: Button (top) + Filter (bottom) */}
+        <div className="right-section">
+          {currentUser &&
+            ["admin", "alumni", "faculty"].includes(currentUser.role) && (
+              <button
+                className="create-job-btn"
+                onClick={handleCreateJob}
+                disabled={authLoading || loading}
+              >
+                Create Job
+              </button>
+            )}
+
+          <div className="filter-container">
+            {/* <label htmlFor="filter-select" className="filter-label">
+              Filter by Tag:
+            </label> */}
+            <select
+              id="filter-select"
+              value={filterTag}
+              onChange={(e) => setFilterTag(e.target.value)}
+            >
+              <option value="All">All</option>
+              {popularTags.map((tag) => (
+                <option key={tag} value={tag}>
+                  {tag}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <section className="job-main">
         {loading &&
           [...Array(3)].map((_, index) => <JobSkeleton key={index} />)}
 
@@ -166,16 +184,6 @@ const Job = () => {
             </article>
           ))}
       </section>
-
-      {currentUser && ["admin", "alumni", "faculty"].includes(currentUser.role) && (
-        <button
-          className="create-forum-btn"
-          onClick={handleCreateJob}
-          disabled={authLoading || loading}
-        >
-          Create Job
-        </button>
-      )}      
     </div>
   );
 };

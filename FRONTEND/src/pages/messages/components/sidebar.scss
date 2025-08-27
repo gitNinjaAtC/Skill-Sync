@@ -12,7 +12,6 @@
 
   // ✅ Divider for tabs
   .divider {
-    margin: 2px 0;
     border: none;
     border-top: 1px solid #e0e0e0;
   }
@@ -48,8 +47,7 @@
 }
 
 .sidebar-header {
-  padding: 1rem;
-  padding-bottom: 0.75rem;
+  padding: 1rem 0rem 0rem;
 
   .header-top {
     display: flex;
