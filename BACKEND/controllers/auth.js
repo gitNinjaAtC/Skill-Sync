@@ -59,10 +59,10 @@ export const register = async (req, res) => {
 
     const student = await Student.findOne({
       EnrollmentNo: enrollmentNo,
-      EmailId: email,
+      //EmailId: email, //Registration logic changed
     });
     if (!student) {
-      return res.status(400).json("Email and enrollment number do not match");
+      return res.status(400).json("Enrollment number not found");
     }
 
     const newUser = new User({
