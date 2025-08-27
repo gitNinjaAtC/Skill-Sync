@@ -389,3 +389,22 @@
   background: rgba(255, 255, 255, 0.1);
   transform: skewX(-20deg);
 }
+
+.hover-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  background: rgba(0, 0, 0, 0.13); // shady background
+  border-radius: 16px;
+  pointer-events: none; // so it doesn’t block clicks
+  opacity: 0;
+  transition: all 0.35s ease;
+  z-index: 1; // sits *behind* cards
+}
+
+.user-grid {
+  position: relative;
+  z-index: 2; // ensure cards stay above
+}

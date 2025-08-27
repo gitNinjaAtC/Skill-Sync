@@ -90,6 +90,28 @@ const PeopleSection = () => {
     );
   });
 
+  // Floating hover background logic
+  useEffect(() => {
+    const hoverBg = document.getElementById("hover-bg");
+    const cards = document.querySelectorAll(".user-card");
+
+    cards.forEach((card) => {
+      card.addEventListener("mouseenter", () => {
+        const rect = card.getBoundingClientRect();
+        hoverBg.style.opacity = 1;
+        hoverBg.style.transform = `translate(${rect.left + window.scrollX - 10}px, ${
+          rect.top + window.scrollY - 10
+        }px)`;
+        hoverBg.style.width = rect.width + 20 + "px";
+        hoverBg.style.height = rect.height + 20 + "px";
+      });
+
+      card.addEventListener("mouseleave", () => {
+        hoverBg.style.opacity = 0;
+      });
+    });
+  }, [loading]);
+
   return (
     <div className="people-section">
       <div className="people-header">
@@ -106,6 +128,9 @@ const PeopleSection = () => {
           className="search-input"
         />
       </div>
+
+      {/* floating hover background */}
+      <div className="hover-bg" id="hover-bg"></div>
 
       <div className="user-grid">
         {loading
