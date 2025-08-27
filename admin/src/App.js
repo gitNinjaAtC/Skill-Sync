@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
-import Events from "./pages/Events";
 import Dashboard from "./pages/Dashboard";
 import JobsDashboard from "./pages/Jobs";
 import Gallery from "./pages/Gallery.jsx";
@@ -52,7 +51,6 @@ const App = () => {
                       <Route path="/users" element={<Users />} />
                       <Route path="/jobs" element={<JobsDashboard />} />
                       <Route path="/posts" element={<Posts />} /> {/* ✅ Added Posts route */}
-                      <Route path="/events" element={<Events />} />
                       <Route path="/gallery" element={<Gallery />} />
                       <Route path="/batches" element={<Batches />} />
                       <Route path="/create-admin" element={<CreateAdmin />} />
