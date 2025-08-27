@@ -99,20 +99,20 @@ router.post("/upload", upload.single("file"), importFile);
     }
   });
 
-  // ✅ GET user stats
-  router.get("/stats", async (req, res) => {
-    try {
-      const total = await User.countDocuments();
-      const students = await User.countDocuments({ role: "student" });
-      const alumni = await User.countDocuments({ role: "alumni" });
-      const admins = await User.countDocuments({ role: "admin" });
+  // // ✅ GET user stats
+  // router.get("/stats", async (req, res) => {
+  //   try {
+  //     const total = await User.countDocuments();
+  //     const students = await User.countDocuments({ role: "student" });
+  //     const alumni = await User.countDocuments({ role: "alumni" });
+  //     const admins = await User.countDocuments({ role: "admin" });
 
-      res.status(200).json({ total, students, alumni, admins });
-    } catch (err) {
-      console.error("Stats error:", err);
-      res.status(500).json({ message: "Error getting stats" });
-    }
-  });
+  //     res.status(200).json({ total, students, alumni, admins });
+  //   } catch (err) {
+  //     console.error("Stats error:", err);
+  //     res.status(500).json({ message: "Error getting stats" });
+  //   }
+  // });
 
   // ✅ Change user role
   router.put("/user/:id/role", async (req, res) => {
@@ -201,20 +201,22 @@ router.post("/upload", upload.single("file"), importFile);
 //   }
 // });
 
-// ✅ GET user stats
+// ✅ GET user stats (fix: add faculty count & remove duplicate)
 router.get("/stats", async (req, res) => {
   try {
     const total = await User.countDocuments();
     const students = await User.countDocuments({ role: "student" });
     const alumni = await User.countDocuments({ role: "alumni" });
     const admins = await User.countDocuments({ role: "admin" });
+    const faculty = await User.countDocuments({ role: "faculty" }); // 👈 added
 
-    res.status(200).json({ total, students, alumni, admins });
+    res.status(200).json({ total, students, alumni, admins, faculty });
   } catch (err) {
     console.error("Stats error:", err);
     res.status(500).json({ message: "Error getting stats" });
   }
 });
+
 
 // ✅ Change user role
 router.put("/user/:id/role", async (req, res) => {
