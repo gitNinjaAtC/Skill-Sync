@@ -193,7 +193,7 @@ export const RegisterForm = () => {
               placeholder="Password"
               value={inputs.password}
               onChange={handleChange}
-              />
+            />
 
             <Select
               options={options}
@@ -219,7 +219,7 @@ export const RegisterForm = () => {
               type="submit"
               value={loading ? "Registering..." : "Register"}
               disabled={loading}
-              />
+            />
           </form>
         </div>
       </div>
@@ -228,5 +228,3 @@ export const RegisterForm = () => {
 };
 
 export default RegisterForm;
-
-
