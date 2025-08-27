@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../context/authContext";
 import "./comments.scss";
 
 const CommentPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
 
   const [forum, setForum] = useState(null);
@@ -62,6 +63,10 @@ const CommentPage = () => {
 
   return (
     <div className="comments-container">
+      <button className="back-btn" onClick={() => navigate(-1)}>
+        ⬅ Back
+      </button>
+
       {loading ? (
         <p>Loading forum and comments...</p>
       ) : error ? (

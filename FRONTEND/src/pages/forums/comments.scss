@@ -111,3 +111,18 @@
   font-weight: bold;
   margin-top: 1rem;
 }
+
+.back-btn {
+  background: #eee;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 15px;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.back-btn:hover {
+  background: #ddd;
+}
