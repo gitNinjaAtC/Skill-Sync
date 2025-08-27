@@ -140,7 +140,7 @@ const Users = () => {
                   </select>
                 </td>
                 <td>
-                  {u.isActive ? "✅ Active" : "🕓 Pending"}
+                  {u.isActive ? "Active" : "Pending"}
                 </td>
                 <td>
                   <button onClick={() => handleDelete(u._id)}>Delete</button>

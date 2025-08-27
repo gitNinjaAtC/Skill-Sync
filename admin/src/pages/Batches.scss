@@ -33,7 +33,8 @@ input[type="text"] {
   background-color: #fff;
 }
 
-.custom-branch {
+.custom-branch,
+.custom-role {
   display: flex;
   gap: 10px;
   margin-bottom: 15px;
@@ -98,8 +99,6 @@ input[type="text"] {
 
 .preview-table {
   margin-bottom: 15px;
-
-  // Ensure no overflow or scrollbars
   overflow: visible;
   max-height: none;
 
@@ -107,7 +106,7 @@ input[type="text"] {
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
-    table-layout: auto; // Allows columns to auto-size based on content
+    table-layout: auto;
   }
 
   th,
@@ -115,7 +114,7 @@ input[type="text"] {
     border: 1px solid #ccc;
     padding: 8px;
     text-align: left;
-    word-break: break-word; // Prevents layout break with long text
+    word-break: break-word;
   }
 
   th {
@@ -131,12 +130,10 @@ input[type="text"] {
   }
 }
 
-// If you are wrapping the table in another div
 .table-wrapper {
   overflow: visible !important;
   max-height: none !important;
 }
-
 
 .btn-row {
   display: flex;
