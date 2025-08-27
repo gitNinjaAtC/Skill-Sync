@@ -71,110 +71,113 @@ const upload = multer({
 // Import file endpoint
 router.post("/upload", upload.single("file"), importFile);
 
-  // ✅ LOGIN for admin
-  router.post("/login", async (req, res) => {
-    const { email, password } = req.body;
+// ✅ LOGIN for admin
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
 
-    try {
-      const admin = await User.findOne({ email, role: "admin" });
-      if (!admin) {
-        return res.status(401).json({ message: "Admin not found or unauthorized" });
-      }
-
-      const isMatch = await bcrypt.compare(password, admin.password);
-      if (!isMatch) {
-        return res.status(401).json({ message: "Invalid credentials" });
-      }
-
-      const token = jwt.sign(
-        { id: admin._id, isAdmin: true },
-        process.env.JWT_SECRET,
-        { expiresIn: "1d" }
-      );
-
-      res.status(200).json({ token, admin });
-    } catch (err) {
-      console.error("Admin login error:", err);
-      res.status(500).json({ message: "Server error during login" });
+  try {
+    const admin = await User.findOne({ email, role: "admin" });
+    if (!admin) {
+      return res
+        .status(401)
+        .json({ message: "Admin not found or unauthorized" });
     }
-  });
 
-  // ✅ GET user stats
-  router.get("/stats", async (req, res) => {
-    try {
-      const total = await User.countDocuments();
-      const students = await User.countDocuments({ role: "student" });
-      const alumni = await User.countDocuments({ role: "alumni" });
-      const admins = await User.countDocuments({ role: "admin" });
-
-      res.status(200).json({ total, students, alumni, admins });
-    } catch (err) {
-      console.error("Stats error:", err);
-      res.status(500).json({ message: "Error getting stats" });
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
     }
-  });
 
-  // ✅ Change user role
-  router.put("/user/:id/role", async (req, res) => {
-    const { role } = req.body;
-    if (!role) return res.status(400).json({ message: "Role is required." });
+    const token = jwt.sign(
+      { id: admin._id, isAdmin: true },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
 
-    try {
-      const user = await User.findByIdAndUpdate(
-        req.params.id,
-        { role },
-        { new: true }
-      );
-      if (!user) return res.status(404).json({ message: "User not found." });
+    res.status(200).json({ token, admin });
+  } catch (err) {
+    console.error("Admin login error:", err);
+    res.status(500).json({ message: "Server error during login" });
+  }
+});
 
-      res.status(200).json({ message: "Role updated", user });
-    } catch (err) {
-      console.error("Role update error:", err);
-      res.status(500).json({ message: "Failed to update role" });
-    }
-  });
+// ✅ GET user stats
+router.get("/stats", async (req, res) => {
+  try {
+    const total = await User.countDocuments();
+    const students = await User.countDocuments({ role: "student" });
+    const alumni = await User.countDocuments({ role: "alumni" });
+    const admins = await User.countDocuments({ role: "admin" });
+    const faculty = await User.countDocuments({ role: "faculty" });
 
-  // ✅ Delete user
-  router.delete("/user/:id", async (req, res) => {
-    try {
-      const user = await User.findByIdAndDelete(req.params.id);
-      if (!user) return res.status(404).json({ message: "User not found." });
+    res.status(200).json({ total, students, alumni, admins, faculty });
+  } catch (err) {
+    console.error("Stats error:", err);
+    res.status(500).json({ message: "Error getting stats" });
+  }
+});
 
-      res.status(200).json({ message: "User deleted" });
-    } catch (err) {
-      console.error("Delete error:", err);
-      res.status(500).json({ message: "Failed to delete user" });
-    }
-  });
+// ✅ Change user role
+router.put("/user/:id/role", async (req, res) => {
+  const { role } = req.body;
+  if (!role) return res.status(400).json({ message: "Role is required." });
 
-  // ✅ Approve user (activate + email)
-  router.put("/approve/:id", async (req, res) => {
-    try {
-      const user = await User.findByIdAndUpdate(
-        req.params.id,
-        { isActive: true },
-        { new: true }
-      ).select("-password");
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { role },
+      { new: true }
+    );
+    if (!user) return res.status(404).json({ message: "User not found." });
 
-      if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json({ message: "Role updated", user });
+  } catch (err) {
+    console.error("Role update error:", err);
+    res.status(500).json({ message: "Failed to update role" });
+  }
+});
 
-      // Send approval email
-      // await transporter.sendMail({
-      //   from: process.env.EMAIL_USER,
-      //   to: user.email,
-      //   subject: "SISTec Alumni Portal – Account Approved",
-      //   text: `Hi ${user.name},\n\nYour account has been approved. You can now login to the portal.\n\nRegards,\nSISTec Admin`,
-      // });
+// ✅ Delete user
+router.delete("/user/:id", async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ message: "User not found." });
 
-      res.status(200).json({ message: "User approved and notified", user });
-    } catch (err) {
-      console.error("Approval error:", err);
-      res.status(500).json({ message: "Approval failed" });
-    }
-  });
+    res.status(200).json({ message: "User deleted" });
+  } catch (err) {
+    console.error("Delete error:", err);
+    res.status(500).json({ message: "Failed to delete user" });
+  }
+});
 
-  // ✅ Get all students in a batch and branch
-  router.get("/students", async (req, res) => {
+// ✅ Approve user (activate + email)
+router.put("/approve/:id", async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { isActive: true },
+      { new: true }
+    ).select("-password");
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Send approval email
+    // await transporter.sendMail({
+    //   from: process.env.EMAIL_USER,
+    //   to: user.email,
+    //   subject: "SISTec Alumni Portal – Account Approved",
+    //   text: `Hi ${user.name},\n\nYour account has been approved. You can now login to the portal.\n\nRegards,\nSISTec Admin`,
+    // });
+
+    res.status(200).json({ message: "User approved and notified", user });
+  } catch (err) {
+    console.error("Approval error:", err);
+    res.status(500).json({ message: "Approval failed" });
+  }
+});
+
+// ✅ Get all students in a batch and branch
+router.get("/students", async (req, res) => {
   try {
     const admin = await User.findOne({ email, role: "admin" });
     if (!admin) {
