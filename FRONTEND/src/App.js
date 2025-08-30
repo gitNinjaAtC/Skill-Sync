@@ -28,6 +28,7 @@ import Home from "./pages/home/Home";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import EditProfile from "./pages/ProfilePage/EditProfile";
 import Forums from "./pages/forums/Forums";
+import Gallery from "./pages/gallery/Gallery";
 import CreateForum from "./pages/createForum/createForum";
 import Jobs from "./pages/job/job";
 import JobDescription from "./pages/job/JobDescription";
@@ -115,7 +116,7 @@ function App() {
         { path: "/events", element: <Events /> },
         { path: "/messages", element: <HomePage /> },
         { path: "/people", element: <PeopleSection /> },
-        { path: "/gallery", element: <ComingSoon /> },
+        { path: "/gallery", element: <Gallery /> },
         { path: "/fundraiser", element: <ComingSoon /> },
         { path: "/resume-builder", element: <ComingSoon /> },
       ],
