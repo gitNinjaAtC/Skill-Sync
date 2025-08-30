@@ -41,31 +41,34 @@ const AvatarSection = ({ userId }) => {
 
   // Fetch profile picture on component mount
   // Fetch profile picture on component mount (with axios)
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await axios.get(
-          `${BACKEND_URL}/API_B/profile/${userId}`,
-          { withCredentials: true }
-        );
-        const profilePicPath = response.data.profilePic;
+useEffect(() => {
+  const fetchProfilePic = async () => {
+    try {
+      const res = await axios.get(`${BACKEND_URL}/API_B/profile/${userId}`, {
+        withCredentials: true,
+      });
 
-        if (profilePicPath && profilePicPath.trim() !== "") {
-          // Prepend the server URL if needed
-          setAvatarSrc(`${BACKEND_URL}${profilePicPath}`);
-        } else {
-          setAvatarSrc(defaultProfilePic); // ✅ use defaultProfilePic, not profilePic
-        }
-      } catch (error) {
-        console.error("Error fetching profile picture:", error);
-        setAvatarSrc(defaultProfilePic); // ✅ fallback to defaultProfilePic
+      const profilePicPath = res.data.profilePic;
+
+      if (profilePicPath && profilePicPath.trim() !== "") {
+        // If backend returns relative path, prepend backend URL
+        const fullPath = profilePicPath.startsWith("http")
+          ? profilePicPath
+          : `${BACKEND_URL}${profilePicPath}`;
+
+        setAvatarSrc(`${fullPath}?t=${Date.now()}`);
+      } else {
+        setAvatarSrc(defaultProfilePic);
       }
-    };
-
-    if (userId) {
-      fetchProfile();
+    } catch (err) {
+      console.error("Failed to load profile picture", err);
+      setAvatarSrc(defaultProfilePic);
     }
-  }, [userId, BACKEND_URL]);
+  };
+
+  if (userId) fetchProfilePic();
+}, [userId, BACKEND_URL]);
+
 
   const handleEditClick = () => {
     if (currentUser?._id === userId) {
