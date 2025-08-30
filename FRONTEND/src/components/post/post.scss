@@ -8,7 +8,7 @@
     color: themed("textColor");
 
     .container {
-      padding: 20px 20px 0px 20px;
+      padding: 20px 20px 20px 20px;
 
       .user {
         display: flex;
@@ -75,13 +75,7 @@
     // Tablet: max-width 768px
     @media (max-width: 768px) {
       .container {
-        padding: 16px;
-
-        .user {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 10px;
-        }
+        padding: 16px;        
 
         .userInfo {
           gap: 12px;

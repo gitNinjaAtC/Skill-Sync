@@ -337,23 +337,7 @@ const Batches = () => {
             {role}
           </option>
         ))}
-        <option value="custom">+ Add Custom Role</option>
       </select>
-
-      {selectedRole === "custom" && (
-        <div className="custom-role">
-          <input
-            type="text"
-            placeholder="Enter new role"
-            value={customRole}
-            onChange={(e) => setCustomRole(e.target.value)}
-            disabled={loading}
-          />
-          <button onClick={handleRoleAdd} disabled={loading || !customRole}>
-            Add
-          </button>
-        </div>
-      )}
 
       {/* Batch Selection */}
       <label>Select Batch:</label>
