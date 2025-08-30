@@ -1,3 +1,5 @@
+// C:\Users\Dell\Desktop\Skill-Sync\FRONTEND\src\App.js
+
 import "./style.scss";
 import { useContext, useEffect } from "react";
 import {
@@ -21,12 +23,12 @@ import LeftBar from "./components/leftBar/LeftBar";
 import Footer from "./components/footer/Footer";
 
 // Pages
-import Login from "./pages/login/Login";
-import Register from "./pages/register/Register";
+import LandingPage from "./pages/LandingPage/LandingPage";
 import Home from "./pages/home/Home";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import EditProfile from "./pages/ProfilePage/EditProfile";
 import Forums from "./pages/forums/Forums";
+import Gallery from "./pages/gallery/Gallery";
 import CreateForum from "./pages/createForum/createForum";
 import Jobs from "./pages/job/job";
 import JobDescription from "./pages/job/JobDescription";
@@ -36,6 +38,17 @@ import PeopleSection from "./pages/people/PeopleSection";
 import HomePage from "./pages/messages/page/HomePage";
 import ErrorPage from "./pages/ErrorPage";
 import ComingSoon from "./pages/Comingsoon/Comingsoon";
+
+// Forgot/Reset Password Pages
+import ForgotPassword from "./pages/Update Password/ForgotPassword";
+import ResetPassword from "./pages/Update Password/ResetPassword";
+
+//forgot enroll
+import ForgotEnrollment from "./pages/recoverEnroll/forgotEnroll";
+import RecoverEnrollment from "./pages/recoverEnroll/recoverEnroll";
+
+// Comments Page
+import CommentPage from "./pages/forums/CommentPage"; // ✅ make sure this file exists
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -50,26 +63,26 @@ function App() {
         setCurrentUser(currentUser);
         connectSocket(currentUser._id);
       }
-    }, [currentUser]);
+    }, [currentUser, connectSocket, setCurrentUser]);
 
     return (
       <QueryClientProvider client={queryClient}>
         <div className={`theme-${darkMode ? "dark" : "light"}`}>
           <Navbar />
-          {/* Main vertical layout container */}
-          <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            {/* Body with LeftBar + Outlet */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              minHeight: "100vh",
+            }}
+          >
             <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
               <LeftBar />
               <div style={{ flex: 6, overflowY: "auto" }}>
                 <Outlet />
               </div>
             </div>
-
-
-
-            {/* Footer at the bottom */}
-            <Footer />
+            {/* <Footer /> */}
           </div>
         </div>
       </QueryClientProvider>
@@ -77,10 +90,11 @@ function App() {
   };
 
   const ProtectedRoute = ({ children }) => {
-    return currentUser ? children : <Navigate to="/login" replace />;
+    return currentUser ? children : <Navigate to="/" replace />;
   };
 
   const router = createBrowserRouter([
+    { path: "/", element: <LandingPage /> },
     {
       path: "/",
       element: (
@@ -90,10 +104,11 @@ function App() {
       ),
       errorElement: <ErrorPage />,
       children: [
-        { path: "/", element: <Home /> },
+        { path: "/home", element: <Home /> },
         { path: "/profile/:id", element: <ProfilePage /> },
         { path: "/edit-profile/:id", element: <EditProfile /> },
         { path: "/forums", element: <Forums /> },
+        { path: "/forums/:id/comments", element: <CommentPage /> }, // ✅ Route added
         { path: "/create-forum", element: <CreateForum /> },
         { path: "/job", element: <Jobs /> },
         { path: "/jobs/:id", element: <JobDescription /> },
@@ -101,17 +116,21 @@ function App() {
         { path: "/events", element: <Events /> },
         { path: "/messages", element: <HomePage /> },
         { path: "/people", element: <PeopleSection /> },
-        { path: "/gallery", element: <ComingSoon /> },
+        { path: "/gallery", element: <Gallery /> },
         { path: "/fundraiser", element: <ComingSoon /> },
         { path: "/resume-builder", element: <ComingSoon /> },
       ],
     },
-    { path: "/login", element: <Login /> },
-    { path: "/register", element: <Register /> },
+    { path: "/forgot-password", element: <ForgotPassword /> },
+    { path: "/reset-password/:token", element: <ResetPassword /> },
     { path: "*", element: <ErrorPage /> },
+    { path: "/forgot-enrollment", element: <ForgotEnrollment /> },
+    { path: "/recover-enrollment/:token", element: <RecoverEnrollment /> },
   ]);
 
-  return <RouterProvider router={router} future={{ v7_startTransition: true }} />;
+  return (
+    <RouterProvider router={router} future={{ v7_startTransition: true }} />
+  );
 }
 
 export default App;

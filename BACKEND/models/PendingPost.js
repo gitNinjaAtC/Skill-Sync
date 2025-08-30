@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const pendingPostSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Users", // Reference to the User collection
+    ref: "User", // Reference to the User collection
     required: true,
   },
   desc: {

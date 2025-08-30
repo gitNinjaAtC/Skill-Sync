@@ -12,16 +12,7 @@ const studentSchema = new mongoose.Schema(
       trim: true,
       default: "Unknown",
     },
-    RegistrationNo: {
-      type: String,
-      trim: true,
-      default: "unknown",
-    },
-    ClassRollNo: {
-      type: String,
-      trim: true,
-      default: "unknown",
-    },
+
     EmailId: {
       type: String,
       trim: true,
@@ -33,19 +24,21 @@ const studentSchema = new mongoose.Schema(
       trim: true,
       default: "0000000000",
     },
-    DateOfBirth: {
-      type: Date,
-      default: null,
-    },
-    GenderName: {
-      type: String,
-      trim: true,
-      default: "Other",
-    },
+
     batch: {
       type: String,
       trim: true,
       match: [/^\d{4}-\d{4}$/, "Batch must be in the format YYYY-YYYY"],
+    },
+    branch: {
+      type: String,
+      trim: true,
+      default: "Unknown",
+    },
+    role: {
+      type: String,
+      trim: true,
+      default: "student",
     },
   },
   {

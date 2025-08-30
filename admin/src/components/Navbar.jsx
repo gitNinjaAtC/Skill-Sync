@@ -1,36 +1,32 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./navbar.scss";
 import { FaUserCircle } from "react-icons/fa";
-import UploadForm from "../uploadForm/UploadForm";
+import CreateAdmin from "../createAdmin/createAdmin"; // Adjust path if needed
 import { useNavigate } from "react-router-dom";
 
 const Navbar = ({ onLogout }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [showForm, setShowForm] = useState(false);
+  const [showAdminForm, setShowAdminForm] = useState(false);
   const dropdownRef = useRef();
   const navigate = useNavigate();
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   const handleLogout = () => {
-    if (onLogout) onLogout(); // Call App.js logout handler
+    if (onLogout) onLogout();
     setDropdownOpen(false);
     navigate("/login");
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -42,17 +38,17 @@ const Navbar = ({ onLogout }) => {
           <div className="right-section" ref={dropdownRef}>
             <FaUserCircle className="profile-icon" onClick={toggleDropdown} />
             {dropdownOpen && (
-              <div className="dropdown-menu">
+              <div className="dropdown-menu">               
                 <span
                   className="dropdown-item"
                   onClick={() => {
-                    setShowForm(true);
+                    setShowAdminForm(true);
                     setDropdownOpen(false);
                   }}
                 >
-                  Update User Data
+                  Create Admin
                 </span>
-                <span className="dropdown-item">Create Admin</span>
+
                 <span className="dropdown-item" onClick={handleLogout}>
                   Logout
                 </span>
@@ -61,8 +57,8 @@ const Navbar = ({ onLogout }) => {
           </div>
         </div>
       </nav>
-
-      {showForm && <UploadForm onClose={() => setShowForm(false)} />}
+      
+      {showAdminForm && <CreateAdmin onClose={() => setShowAdminForm(false)} />}
     </>
   );
 };

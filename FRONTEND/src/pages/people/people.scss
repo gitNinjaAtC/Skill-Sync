@@ -1,13 +1,13 @@
 @import "../../style";
 
 .people-section {
-  padding: 2rem;
+  padding: 1.5rem;
 
   h2 {
     font-size: 2rem;
     margin-bottom: 1.5rem;
     @include themify($themes) {
-      color: themed(textColor)
+      color: themed(textColor);
     }
   }
 
@@ -19,14 +19,12 @@
 
   .user-card {
     display: flex;
-    background: white;
     border-radius: 12px;
     padding: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-
+    
     @include themify($themes) {
-      background: themed(bgSoft);
+      background-color: themed("bg");
       color: themed(textColor);
     }
 
@@ -44,7 +42,7 @@
         height: 70px;
         border-radius: 50%;
         object-fit: cover;
-        border: 2px solid #B0C4DE;
+        border: 2px solid #b0c4de;
       }
     }
 
@@ -67,7 +65,7 @@
           margin-right: 0.5rem;
           padding: 0.4rem 0.9rem;
           border: none;
-          background: #4169E1;
+          background: #4169e1;
           color: white;
           border-radius: 6px;
           font-weight: 600;
@@ -75,7 +73,7 @@
           transition: all 0.3s;
 
           &:hover {
-            background: #87CEFA;
+            background: #87cefa;
           }
         }
       }
@@ -84,6 +82,7 @@
 
   .popup-overlay {
     position: fixed;
+    margin-top: 5rem;
     top: 0;
     left: 0;
     right: 0;
@@ -95,8 +94,9 @@
     z-index: 999;
 
     .popup-card {
+      position: relative;
       border-radius: 20px;
-      padding: 2rem;
+      padding: 2rem 1.5rem;
       width: 90%;
       max-width: 460px;
       max-height: 85vh;
@@ -106,7 +106,46 @@
       @include themify($themes) {
         background: themed(bgSoft);
         color: themed(textColor);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        background: transparent;
+        border: none;
+        font-size: 1.4rem;
+        cursor: pointer;
+        color: #353536c2;
+        transition: color 0.3s, transform 0.2s;
+
+        &:hover {
+          color: #f03030e6;
+          transform: scale(1.1);
+        }
+      }
+
+      .popup-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        p {
+          &.left {
+            text-align: left;
+          }
+
+          &.right {
+            text-align: right;
+          }
+
+          strong {
+            @include themify($themes) {
+              color: themed(textColorSoft);
+            }
+          }
+        }
       }
 
       .popup-profile-pic {
@@ -115,22 +154,22 @@
         border-radius: 50%;
         object-fit: cover;
         margin: 0 auto 1rem auto;
-        border: 3px solid #B0C4DE;
-        box-shadow: 0 0 12px #B0C4DE;
+        border: 3px solid #b0c4de;
+        box-shadow: 0 0 16px rgba(176, 196, 222, 0.8);
       }
 
       h3 {
         font-size: 1.8rem;
-        margin: 0.5rem 0 1rem 0;
-        color: #4169E1;
+        margin-bottom: 0.5rem;
+        color: #4169e1;
         font-weight: 700;
       }
 
       p {
-        margin: 0.5rem 0;
+        margin: 0.4rem 0;
         font-size: 0.95rem;
         line-height: 1.5;
-
+        text-align: left;
         strong {
           @include themify($themes) {
             color: themed(textColorSoft);
@@ -143,19 +182,29 @@
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        gap: 0.5rem;
+        gap: 0.8rem;
 
-        a {
-          background: #4169E1;
-          color: white;
-          font-weight: 600;
-          padding: 0.4rem 0.9rem;
-          border-radius: 20px;
-          text-decoration: none;
+        a,
+        button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 42px;
+          height: 42px;
+          background: transparent;
+          border: 2px solid #4169e1;
+          border-radius: 50%;
+          color: #4169e1;
           transition: all 0.3s;
 
+          svg {
+            font-size: 28px;
+          }
+
           &:hover {
-            background: #87CEFA;
+            background: #4169e1;
+            color: white;
+            transform: scale(1.1);
           }
         }
       }
@@ -167,17 +216,18 @@
         margin-top: 1.5rem;
 
         button {
-          padding: 0.6rem 1.3rem;
+          padding: 0.6rem 1.4rem;
           border: none;
-          border-radius: 8px;
-          background: #4169E1;
+          border-radius: 10px;
+          background: #4169e1;
           color: white;
           font-weight: 600;
           cursor: pointer;
-          transition: background 0.3s;
+          transition: background 0.3s, transform 0.2s;
 
           &:hover {
-            background: #87CEFA;
+            background: #87cefa;
+            transform: translateY(-2px);
           }
         }
       }
@@ -249,4 +299,112 @@
       background-position: 200% 0;
     }
   }
+}
+.people-header {
+  display: flex;
+  justify-content: space-between; /* Left (title+icon) vs Right (search) */
+  align-items: center;
+  flex-wrap: wrap; /* allows stacking on small screens */
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  .left-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* spacing between icon + title */
+
+    img {
+      width: 35px;
+      height: 35px;
+      object-fit: contain;
+      font-weight: 750;
+    }
+
+    .home-title {
+      font-size: 1.8rem;
+      font-weight: 750;
+    }
+  }
+
+  .search-input {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    height: 42px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 300px;
+    max-width: 100%;
+    outline: none;
+    transition: border 0.3s;
+
+    &:focus {
+      border-color: #4169e1;
+    }
+  }
+
+  @media (max-width: 550px) {
+    .search-input {
+      width: 50%;
+    }    
+  }
+  @media (max-width: 400px) {
+    .search-input {
+      width: 35%;
+    }    
+  }
+}
+
+.faculty-tag {
+  display: inline-block;
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    #141e30,
+    #243b55
+  ); /* Dark stylish gradient */
+  color: #fff;
+  padding: 8px 18px;
+  margin-right: 22px;
+  border-radius: 30px 6px 30px 6px; /* unique shape */
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: "Orbitron", sans-serif; /* Futuristic font */
+  letter-spacing: 1.5px;
+  margin-top: 2px;
+  text-transform: uppercase;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+/* Cool angled accent bar */
+.faculty-tag::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -20%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: skewX(-20deg);
+}
+
+.hover-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  background: rgba(0, 0, 0, 0.08); // shady background
+  border-radius: 16px;
+  pointer-events: none; // so it doesn’t block clicks
+  opacity: 0;
+  transition: all 0.35s ease;
+  z-index: 1; // sits *behind* cards
+}
+
+.user-grid {
+  position: relative;
+  z-index: 2; // ensure cards stay above
 }

@@ -99,7 +99,9 @@ const Post = ({ post }) => {
   };
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this post?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this post?"
+    );
     if (!confirmDelete) return;
     try {
       await makeRequest.delete(`/API_B/posts/${post.id}`);
@@ -118,29 +120,61 @@ const Post = ({ post }) => {
       <div className="container">
         <div className="user">
           <div className="userInfo">
-            <img
-              src={
-                post.profilePic && post.profilePic.trim() !== ""
-                  ? post.profilePic.startsWith("http")
-                    ? post.profilePic
-                    : `https://skill-sync-backend-522o.onrender.com${post.profilePic}`
-                  : defaultAvatar
-              }
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = defaultAvatar;
-              }}
-              alt="User"
-            />
-            <div className="details">
+            {post.userId ? (
               <Link
                 to={`/profile/${post.userId}`}
-                style={{ textDecoration: "none", color: "inherit" }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  textDecoration: "none",
+                  color: "inherit",
+                }}
               >
-                <span className="name">{post.name || "User"}</span>
+                <img
+                  src={
+                    post.profilePic && post.profilePic.trim() !== ""
+                      ? post.profilePic.startsWith("http")
+                        ? post.profilePic
+                        : `https://skill-sync-backend-522o.onrender.com${post.profilePic}`
+                      : defaultAvatar
+                  }
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = defaultAvatar;
+                  }}
+                  alt="User"
+                />
+                <div className="details">
+                  <span className="name">{post.name || "User"}</span>
+                  <span className="date">
+                    {new Date(post.createdAt).toLocaleString()}
+                  </span>
+                </div>
               </Link>
-              <span className="date">{new Date(post.createdAt).toLocaleString()}</span>
-            </div>
+            ) : (
+              <>
+                <img
+                  src={defaultAvatar}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = defaultAvatar;
+                  }}
+                  alt="User"
+                />
+                <div className="details">
+                  <span
+                    className="name"
+                    style={{ color: "gray", fontStyle: "italic" }}
+                  >
+                    User not found
+                  </span>
+                  <span className="date">
+                    {new Date(post.createdAt).toLocaleString()}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
 
           <div className="options" ref={optionsRef}>

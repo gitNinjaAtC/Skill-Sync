@@ -2,11 +2,16 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./users.scss";
 
+const API_BASE_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:8800"
+    : "https://skill-sync-backend-522o.onrender.com";
+
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [originalUsers, setOriginalUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ total: 0, students: 0, alumni: 0, admins: 0 });
+  const [stats, setStats] = useState({ total: 0, students: 0, alumni: 0, admins: 0, faculty: 0 });
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all"); // all, approved, pending
 
@@ -17,7 +22,7 @@ const Users = () => {
 
   const fetchUsers = () => {
     setLoading(true);
-    let url = "http://localhost:8800/API_B/admin/users";
+    let url = `${API_BASE_URL}/API_B/admin/users`;
 
     if (filter === "approved") url += "?active=true";
     else if (filter === "pending") url += "?active=false";
@@ -34,7 +39,7 @@ const Users = () => {
 
   const fetchStats = () => {
     axios
-      .get("http://localhost:8800/API_B/admin/stats", { withCredentials: true })
+      .get(`${API_BASE_URL}/API_B/admin/stats`, { withCredentials: true })
       .then((res) => setStats(res.data))
       .catch((err) => console.error("Error fetching stats:", err));
   };
@@ -42,7 +47,7 @@ const Users = () => {
   const handleRoleChange = (userId, newRole) => {
     axios
       .put(
-        `http://localhost:8800/API_B/admin/user/${userId}/role`,
+        `${API_BASE_URL}/API_B/admin/user/${userId}/role`,
         { role: newRole },
         { withCredentials: true }
       )
@@ -56,7 +61,7 @@ const Users = () => {
   const handleDelete = (userId) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       axios
-        .delete(`http://localhost:8800/API_B/admin/user/${userId}`, {
+        .delete(`${API_BASE_URL}/API_B/admin/user/${userId}`, {
           withCredentials: true,
         })
         .then(() => {
@@ -66,20 +71,6 @@ const Users = () => {
         .catch((err) => console.error("Error deleting user:", err));
     }
   };
-
-  // const handleApprove = (userId) => {
-  //   axios
-  //     .post(
-  //       "http://localhost:8800/API_B/admin/approve-user",
-  //       { userId },
-  //       { withCredentials: true }
-  //     )
-  //     .then(() => {
-  //       fetchUsers();
-  //       fetchStats();
-  //     })
-  //     .catch((err) => console.error("Error approving user:", err));
-  // };
 
   const handleSearch = (e) => {
     const keyword = e.target.value.toLowerCase();
@@ -101,6 +92,7 @@ const Users = () => {
         <div className="stat"><h3>Students</h3><p>{stats.students}</p></div>
         <div className="stat"><h3>Alumni</h3><p>{stats.alumni}</p></div>
         <div className="stat"><h3>Admins</h3><p>{stats.admins}</p></div>
+        <div className="stat"><h3>Faculty</h3><p>{stats.faculty}</p></div>
       </div>
 
       <div className="filter-buttons">
@@ -144,10 +136,11 @@ const Users = () => {
                     <option value="student">Student</option>
                     <option value="alumni">Alumni</option>
                     <option value="admin">Admin</option>
+                    <option value="faculty">Faculty</option>
                   </select>
                 </td>
                 <td>
-                  {u.isActive ? "✅ Active" : "🕓 Pending"}
+                  {u.isActive ? "Active" : "Pending"}
                 </td>
                 <td>
                   <button onClick={() => handleDelete(u._id)}>Delete</button>

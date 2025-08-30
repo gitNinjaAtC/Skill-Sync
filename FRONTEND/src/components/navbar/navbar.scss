@@ -88,7 +88,8 @@
     align-items: center;
     gap: 15px;
 
-    .homeIconWrapper, .iconWrapper {
+    .homeIconWrapper,
+    .iconWrapper {
       display: flex;
       align-items: center;
 
@@ -96,12 +97,16 @@
         background-color: #e6f0ff;
         border-radius: 10px;
 
-        .homeIcon, .mailIcon, .notificationIcon {
+        .homeIcon,
+        .mailIcon,
+        .notificationIcon {
           color: #007bff;
         }
       }
 
-      .homeIcon, .mailIcon, .notificationIcon{
+      .homeIcon,
+      .mailIcon,
+      .notificationIcon {
         font-size: 24px;
         color: #555;
         cursor: pointer;
@@ -125,39 +130,39 @@
     }
 
     .profile-button {
-  background-color: white;
-  border: none;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 0;
-  position: relative;
-  z-index: 2;
-  border-radius: 10px; // match .homeIconWrapper
-  transition: background-color 0.3s ease;
+      background-color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 0;
+      position: relative;
+      z-index: 2;
+      border-radius: 10px; // match .homeIconWrapper
+      transition: background-color 0.3s ease;
 
-  svg {
-    font-size: 25px;
-    color: #555;
-    transition: color 0.3s ease;
-  }
+      svg {
+        font-size: 25px;
+        color: #555;
+        transition: color 0.3s ease;
+      }
 
-  &:hover {
-    background-color: #f0f4ff;
+      &:hover {
+        background-color: #f0f4ff;
 
-    svg {
-      color: #007bff;
+        svg {
+          color: #007bff;
+        }
+      }
+
+      &.active {
+        background-color: #e6f0ff;
+
+        svg {
+          color: #007bff;
+        }
+      }
     }
-  }
-
-  &.active {
-    background-color: #e6f0ff;
-
-    svg {
-      color: #007bff;
-    }
-  }
-}
     .rightIconsDesktop {
       display: flex;
       align-items: center;
@@ -248,13 +253,15 @@
     position: fixed;
     top: 60px;
     left: 0;
-    width: 280px;
+    width: 100%;
+    max-width: 280px;
     height: calc(100% - 60px);
     background-color: themed("bg");
     border-right: 1px solid themed("border");
     z-index: 1100;
     padding: 20px;
     overflow-y: auto;
+    overflow-x: auto;
     box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease-in-out;
     transform: translateX(0);
@@ -266,6 +273,7 @@
     .container {
       display: flex;
       flex-direction: column;
+      max-width: 280px;
       height: 100%;
 
       hr {
@@ -293,11 +301,19 @@
             border: none;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 20px;
             cursor: pointer;
             padding: 5px;
             border-radius: 8px;
             transition: background-color 0.3s ease;
+            span {
+              display: block;
+              text-align: left;
+            }
+            .role {
+              text-transform: uppercase;
+              font-size: 0.7rem;
+            }
 
             &:hover,
             &.active {
@@ -309,6 +325,11 @@
 
               span {
                 color: #007bff;
+                .role {
+                  text-transform: uppercase;
+                  margin-right: 3rem;
+                  font-size: 0.7rem;
+                }
               }
             }
 
@@ -346,7 +367,9 @@
             color: #007bff;
 
             img {
-              filter: brightness(0) saturate(100%) invert(35%) sepia(98%) saturate(2955%) hue-rotate(202deg) brightness(94%) contrast(101%);
+              filter: brightness(0) saturate(100%) invert(35%) sepia(98%)
+                saturate(2955%) hue-rotate(202deg) brightness(94%)
+                contrast(101%);
             }
           }
 
@@ -367,7 +390,8 @@
     }
 
     @include tablet {
-      width: 240px;
+      width: 100%;
+      max-width: 280px;
       padding: 15px;
     }
 
@@ -387,17 +411,18 @@
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 12px;
-  width: 220px;
+  width: 250px;
   z-index: 1500;
   display: flex;
   flex-direction: column;
   gap: 8px;
 
   .dropdown-header {
+    overflow: hidden;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 8px 10px;
+    gap: 3px;
+    padding: 5px 0 2px 6px;
     border-bottom: 1px solid #eee;
     font-weight: 600;
     color: #333;
@@ -411,7 +436,6 @@
 
     span {
       font-size: 15px;
-      white-space: nowrap;
     }
   }
 
@@ -440,10 +464,9 @@
       color: #007bff;
 
       img {
-        filter: brightness(0) saturate(100%) invert(35%) sepia(98%) saturate(2955%) hue-rotate(202deg) brightness(94%) contrast(101%);
+        filter: brightness(0) saturate(100%) invert(35%) sepia(98%)
+          saturate(2955%) hue-rotate(202deg) brightness(94%) contrast(101%);
       }
     }
   }
 }
-
-

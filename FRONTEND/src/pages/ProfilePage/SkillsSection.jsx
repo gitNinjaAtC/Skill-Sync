@@ -1,18 +1,29 @@
 import React from "react";
+import "./skillsSection.scss"; // 👈 add styles here
 
-const SkillsSection = ({ skills }) => (
-  <div className="skills-section" id="skills">
-    <h3>Skills</h3>
-    {skills ? (
-      <ul>
-        {skills.split(",").map((skill, index) => (
-          <li key={index}>{skill.trim()}</li>
-        ))}
-      </ul>
-    ) : (
-      <p>No skills listed.</p>
-    )}
-  </div>
-);
+const SkillsSection = ({ skills }) => {
+  let skillsArray = [];
+
+  if (typeof skills === "string") {
+    skillsArray = skills.split(",").map((s) => s.trim());
+  } else if (Array.isArray(skills)) {
+    skillsArray = skills;
+  }
+
+  return (
+    <div className="skills-section" id="skills">
+      <h3>Skills</h3>
+      {skillsArray.length > 0 ? (
+        <ul className="skills-list">
+          {skillsArray.map((skill, index) => (
+            <li key={index}>{skill}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No skills listed.</p>
+      )}
+    </div>
+  );
+};
 
 export default SkillsSection;

@@ -7,6 +7,11 @@ const AdminLogin = ({ onLogin }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Auto-select backend: if on localhost, use local; else use Render
+  const API_BASE_URL = window.location.hostname === "localhost"
+    ? "http://localhost:8800"
+    : "https://skill-sync-backend-522o.onrender.com";
+
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
@@ -17,7 +22,7 @@ const AdminLogin = ({ onLogin }) => {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:8800/API_B/admin/login", credentials, {
+      const res = await axios.post(`${API_BASE_URL}/API_B/admin/login`, credentials, {
         withCredentials: true,
       });
 

@@ -1,0 +1,11 @@
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;  /* allow wrapping if too many skills */
+  gap: 10px;        /* spacing between items */
+  list-style-type: disc; /* keep bullet pointers */
+  padding-left: 20px;    /* indent bullets nicely */
+}
+
+.skills-list li {
+  margin-right: 15px;
+}

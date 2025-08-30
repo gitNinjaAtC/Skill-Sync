@@ -1,13 +1,29 @@
 .home {
   height: 100vh;
-  background-color: #f1f5f9; // base-200
+  background-color: #f1f5f9; // base-200\
+  margin: 1.5rem 0rem 0rem;
 
+  .home-header {
+    margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      img {
+        width: 35px;
+        height: 35px;
+        object-fit: contain;
+        font-weight: 750;
+      }
+
+      span {
+        font-size: 1.8rem;
+        font-weight: 750;
+      }
+    }
   .home-wrapper {
     display: flex;
     justify-content: center;
-    padding-top: 5rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
 
     .home-content {
       background-color: #ffffff; // base-100

@@ -2,8 +2,11 @@ import { useRef, useState, useContext, useEffect } from "react";
 import cameraIcon from "../../assets/camera-icon.png";
 import defaultProfilePic from "../../assets/profile.jpg";
 import { AuthContext } from "../../context/authContext";
+import axios from "axios";
+
 
 const AvatarSection = ({ userId }) => {
+  const [profilePic, setProfilePic] = useState(null);
   const [avatarSrc, setAvatarSrc] = useState(defaultProfilePic);
   const fileInputRef = useRef(null);
   const { currentUser } = useContext(AuthContext);
@@ -35,6 +38,37 @@ const AvatarSection = ({ userId }) => {
 
     if (userId) fetchProfilePic();
   }, [userId, BACKEND_URL]);
+
+  // Fetch profile picture on component mount
+  // Fetch profile picture on component mount (with axios)
+useEffect(() => {
+  const fetchProfilePic = async () => {
+    try {
+      const res = await axios.get(`${BACKEND_URL}/API_B/profile/${userId}`, {
+        withCredentials: true,
+      });
+
+      const profilePicPath = res.data.profilePic;
+
+      if (profilePicPath && profilePicPath.trim() !== "") {
+        // If backend returns relative path, prepend backend URL
+        const fullPath = profilePicPath.startsWith("http")
+          ? profilePicPath
+          : `${BACKEND_URL}${profilePicPath}`;
+
+        setAvatarSrc(`${fullPath}?t=${Date.now()}`);
+      } else {
+        setAvatarSrc(defaultProfilePic);
+      }
+    } catch (err) {
+      console.error("Failed to load profile picture", err);
+      setAvatarSrc(defaultProfilePic);
+    }
+  };
+
+  if (userId) fetchProfilePic();
+}, [userId, BACKEND_URL]);
+
 
   const handleEditClick = () => {
     if (currentUser?._id === userId) {
@@ -96,13 +130,17 @@ const AvatarSection = ({ userId }) => {
             onClick={handleEditClick}
             disabled={uploading}
           >
-            <img src={cameraIcon} alt="Edit" className="edit-icon" />
+            {uploading ? (
+              <div className="loader" />
+            ) : (
+              <img src={cameraIcon} alt="Edit" className="edit-icon" />
+            )}
           </button>
         )}
       </div>
       <input
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png,image/jpg"
         ref={fileInputRef}
         style={{ display: "none" }}
         onChange={handleFileChange}

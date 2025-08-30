@@ -5,6 +5,7 @@ import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { formatMessageTime } from "../lib/utils";
+import { groupMessagesByDate } from "../lib/dateGrouping";
 import avatar from "../../../assets/avatar.png";
 import "./chatContainer.scss";
 
@@ -54,57 +55,64 @@ const ChatContainer = () => {
     );
   }
 
+  const groupedMessages = groupMessagesByDate(messages);
+
   return (
     <div className="chat-container relative">
       <ChatHeader />
 
       <div className="chat-body scrollable">
-        {messages.map((message) => (
-          <div
-            key={message._id}
-            className={`chat-message ${
-              message.senderId === authUser._id ? "chat-end" : "chat-start"
-            }`}
-            ref={messageEndRef}
-          >
-            <div className="chat-content">
-              <div className="chat-avatar">
-                <img
-                  src={
-                    message.senderId === authUser._id
-                      ? resolveProfilePic(authUser)
-                      : resolveProfilePic(selectedUser)
-                  }
-                  alt="profile pic"
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = avatar;
-                  }}
-                />
-              </div>
-
-              <div className="chat-bubble-container">
-                <div className="chat-header">
-                  <time>{formatMessageTime(message.createdAt)}</time>
-                </div>
-
-                <div
-                  className={`chat-bubble ${
-                    message.image && !message.text ? "image-only" : ""
-                  }`}
-                >
-                  {message.image && (
+        {Object.entries(groupedMessages).map(([date, msgs]) => (
+          <div key={date}>
+            <div className="chat-date-heading">{date}</div>
+            {msgs.map((message) => (
+              <div
+                key={message._id}
+                className={`chat-message ${
+                  message.senderId === authUser._id ? "chat-end" : "chat-start"
+                }`}
+                ref={messageEndRef}
+              >
+                <div className="chat-content">
+                  <div className="chat-avatar">
                     <img
-                      src={message.image}
-                      alt="Attachment"
-                      onClick={() => setSelectedImage(message.image)}
-                      className="chat-image"
+                      src={
+                        message.senderId === authUser._id
+                          ? resolveProfilePic(authUser)
+                          : resolveProfilePic(selectedUser)
+                      }
+                      alt="profile pic"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = avatar;
+                      }}
                     />
-                  )}
-                  {message.text && <p>{message.text}</p>}
+                  </div>
+
+                  <div className="chat-bubble-container">
+                    <div className="chat-header">
+                      <time>{formatMessageTime(message.createdAt)}</time>
+                    </div>
+
+                    <div
+                      className={`chat-bubble ${
+                        message.image && !message.text ? "image-only" : ""
+                      }`}
+                    >
+                      {message.image && (
+                        <img
+                          src={message.image}
+                          alt="Attachment"
+                          onClick={() => setSelectedImage(message.image)}
+                          className="chat-image"
+                        />
+                      )}
+                      {message.text && <p>{message.text}</p>}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         ))}
         <div ref={messageEndRef} />

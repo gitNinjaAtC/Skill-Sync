@@ -2,16 +2,13 @@
 
 .post {
   @include themify($themes) {
-    -webkit-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
-    -moz-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
-    box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
     border-radius: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
     background-color: themed("bg");
     color: themed("textColor");
 
     .container {
-      padding: 20px 20px 0px 20px;
+      padding: 20px 20px 20px 20px;
 
       .user {
         display: flex;
@@ -78,13 +75,7 @@
     // Tablet: max-width 768px
     @media (max-width: 768px) {
       .container {
-        padding: 16px;
-
-        .user {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 10px;
-        }
+        padding: 16px;        
 
         .userInfo {
           gap: 12px;

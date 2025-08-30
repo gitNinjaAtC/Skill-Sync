@@ -4,7 +4,6 @@
   width: 100%;
   background-color: #0e1628;
   color: #d1d5db;
-  padding: 10px 20px 40px;
   font-size: 14px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   box-sizing: border-box;
@@ -15,7 +14,7 @@
     justify-content: space-between;
     gap: 60px;
     margin-top: 30px;
-    padding-left: 150px;
+    padding-left: 50px;
     margin-bottom: 40px;
 
     @include tablet {
@@ -145,6 +144,12 @@
     span {
       color: #38bdf8;
       font-weight: 600;
+    }
+  }
+
+  @media (min-width: 961px) {
+    .social-icons{
+      justify-content: center;
     }
   }
 }

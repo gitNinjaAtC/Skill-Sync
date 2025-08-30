@@ -1,0 +1,195 @@
+@import "../../style.scss";
+
+.alumni-marquee-section {
+    margin: 0rem 10rem;
+    padding: 60px 0;
+
+    @include themify($themes) {
+        background: themed(bgSoft);
+    }
+
+    @media (max-width: 960px) {
+        margin: 0rem 1.5rem;
+    }
+
+    @media (max-width: 479px) {
+        margin: 0rem;
+    }
+
+    .triple-border-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 40px;
+
+        h2 {
+            font-size: 30px;
+            font-weight: 400;
+            background: linear-gradient(to right, #033ab3, cyan);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin: 0;
+            white-space: nowrap;
+
+            @media (max-width: 960px) {
+                font-size: 20px;
+            }
+
+            @media (max-width: 479px) {
+                font-size: 15px;
+            }
+        }
+
+        .line-group {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 24px;
+
+            .line {
+                display: block;
+                background-color: #c50000;
+                border-radius: 1px;
+            }
+
+            &.left {
+                align-items: flex-end;
+
+                .thick {
+                    width: 25px;
+                    height: 1px;
+                }
+
+                .medium {
+                    width: 50px;
+                    height: 1px;
+                }
+
+                .thin {
+                    width: 75px;
+                    height: 1px;
+                }
+            }
+
+            &.right {
+                .thin {
+                    width: 25px;
+                    height: 1px;
+                }
+
+                .medium {
+                    width: 50px;
+                    height: 1px;
+                }
+
+                .thick {
+                    width: 75px;
+                    height: 1px;
+                }
+            }
+
+            @media (max-width: 960px) {
+                height: 20px;
+                &.left {
+                align-items: flex-end;
+
+                .thick {
+                    width: 20px;
+                    height: 0.8px;
+                }
+
+                .medium {
+                    width: 40px;
+                    height: 0.8px;
+                }
+
+                .thin {
+                    width: 60px;
+                    height: 0.8px;
+                }
+            }
+
+            &.right {
+                .thin {
+                    width: 20px;
+                    height: 0.8px;
+                }
+
+                .medium {
+                    width: 40px;
+                    height: 0.8px;
+                }
+
+                .thick {
+                    width: 60px;
+                    height: 0.8px;
+                }
+            }
+            }
+
+            @media (max-width: 479px) {
+                height: 18px;
+                    &.left {
+                align-items: flex-end;
+
+                .thick {
+                    width: 15px;
+                    height: 0.6px;
+                }
+
+                .medium {
+                    width: 30px;
+                    height: 0.6px;
+                }
+
+                .thin {
+                    width: 45px;
+                    height: 0.6px;
+                }
+            }
+
+            &.right {
+                .thin {
+                    width: 15px;
+                    height: 0.6px;
+                }
+
+                .medium {
+                    width: 30px;
+                    height: 0.6px;
+                }
+
+                .thick {
+                    width: 45px;
+                    height: 0.6px;
+                }
+            }
+            }
+        }
+
+        @media (max-width: 960px) {
+            gap: 15px;
+        }
+
+        @media (max-width: 479px) {
+            gap: 10px;
+        }
+    }
+
+
+    .alumni-marquee-wrapper {
+        overflow: hidden;
+
+        .marquee-row {
+            margin-bottom: 20px;
+        }
+
+        .reverse {
+            margin-top: 20px;
+        }
+    }
+}

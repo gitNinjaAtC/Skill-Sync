@@ -9,11 +9,45 @@
   @media (min-width: 1024px) {
     width: 22rem; // Fixed width on desktop
   }
+
+  // ✅ Divider for tabs
+  .divider {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+  }
+
+  // ✅ Tabs styles
+  .tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 6px;
+
+    .tab {
+      flex: 1;
+      padding: 2px 0;
+      border: none;
+      background: transparent;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 2px solid transparent;
+
+      &:hover {
+        color: #333;
+      }
+
+      &.active {
+        color: #4a90e2;
+        border-bottom: 2px solid #4a90e2;
+      }
+    }
+  }
 }
 
 .sidebar-header {
-  padding: 1rem;
-  padding-bottom: 0.75rem;
+  padding: 1rem 0rem 0rem;
 
   .header-top {
     display: flex;
@@ -57,7 +91,27 @@
     }
   }
 
-  border-bottom: 1px solid #d1d5db;
+  // ✅ Search bar style
+  .search-bar {
+    margin-top: 0.75rem;
+    margin-right: 0.45rem;
+
+    input {
+      width: 80%;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+
+      &:focus {
+        border-color: #3b82f6;
+      }
+    }
+  }
+
+  // border-bottom: 1px solid #d1d5db;
   margin: 0 1rem;
 }
 

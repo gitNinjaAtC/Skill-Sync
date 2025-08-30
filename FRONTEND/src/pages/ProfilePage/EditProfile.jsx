@@ -20,6 +20,7 @@ const EditProfile = () => {
     others: "",
   });
 
+  const [originalData, setOriginalData] = useState({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -32,18 +33,22 @@ const EditProfile = () => {
           { withCredentials: true }
         );
         const data = res.data;
-        setFormData({
+        const safeData = {
           name: data.name || "",
           description: data.description || "",
           facebook: data.facebook || data.socialLinks?.facebook || "",
           instagram: data.instagram || data.socialLinks?.instagram || "",
           twitter: data.twitter || data.socialLinks?.twitter || "",
           linkedin: data.linkedin || data.socialLinks?.linkedin || "",
-          skills: data.skills || "",
+          skills: Array.isArray(data.skills)
+            ? data.skills.join(", ")
+            : data.skills || "",
           education: data.education || "",
           experience: data.experience || "",
           others: data.others || "",
-        });
+        };
+        setFormData(safeData);
+        setOriginalData(safeData);
       } catch (err) {
         console.error("Failed to fetch user data:", err);
         setError("Failed to load profile info.");
@@ -64,25 +69,53 @@ const EditProfile = () => {
     e.preventDefault();
     setSaving(true);
     setError(null);
+
     try {
+      const isUnchanged = Object.keys(formData).every((key) => {
+        const currentVal =
+          typeof formData[key] === "string"
+            ? formData[key].trim()
+            : JSON.stringify(formData[key]);
+
+        const originalVal =
+          typeof originalData[key] === "string"
+            ? originalData[key].trim()
+            : JSON.stringify(originalData[key]);
+
+        return currentVal === originalVal;
+      });
+
+      if (isUnchanged) {
+        setSaving(false);
+        return alert("No changes made.");
+      }
+
+      const payload = {
+        name: String(formData.name || "").trim(),
+        description: String(formData.description || "").trim(),
+        skills: formData.skills
+          ? formData.skills
+              .split(",")
+              .map((skill) => skill.trim())
+              .filter(Boolean)
+          : [],
+        education: String(formData.education || "").trim(),
+        experience: String(formData.experience || "").trim(),
+        others: String(formData.others || "").trim(),
+        socialLinks: {
+          facebook: String(formData.facebook || "").trim(),
+          instagram: String(formData.instagram || "").trim(),
+          twitter: String(formData.twitter || "").trim(),
+          linkedin: String(formData.linkedin || "").trim(),
+        },
+      };
+
       await axios.put(
         `https://skill-sync-backend-522o.onrender.com/API_B/profile/update/${id}`,
-        {
-          name: formData.name,
-          description: formData.description,
-          socialLinks: {
-            facebook: formData.facebook,
-            instagram: formData.instagram,
-            twitter: formData.twitter,
-            linkedin: formData.linkedin,
-          },
-          skills: formData.skills,
-          education: formData.education,
-          experience: formData.experience,
-          others: formData.others,
-        },
+        payload,
         { withCredentials: true }
       );
+
       navigate(`/profile/${id}`);
     } catch (err) {
       console.error("Error updating profile:", err);
@@ -96,6 +129,7 @@ const EditProfile = () => {
     navigate(`/profile/${id}`);
   };
 
+  if (loading) return <div className="loading">Loading profile...</div>;
   if (error) return <div className="error">{error}</div>;
 
   return (
@@ -111,16 +145,59 @@ const EditProfile = () => {
 
       <form className="edit-profile-form" onSubmit={handleSave}>
         {[
-          { label: "Name", name: "name", placeholder:"John Snow",required: true },
-          { label: "About / Description", name: "description", placeholder:"e.g. I am a Student...",type: "textarea", required: true },
-          { label: "Skills", name: "skills", type: "textarea", placeholder: "e.g. React, Node.js, SQL...", required: true },
-          { label: "Education", name: "education", type: "textarea", placeholder: "e.g. B.Tech in CSE from XYZ University..." },
-          { label: "Professional Experience", name: "experience", type: "textarea", placeholder: "e.g. Intern at ABC Corp..." },
-          { label: "Others", name: "others", type: "textarea", placeholder: "Certifications, volunteering, etc." },
-          { label: "Facebook URL", name: "facebook", placeholder: "https://facebook.com/username" },
-          { label: "Instagram URL", name: "instagram", placeholder: "https://instagram.com/username" },
-          { label: "Twitter URL", name: "twitter", placeholder: "https://twitter.com/username" },
-          { label: "LinkedIn URL", name: "linkedin", placeholder: "https://linkedin.com/in/username" },
+          { label: "Name", name: "name", placeholder: "John Snow", required: true },
+          {
+            label: "About / Description",
+            name: "description",
+            placeholder: "e.g. I am a Student...",
+            type: "textarea",
+            required: true,
+          },
+          {
+            label: "Skills",
+            name: "skills",
+            type: "textarea",
+            placeholder: "e.g. React, Node.js, SQL...",
+            required: true,
+          },
+          {
+            label: "Education",
+            name: "education",
+            type: "textarea",
+            placeholder: "e.g. B.Tech in CSE from XYZ University...",
+          },
+          {
+            label: "Professional Experience",
+            name: "experience",
+            type: "textarea",
+            placeholder: "e.g. Intern at ABC Corp...",
+          },
+          {
+            label: "Others",
+            name: "others",
+            type: "textarea",
+            placeholder: "Certifications, volunteering, etc.",
+          },
+          {
+            label: "Facebook URL",
+            name: "facebook",
+            placeholder: "https://facebook.com/username",
+          },
+          {
+            label: "Instagram URL",
+            name: "instagram",
+            placeholder: "https://instagram.com/username",
+          },
+          {
+            label: "Twitter URL",
+            name: "twitter",
+            placeholder: "https://twitter.com/username",
+          },
+          {
+            label: "LinkedIn URL",
+            name: "linkedin",
+            placeholder: "https://linkedin.com/in/username",
+          },
         ].map(({ label, name, type, placeholder, required }) => (
           <label key={name}>
             <div className="label-with-required">
@@ -132,8 +209,8 @@ const EditProfile = () => {
                 name={name}
                 value={formData[name]}
                 onChange={handleChange}
-                {...(required ? { required: true } : {})}
                 placeholder={placeholder || ""}
+                required={required}
                 rows={3}
               />
             ) : (
@@ -142,8 +219,8 @@ const EditProfile = () => {
                 name={name}
                 value={formData[name]}
                 onChange={handleChange}
-                {...(required ? { required: true } : {})}
                 placeholder={placeholder || ""}
+                required={required}
               />
             )}
           </label>
