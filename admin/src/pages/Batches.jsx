@@ -592,7 +592,7 @@ const Batches = () => {
                   <td>{student.MobileNo}</td>
                   <td>{student.batch}</td>
                   <td>{student.branch}</td>
-                  <td>{student.Role || "N/A"}</td>
+                  <td>{student.role || "N/A"}</td>
                 </tr>
               ))}
             </tbody>
