@@ -40,29 +40,32 @@ const AvatarSection = ({ userId }) => {
   }, [userId, BACKEND_URL]);
 
   // Fetch profile picture on component mount
+  // Fetch profile picture on component mount (with axios)
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/API_B/profile/${userId}`
+          `${BACKEND_URL}/API_B/profile/${userId}`,
+          { withCredentials: true }
         );
         const profilePicPath = response.data.profilePic;
-        if (profilePicPath) {
-          // Prepend the server URL to the profilePic path
-          setAvatarSrc(`http://localhost:3000${profilePicPath}`);
+
+        if (profilePicPath && profilePicPath.trim() !== "") {
+          // Prepend the server URL if needed
+          setAvatarSrc(`${BACKEND_URL}${profilePicPath}`);
         } else {
-          setAvatarSrc(profilePic); // Fallback to default image
+          setAvatarSrc(defaultProfilePic); // ✅ use defaultProfilePic, not profilePic
         }
       } catch (error) {
         console.error("Error fetching profile picture:", error);
-        setAvatarSrc(profilePic); // Fallback to default image on error
+        setAvatarSrc(defaultProfilePic); // ✅ fallback to defaultProfilePic
       }
     };
 
     if (userId) {
       fetchProfile();
     }
-  }, [userId]);
+  }, [userId, BACKEND_URL]);
 
   const handleEditClick = () => {
     if (currentUser?._id === userId) {
