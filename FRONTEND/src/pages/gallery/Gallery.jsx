@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import "./gallery.scss";
+import "./Gallery.scss";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import alumniimage1 from "../LandingPage/about-image/a1.jpg";
 import alumniimage2 from "../LandingPage/about-image/a2.jpg";
