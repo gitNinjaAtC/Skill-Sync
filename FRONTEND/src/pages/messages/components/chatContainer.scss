@@ -162,3 +162,30 @@
   margin: 1rem 0 0.5rem;
   font-size: 0.9rem;
 }
+
+.new-messages-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+  color: #ff4444;
+  font-weight: 600;
+  font-size: 0.9rem;
+  position: relative;
+
+  span {
+    background: #fff;
+    padding: 2px 10px;
+    border-radius: 12px;
+    border: 1px solid #ff4444;
+  }
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #ddd;
+    margin: 0 8px;
+  }
+}
