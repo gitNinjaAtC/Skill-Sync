@@ -12,8 +12,8 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-top">
-        <div className="footer-section">
-          <h2>Sagar Institute of Science and Technology</h2>
+        <div className="footer-section-1">
+          <h2>Sagar Institute of Science and Technology®</h2>
           <p>Your journey started here — now help shape someone else’s.</p>
           <div className="contact-item">
             <LocationOnIcon />
@@ -23,7 +23,7 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Sagar Institute of Science and Technology, Bhopal
+                Bhopal, Madhya Pradesh
               </a>
             </span>
           </div>
@@ -38,12 +38,12 @@ const Footer = () => {
           <div className="contact-item">
             <PhoneIcon />
             <span>
-              <a href="tel:+919910128025">+919910128025</a>
+              <a href="tel:+919910128025">9910128025</a>
             </span>
           </div>
         </div>
 
-        <div className="footer-section">
+        <div className="footer-section-2">
           <h3>Quick Links</h3>
           <Link
             to="https://www.sistec.ac.in/sagar-group"
@@ -68,7 +68,7 @@ const Footer = () => {
           </Link>
         </div>
 
-        <div className="footer-section">
+        <div className="footer-section-3">
           <h3>Connect with Us</h3>
           <div className="social-icons">
             <a href="https://linkedin.com" target="_blank" rel="noreferrer">
