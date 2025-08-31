@@ -1,69 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import Select from "react-select"; // Import react-select
-import "./loginform.scss";
 import axios from "axios";
+import "./loginform.scss";
 
-const options = [
+// Tab options
+const roleOptions = [
   { value: "student", label: "Student" },
   { value: "alumni", label: "Alumni" },
   { value: "faculty", label: "Faculty" },
 ];
-
-const customStyles = {
-  control: (provided, state) => ({
-    ...provided,
-    background: "white",
-    borderRadius: 20,
-    marginTop: "15px",
-    padding: "10px 20px",
-    border: "none",
-    boxShadow: "#cff0ff 0px 10px 10px -5px;",
-    fontSize: "1rem",
-    cursor: "pointer",
-    borderInline: "2px solid transparent",
-    transition: "all 0.3s ease",
-    "&:hover": {
-      borderColor: "#1089d3",
-    },
-  }),
-  menu: (provided) => ({
-    ...provided,
-    borderRadius: 20,
-    marginTop: "5px",
-    backgroundColor: "white",
-    animation: "fadeInDown 0.3s ease",
-  }),
-  option: (provided, state) => ({
-    ...provided,
-    color: "black",
-    borderRadius: 20,
-    cursor: "pointer",
-    padding: "10px 20px",
-    overflow: "hidden",
-  }),
-  placeholder: (provided) => ({
-    ...provided,
-    color: "#aaa",
-    marginLeft: 0,
-  }),
-  singleValue: (provided) => ({
-    ...provided,
-    color: "#1089d3",
-    marginLeft: 0,
-  }),
-  indicatorsContainer: (provided) => ({
-    ...provided,
-    paddingRight: "10px",
-  }),
-  dropdownIndicator: (provided) => ({
-    ...provided,
-    color: "#1089d3",
-    "&:hover": {
-      color: "#12b1d1",
-    },
-  }),
-};
 
 export const RegisterForm = () => {
   const [inputs, setInputs] = useState({
@@ -71,14 +16,14 @@ export const RegisterForm = () => {
     enrollmentNo: "",
     password: "",
     name: "",
-    role: "",
+    role: "student", // default to student, or empty string if none selected
   });
-
   const [err, setErr] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Input change handler
   const handleChange = (e) => {
     setInputs((prev) => ({
       ...prev,
@@ -88,10 +33,11 @@ export const RegisterForm = () => {
     setSuccess(null);
   };
 
-  const handleSelectChange = (selectedOption) => {
+  // Tab click handler
+  const handleRoleTabClick = (roleValue) => {
     setInputs((prev) => ({
       ...prev,
-      role: selectedOption ? selectedOption.value : "",
+      role: roleValue,
     }));
     setErr(null);
     setSuccess(null);
@@ -124,7 +70,7 @@ export const RegisterForm = () => {
         enrollmentNo: "",
         password: "",
         name: "",
-        role: "",
+        role: "student", // or reset as needed
       });
 
       setTimeout(() => navigate("/"), 3000);
@@ -141,10 +87,6 @@ export const RegisterForm = () => {
     }
   };
 
-  // Finding selected role option
-  const selectedRoleOption =
-    options.find((opt) => opt.value === inputs.role) || null;
-
   return (
     <div className="login-page">
       <div className="login-wrapper">
@@ -153,6 +95,22 @@ export const RegisterForm = () => {
             ×
           </button>
           <div className="heading">Register</div>
+
+          {/* Role Tabs */}
+          <div className="role-tabs">
+            {roleOptions.map((role) => (
+              <button
+                key={role.value}
+                className={`role-tab ${
+                  inputs.role === role.value ? "active" : ""
+                }`}
+                type="button"
+                onClick={() => handleRoleTabClick(role.value)}
+              >
+                {role.label}
+              </button>
+            ))}
+          </div>
 
           <form className="form" onSubmit={handleSubmit}>
             <input
@@ -184,7 +142,6 @@ export const RegisterForm = () => {
               value={inputs.enrollmentNo}
               onChange={handleChange}
             />
-
             <input
               required
               className="input"
@@ -194,26 +151,13 @@ export const RegisterForm = () => {
               value={inputs.password}
               onChange={handleChange}
             />
-
-            <Select
-              options={options}
-              value={selectedRoleOption}
-              onChange={handleSelectChange}
-              placeholder="Role"
-              styles={customStyles}
-              isSearchable={false}
-              name="role"
-              classNamePrefix="custom-select"
-            />
             {inputs.role !== "faculty" && (
               <Link to="/forgot-Enrollment" className="forgot-link">
                 Forgot Enrollment Number?
               </Link>
             )}
-
             {err && <p className="error">{err}</p>}
             {success && <p className="success">{success}</p>}
-
             <input
               className="login-button"
               type="submit"

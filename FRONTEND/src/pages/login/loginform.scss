@@ -45,7 +45,7 @@
   }
 
   .form {
-    margin-top: 20px;
+    margin-top: 0.5rem;
 
     .input {
       width: 100%;
@@ -109,9 +109,6 @@
       padding: 0 !important;
       margin: 0 !important;
       border: none !important;
-      transition: transform 0.5s ease, opacity 0.5s ease, max-width 0.5s ease,
-        max-height 0.5s ease, height 0.5s ease, padding 0.5s ease,
-        margin 0.5s ease;
     }
 
     .forgot-link {
@@ -243,6 +240,31 @@
       .success {
         font-size: 12px;
       }
+    }
+  }
+}
+.role-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: nowrap;
+
+  .role-tab {
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #666;
+    padding: 0 0 6px 0;
+    margin: 1rem 0 0;
+    font-weight: 500;
+    cursor: pointer;
+    min-width: 70px;
+
+    &.active {
+      color: #3493f9;
+      border-bottom: 2px solid #3493f9;
+      font-weight: 600;
     }
   }
 }
