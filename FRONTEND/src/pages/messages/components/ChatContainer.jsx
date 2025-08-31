@@ -17,12 +17,32 @@ const ChatContainer = () => {
     selectedUser,
     subscribeToMessages,
     unsubscribeFromMessages,
+    users,
+    resetUnreadCount,
   } = useChatStore();
 
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
+  const newMarkerRef = useRef(null); // Divider ref
   const [selectedImage, setSelectedImage] = useState(null);
 
+  // Current user's unread info
+  const currentUserMeta = users.find((u) => u._id === selectedUser?._id);
+  const unreadCount = currentUserMeta?.unreadCount || 0;
+
+  // Determine index of first unread message
+  const splitIndex = (() => {
+    if (!selectedUser?._id || unreadCount <= 0) return null;
+
+    let count = 0;
+    for (let i = 0; i < messages.length; i++) {
+      if (messages[i].senderId !== authUser._id) count++;
+      if (count === unreadCount) return i;
+    }
+    return null;
+  })();
+
+  // Load chat and subscribe to new messages
   useEffect(() => {
     if (!selectedUser?._id) return;
     getMessages(selectedUser._id);
@@ -30,11 +50,17 @@ const ChatContainer = () => {
     return () => unsubscribeFromMessages();
   }, [selectedUser?._id]);
 
+  // Auto-scroll logic
   useEffect(() => {
-    if (messageEndRef.current && messages) {
+    if (!selectedUser?._id) return;
+
+    if (unreadCount > 0 && newMarkerRef.current) {
+      newMarkerRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => resetUnreadCount(selectedUser._id), 0);
+    } else if (messageEndRef.current) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+  }, [messages.length, unreadCount, selectedUser?._id, resetUnreadCount]);
 
   const resolveProfilePic = (user) => {
     if (!user?.profilePic || user.profilePic.trim() === "") return avatar;
@@ -65,54 +91,66 @@ const ChatContainer = () => {
         {Object.entries(groupedMessages).map(([date, msgs]) => (
           <div key={date}>
             <div className="chat-date-heading">{date}</div>
-            {msgs.map((message) => (
-              <div
-                key={message._id}
-                className={`chat-message ${
-                  message.senderId === authUser._id ? "chat-end" : "chat-start"
-                }`}
-                ref={messageEndRef}
-              >
-                <div className="chat-content">
-                  <div className="chat-avatar">
-                    <img
-                      src={
-                        message.senderId === authUser._id
-                          ? resolveProfilePic(authUser)
-                          : resolveProfilePic(selectedUser)
-                      }
-                      alt="profile pic"
-                      onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = avatar;
-                      }}
-                    />
-                  </div>
+            {msgs.map((message, idx) => {
+              const isNewMessageStart =
+                splitIndex !== null && messages.findIndex((m) => m._id === message._id) === splitIndex;
 
-                  <div className="chat-bubble-container">
-                    <div className="chat-header">
-                      <time>{formatMessageTime(message.createdAt)}</time>
+              return (
+                <div key={message._id}>
+                  {isNewMessageStart && (
+                    <div ref={newMarkerRef} className="new-messages-divider">
+                      <span>New Messages</span>
                     </div>
+                  )}
 
-                    <div
-                      className={`chat-bubble ${
-                        message.image && !message.text ? "image-only" : ""
-                      }`}
-                    >
-                      {message.image && (
+                  <div
+                    className={`chat-message ${
+                      message.senderId === authUser._id ? "chat-end" : "chat-start"
+                    }`}
+                    ref={idx === messages.length - 1 ? messageEndRef : null}
+                  >
+                    <div className="chat-content">
+                      <div className="chat-avatar">
                         <img
-                          src={message.image}
-                          alt="Attachment"
-                          onClick={() => setSelectedImage(message.image)}
-                          className="chat-image"
+                          src={
+                            message.senderId === authUser._id
+                              ? resolveProfilePic(authUser)
+                              : resolveProfilePic(selectedUser)
+                          }
+                          alt="profile pic"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = avatar;
+                          }}
                         />
-                      )}
-                      {message.text && <p>{message.text}</p>}
+                      </div>
+
+                      <div className="chat-bubble-container">
+                        <div className="chat-header">
+                          <time>{formatMessageTime(message.createdAt)}</time>
+                        </div>
+
+                        <div
+                          className={`chat-bubble ${
+                            message.image && !message.text ? "image-only" : ""
+                          }`}
+                        >
+                          {message.image && (
+                            <img
+                              src={message.image}
+                              alt="Attachment"
+                              onClick={() => setSelectedImage(message.image)}
+                              className="chat-image"
+                            />
+                          )}
+                          {message.text && <p>{message.text}</p>}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ))}
         <div ref={messageEndRef} />
