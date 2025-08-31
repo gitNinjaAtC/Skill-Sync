@@ -90,7 +90,7 @@ const Footer = () => {
       <div className="footer-bottom">
         <p>
           © 2025 Designed & Developed by <span>Shivam</span>, <span>Sahil</span>{" "}
-          and <span>Purushottam</span> Under the Guidance by{" "}
+          and <span>Purushottam</span> under the Guidance of{" "}
           <span>Prof. Nargish Gupta</span>.
         </p>
       </div>
