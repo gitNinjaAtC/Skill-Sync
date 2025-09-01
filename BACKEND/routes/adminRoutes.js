@@ -251,7 +251,7 @@ router.delete("/user/:id", async (req, res) => {
   }
 });
 
-// ✅ Get all students in a batch and branch
+
 // ✅ Get all students in a batch and branch
 router.get("/students", async (req, res) => {
   try {
