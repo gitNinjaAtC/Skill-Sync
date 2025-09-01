@@ -56,7 +56,7 @@ const alumniData = [
     image: Aman,
   },
   {
-    name: "Aditya Singh",
+    name: "Shekhar Yadav",
     city: "Bhopal",
     companylogo: GlobalLogic,
     packageText: "₹35 LPA",

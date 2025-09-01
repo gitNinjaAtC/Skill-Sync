@@ -90,7 +90,7 @@ const LandingPage = () => {
         {!showLoginForm && !showRegisterForm && (
           <div className="hero-overlay" data-aos="fade-down-right">
             <h1 className="animated-text">
-              Welcome to <WavyText text="Skill-Sync" />
+              Welcome to <WavyText text="AlumniConnect" />
             </h1>
             <p>Connect. Collaborate. Grow.</p>
           </div>
@@ -116,13 +116,13 @@ const LandingPage = () => {
             data-aos-offset="300"
             data-aos-easing="ease-in-sine"
           >
-            What is Skill-Sync?
+            What is AlumniConnect?
           </h2>
           <p>
-            Skill-Sync is more than just a platform—it's a thriving ecosystem
+            AlumniConnect is more than just a platform—it's a thriving ecosystem
             for alumni, students, and faculty to connect and grow together. From
             sharing job opportunities and mentorship to collaborating on
-            projects and hosting events, Skill-Sync helps bridge generations and
+            projects and hosting events, AlumniConnect helps bridge generations and
             spark innovation. Whether you're seeking guidance or looking to give
             back, this is your space to make an impact.
           </p>
