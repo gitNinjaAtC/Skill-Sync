@@ -1,5 +1,5 @@
 import AlumniForm from "../models/AlumniForm.js";
-import User from "../models/User.js";
+import User from "../models/Users.js";
 import Student from "../models/Student.js";
 
 // ✅ Get form data (only for alumnus)
@@ -15,6 +15,7 @@ export const getAlumniForm = async (req, res) => {
 
     // Fetch student info using email
     const student = await Student.findOne({ EmailId: user.email });
+    console.log("Found student:", student); // Add this for debugging
 
     // Fetch previously submitted form if exists
     const form = await AlumniForm.findOne({ userId });

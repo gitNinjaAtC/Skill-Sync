@@ -40,42 +40,44 @@ const AlumniForm = () => {
 
   // Fetch user details on load and prefill
   useEffect(() => {
-    if (currentUser && currentUser.role === "alumni") {
-      axios.get("https://skill-sync-backend-522o.onrender.com/API_B/alumni/form", {
-        withCredentials: true // This sends cookies with the request
-      })
-      .then(res => {
-        // Prefill personal info
-        setUserData({
-          name: res.data.name,
-          email: res.data.email,
-          batch: res.data.batch,
-          department: res.data.department
-        });
-
-        // Prefill form if already submitted
-        if (res.data.form) {
-          const { attending, phoneNumber, occupation, city, specialRequirements, accommodation } = res.data.form;
-          setFormData({
-            attending: attending || "No",
-            phoneNumber: phoneNumber || "",
-            occupation: occupation || "",
-            city: city || "",
-            specialRequirements: specialRequirements || "",
-            accommodationRequired: accommodation?.required || false,
-            accommodationDates: accommodation?.dates || []
-          });
-        }
-      })
-      .catch(err => {
-        console.error("Error fetching user data", err);
-        if (err.response) {
-          console.error("Response status:", err.response.status);
-          console.error("Response data:", err.response.data);
-        }
+  if (currentUser && currentUser.role === "alumni") {
+    axios.get("https://skill-sync-backend-522o.onrender.com/API_B/alumni/form", {
+      withCredentials: true
+    })
+    .then(res => {
+      console.log("Full API response:", res.data); // Add this for debugging
+      
+      // Prefill personal info
+      setUserData({
+        name: res.data.name,
+        email: res.data.email,
+        batch: res.data.batch,
+        department: res.data.department
       });
-    }
-  }, [currentUser]);
+
+      // Prefill form if already submitted
+      if (res.data.form) {
+        const { attending, phoneNumber, occupation, city, specialRequirements, accommodation } = res.data.form;
+        setFormData({
+          attending: attending || "No",
+          phoneNumber: phoneNumber || "",
+          occupation: occupation || "",
+          city: city || "",
+          specialRequirements: specialRequirements || "",
+          accommodationRequired: accommodation?.required || false,
+          accommodationDates: accommodation?.dates || []
+        });
+      }
+    })
+    .catch(err => {
+      console.error("Error fetching user data", err);
+      if (err.response) {
+        console.error("Response status:", err.response.status);
+        console.error("Response data:", err.response.data);
+      }
+    });
+  }
+}, [currentUser]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
