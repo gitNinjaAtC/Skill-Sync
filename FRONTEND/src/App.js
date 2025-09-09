@@ -43,12 +43,15 @@ import ComingSoon from "./pages/Comingsoon/Comingsoon";
 import ForgotPassword from "./pages/Update Password/ForgotPassword";
 import ResetPassword from "./pages/Update Password/ResetPassword";
 
-//forgot enroll
+// Forgot enrollment
 import ForgotEnrollment from "./pages/recoverEnroll/forgotEnroll";
 import RecoverEnrollment from "./pages/recoverEnroll/recoverEnroll";
 
 // Comments Page
-import CommentPage from "./pages/forums/CommentPage"; // ✅ make sure this file exists
+import CommentPage from "./pages/forums/CommentPage";
+
+// ✅ Alumni Form Page
+import AlumniForm from "./pages/AlumniForm/AlumniForm";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -108,7 +111,7 @@ function App() {
         { path: "/profile/:id", element: <ProfilePage /> },
         { path: "/edit-profile/:id", element: <EditProfile /> },
         { path: "/forums", element: <Forums /> },
-        { path: "/forums/:id/comments", element: <CommentPage /> }, // ✅ Route added
+        { path: "/forums/:id/comments", element: <CommentPage /> },
         { path: "/create-forum", element: <CreateForum /> },
         { path: "/job", element: <Jobs /> },
         { path: "/jobs/:id", element: <JobDescription /> },
@@ -119,6 +122,8 @@ function App() {
         { path: "/gallery", element: <Gallery /> },
         { path: "/fundraiser", element: <ComingSoon /> },
         { path: "/resume-builder", element: <ComingSoon /> },
+        // ✅ Alumni Form Route Added
+        { path: "/alumni-form", element: <AlumniForm /> },
       ],
     },
     { path: "/forgot-password", element: <ForgotPassword /> },
