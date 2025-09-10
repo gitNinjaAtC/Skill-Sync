@@ -9,6 +9,7 @@ import {
   approveUser,
   importFile,
   createAdmin,
+  getAllAlumniForms,
 } from "../controllers/adminControllers.js";
 import { validateToken } from "../middleware/validateTokenHandler.js";
 import jwt from "jsonwebtoken";
@@ -270,5 +271,8 @@ router.get("/students", async (req, res) => {
     res.status(500).json({ error: "Error fetching students" });
   }
 });
+
+// ✅ New route to fetch all alumni forms (admin only)
+router.get("/alumni-forms", validateToken, getAllAlumniForms);
 
 export default router;

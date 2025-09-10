@@ -10,7 +10,8 @@ import ManageUsers from "./pages/manageUsers";
 import Users from "./pages/Users";
 import AdminLogin from "./pages/adminLogin/adminLogin";
 import CreateAdmin from "./createAdmin/createAdmin";
-import Posts from "./pages/posts"; // ✅ Correct import
+import Posts from "./pages/posts";
+import AlumniForms from "./pages/AlumniForms"; // ✅ Correct import
 
 const App = () => {
   const [admin, setAdmin] = useState(null);
@@ -50,11 +51,12 @@ const App = () => {
                       <Route path="/" element={<Dashboard />} />
                       <Route path="/users" element={<Users />} />
                       <Route path="/jobs" element={<JobsDashboard />} />
-                      <Route path="/posts" element={<Posts />} /> {/* ✅ Added Posts route */}
+                      <Route path="/posts" element={<Posts />} />
                       <Route path="/gallery" element={<Gallery />} />
                       <Route path="/batches" element={<Batches />} />
                       <Route path="/create-admin" element={<CreateAdmin />} />
                       <Route path="/manageUsers" element={<ManageUsers />} />
+                      <Route path="/alumni-forms" element={<AlumniForms />} /> {/* ✅ Correct usage */}
                     </Routes>
                   </main>
                 </div>

@@ -5,6 +5,7 @@ import xlsx from "xlsx";
 import fs from "fs";
 import bcrypt from "bcrypt";
 import Student from "../models/Student.js";
+import AlumniForm from "../models/AlumniForm.js";
 
 // Admin approval route
 export const approveUser = async (req, res) => {
@@ -319,5 +320,23 @@ export const getStudents = async (req, res) => {
     return res
       .status(500)
       .json({ error: "Server error while fetching students" });
+  }
+};
+
+// ✅ Get all alumni form entries (only for admin)
+export const getAllAlumniForms = async (req, res) => {
+  try {
+    // Check if the user is an admin
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    // Fetch all alumni forms, optionally populate user info
+    const forms = await AlumniForm.find().populate("userId", "name email");
+
+    res.status(200).json(forms);
+  } catch (error) {
+    console.error("❌ Error fetching all alumni forms:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
