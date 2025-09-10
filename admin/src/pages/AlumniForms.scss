@@ -1,0 +1,127 @@
+.alumni-forms-container {
+  padding: 30px;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f4f6f8;
+  min-height: 100vh;
+
+  h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    font-size: 2rem;
+    letter-spacing: 1px;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+
+    button {
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: #2980b9;
+        transform: scale(1.05);
+      }
+    }
+
+    select {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+      &:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+      }
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    thead {
+      background-color: #3498db;
+      color: #fff;
+
+      th {
+        padding: 14px;
+        font-weight: 600;
+        text-align: left;
+        font-size: 0.95rem;
+      }
+    }
+
+    tbody {
+      tr {
+        transition: background-color 0.2s ease;
+
+        &:nth-child(even) {
+          background-color: #f9f9f9;
+        }
+
+        &:hover {
+          background-color: #ecf5fd;
+        }
+
+        td {
+          padding: 12px;
+          font-size: 0.9rem;
+          border-bottom: 1px solid #ddd;
+          color: #333;
+        }
+      }
+    }
+  }
+
+  .error-message,
+  .loading-message,
+  .no-data-message {
+    text-align: center;
+    padding: 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    margin-top: 20px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .error-message {
+    background-color: #ffe6e6;
+    color: #c0392b;
+    font-weight: bold;
+  }
+
+  .loading-message {
+    background-color: #f0f0f0;
+    color: #555;
+    font-style: italic;
+  }
+
+  .no-data-message {
+    background-color: #fdfdfd;
+    color: #777;
+    font-style: italic;
+  }
+}
