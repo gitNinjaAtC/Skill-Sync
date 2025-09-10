@@ -1,56 +1,38 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { jsPDF } from "jspdf";
-import "./AlumniForms.scss"; // Import the SCSS file here
-
-const API_BASE_URL =
-  window.location.hostname === "localhost"
-    ? "http://localhost:8800/API_B/admin"
-    : "https://skill-sync-backend-522o.onrender.com/API_B/admin";
+import "./AlumniForms.scss";
 
 const AlumniForms = () => {
   const [forms, setForms] = useState([]);
   const [filteredForms, setFilteredForms] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState("All");
 
+  const token = localStorage.getItem("adminToken");
+  const API_BASE_URL = "https://skill-sync-backend-522o.onrender.com/API_B/admin";
+
+  const fetchAlumniForms = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/alumni-forms`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setForms(response.data);
+      setFilteredForms(response.data);
+      setError("");
+    } catch (err) {
+      console.error("Error fetching alumni forms:", err);
+      setError("Failed to fetch alumni forms.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchAlumniForms = async () => {
-      try {
-        setLoading(true);
-        setError("");
-
-        const token = localStorage.getItem("adminToken");
-        if (!token) {
-          setError("Admin not authenticated");
-          setLoading(false);
-          return;
-        }
-
-        const response = await axios.get(`${API_BASE_URL}/alumni-forms`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        });
-
-        setForms(response.data);
-        setFilteredForms(response.data);
-      } catch (err) {
-        console.error("Error fetching alumni forms:", err);
-        if (err.response && err.response.status === 401) {
-          setError("Unauthorized. Please login again.");
-        } else if (err.response && err.response.status === 404) {
-          setError("Alumni forms endpoint not found.");
-        } else {
-          setError("Failed to fetch alumni forms. Please try again.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchAlumniForms();
   }, []);
 
@@ -148,17 +130,9 @@ const AlumniForms = () => {
     doc.save("alumni_forms.pdf");
   };
 
-  if (loading) {
-    return <div className="loading-message">Loading alumni forms...</div>;
-  }
-
-  if (error) {
-    return <div className="error-message">{error}</div>;
-  }
-
-  if (forms.length === 0) {
-    return <div className="no-data-message">No alumni forms found.</div>;
-  }
+  if (loading) return <div className="loading-message">Loading alumni forms...</div>;
+  if (error) return <div className="error-message">{error}</div>;
+  if (forms.length === 0) return <div className="no-data-message">No alumni forms found.</div>;
 
   return (
     <div className="alumni-forms-container">
