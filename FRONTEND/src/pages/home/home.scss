@@ -41,3 +41,35 @@
     }
   }
 }
+
+
+.alumni-ad-popup {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  background: linear-gradient(45deg, #4a90e2, #357ab8);
+  color: #fff;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 1;
+  transform: translateY(0);
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  p {
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  span {
+    font-size: 0.9rem;
+    text-decoration: underline;
+  }
+}

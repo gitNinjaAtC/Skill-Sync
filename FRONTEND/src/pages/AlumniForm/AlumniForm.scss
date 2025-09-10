@@ -1,35 +1,61 @@
 .alumni-form-container {
   max-width: 600px;
-  margin: 40px auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 50px auto;
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
   h2 {
     text-align: center;
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-    color: #333;
+    margin-bottom: 25px;
+    font-size: 2rem;
+    color: #222;
+    letter-spacing: 1px;
   }
 
   .personal-info {
-    background-color: #f9f9f9;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    background-color: #f4f6f8;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
 
     h4 {
-      margin-bottom: 10px;
-      color: #555;
+      margin-bottom: 15px;
+      color: #444;
+      font-size: 1.1rem;
     }
 
-    p {
-      margin: 5px 0;
-      font-size: 0.95rem;
+    div {
+      margin-bottom: 12px;
 
-      strong {
-        color: #000;
+      label {
+        font-weight: 500;
+        color: #555;
+        margin-bottom: 4px;
+        display: block;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+
+        &:focus {
+          border-color: #4a90e2;
+          box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+          outline: none;
+        }
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 90px;
       }
     }
   }
@@ -38,56 +64,83 @@
     display: flex;
     flex-direction: column;
 
-    label {
-      margin-top: 10px;
-      margin-bottom: 5px;
-      font-weight: 500;
-    }
+    div {
+      margin-bottom: 15px;
 
-    input[type="text"],
-    textarea,
-    select {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 1rem;
-      width: 100%;
-      box-sizing: border-box;
-      transition: border-color 0.2s;
-
-      &:focus {
-        border-color: #007bff;
-        outline: none;
+      label {
+        font-weight: 500;
+        color: #555;
+        margin-bottom: 6px;
+        display: block;
       }
-    }
 
-    textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
+      input[type="text"],
+      textarea,
+      select {
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
 
-    select[multiple] {
-      height: auto;
-    }
+        &:focus {
+          border-color: #4a90e2;
+          box-shadow: 0 0 6px rgba(74, 144, 226, 0.4);
+          outline: none;
+        }
+      }
 
-    input[type="checkbox"] {
-      margin-right: 10px;
+      select[multiple] {
+        height: auto;
+      }
+
+      input[type="checkbox"] {
+        transform: scale(1.2);
+        margin-right: 8px;
+        accent-color: #4a90e2;
+      }
     }
 
     button {
       margin-top: 20px;
-      padding: 12px;
-      background-color: #007bff;
+      padding: 14px;
+      background: linear-gradient(45deg, #4a90e2, #357ab8);
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 1rem;
-      transition: background-color 0.2s;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: background 0.3s, transform 0.2s;
 
       &:hover {
-        background-color: #0056b3;
+        background: linear-gradient(45deg, #357ab8, #2b5f91);
+        transform: translateY(-2px);
+      }
+
+      &:active {
+        transform: translateY(0);
       }
     }
   }
+
+  .already-submitted {
+    text-align: center;
+    padding: 20px;
+    background-color: #e9f7ef;
+    border: 1px solid #d4edda;
+    border-radius: 10px;
+
+    h3 {
+      color: #155724;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #155724;
+      font-size: 1rem;
+    }
+  }
 }
+
+

@@ -25,30 +25,27 @@ const AlumniForm = () => {
     accommodationDates: []
   });
 
-  const [submitted, setSubmitted] = useState(false); // NEW
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [datesOptions] = useState([
     "2025-09-20",
     "2025-09-21",
     "2025-09-22"
   ]);
 
-  // Redirect if not alumni
   useEffect(() => {
-    if (!currentUser || currentUser.role !== "alumni") {
+    if (!currentUser) return;
+    if (currentUser.role !== "alumni") {
       navigate("/home", { replace: true });
     }
   }, [currentUser, navigate]);
 
-  // Fetch user details on load and prefill
   useEffect(() => {
     if (currentUser && currentUser.role === "alumni") {
       axios.get("https://skill-sync-backend-522o.onrender.com/API_B/alumni/form", {
         withCredentials: true
       })
       .then(res => {
-        console.log("Full API response:", res.data);
-
-        // Prefill personal info
         setUserData({
           name: res.data.name,
           email: res.data.email,
@@ -56,11 +53,9 @@ const AlumniForm = () => {
           department: res.data.department
         });
 
-        // Check if form already submitted
         if (res.data.form) {
           setSubmitted(true);
 
-          // Prefill form data (optional, for reference)
           const { attending, phoneNumber, occupation, city, specialRequirements, accommodation } = res.data.form;
           setFormData({
             attending: attending || "No",
@@ -75,6 +70,9 @@ const AlumniForm = () => {
       })
       .catch(err => {
         console.error("Error fetching user data", err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
     }
   }, [currentUser]);
@@ -97,24 +95,29 @@ const AlumniForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Build payload conditionally
     const payload = {
-      attending: formData.attending,
-      phoneNumber: formData.phoneNumber,
-      occupation: formData.occupation,
-      city: formData.city,
-      specialRequirements: formData.specialRequirements,
-      accommodation: {
+      attending: formData.attending
+    };
+
+    if (formData.attending === "Yes") {
+      payload.phoneNumber = formData.phoneNumber;
+      payload.occupation = formData.occupation;
+      payload.city = formData.city;
+      payload.specialRequirements = formData.specialRequirements;
+      payload.accommodation = {
         required: formData.accommodationRequired,
         dates: formData.accommodationDates
-      }
-    };
+      };
+    }
 
     axios.post("https://skill-sync-backend-522o.onrender.com/API_B/alumni/form", payload, {
       withCredentials: true
     })
     .then(res => {
       alert(res.data.message);
-      setSubmitted(true); // Mark as submitted immediately
+      setSubmitted(true);
     })
     .catch(err => {
       console.error("Error submitting form", err);
@@ -122,8 +125,28 @@ const AlumniForm = () => {
     });
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="alumni-form-container">
+      {/* Back Button */}
+      <button 
+        onClick={() => navigate(-1)} 
+        style={{
+          marginBottom: "20px",
+          padding: "8px 16px",
+          backgroundColor: "#007bff",
+          color: "#fff",
+          border: "none",
+          borderRadius: "4px",
+          cursor: "pointer"
+        }}
+      >
+        ← Back
+      </button>
+
       <h2>Alumni Meet Form</h2>
 
       <div className="personal-info">
@@ -169,7 +192,13 @@ const AlumniForm = () => {
             <>
               <div>
                 <label>Phone Number:</label><br />
-                <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required />
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  required={formData.attending === "Yes"}
+                />
               </div>
 
               <div>
@@ -214,10 +243,10 @@ const AlumniForm = () => {
                   </select>
                 </div>
               )}
-
-              <button type="submit">Submit</button>
             </>
           )}
+
+          <button type="submit">Submit</button>
         </form>
       )}
     </div>
