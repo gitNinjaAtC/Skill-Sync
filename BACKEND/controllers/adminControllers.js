@@ -323,20 +323,93 @@ export const getStudents = async (req, res) => {
   }
 };
 
-// ✅ Get all alumni form entries (only for admin)
+// // Debug version of getAllAlumniForms
+// import AlumniForm from "../models/AlumniForm.js";
+// import Student from "../models/Student.js";
+
 export const getAllAlumniForms = async (req, res) => {
   try {
+    console.log("🎯 getAllAlumniForms endpoint called");
+    console.log("👤 User role:", req.user?.role);
+
     // Check if the user is an admin
     if (req.user.role !== "admin") {
+      console.log("⛔ Access denied - not admin");
       return res.status(403).json({ message: "Access denied" });
     }
 
-    // Fetch all alumni forms, optionally populate user info
-    const forms = await AlumniForm.find().populate("userId", "name email");
+    console.log("✅ Admin access confirmed, fetching data...");
 
-    res.status(200).json(forms);
+    // Fetch all alumni forms and populate user info
+    const forms = await AlumniForm.find().populate("userId", "name email").lean();
+    console.log(`📋 Found ${forms.length} alumni forms`);
+
+    if (forms.length > 0) {
+      console.log("🔍 First form sample:", {
+        id: forms[0]._id,
+        userId: forms[0].userId,
+        attending: forms[0].attending
+      });
+    }
+
+    // Fetch all students data for batch/branch lookup
+    const students = await Student.find({}, "EmailId StudentName batch branch").lean();
+    console.log(`👥 Found ${students.length} student records`);
+
+    if (students.length > 0) {
+      console.log("🔍 Student samples:", students.slice(0, 3).map(s => ({
+        email: s.EmailId,
+        name: s.StudentName,
+        batch: s.batch,
+        branch: s.branch
+      })));
+    }
+
+    // Create a map of email to student data for faster lookup
+    const studentMap = new Map();
+    students.forEach(student => {
+      if (student.EmailId) {
+        const normalizedEmail = student.EmailId.toLowerCase().trim();
+        studentMap.set(normalizedEmail, {
+          batch: student.batch || "N/A",
+          branch: student.branch || "N/A"
+        });
+      }
+    });
+
+    console.log(`🗺️ Created student map with ${studentMap.size} entries`);
+
+    // Enrich forms with batch and branch data
+    const enrichedForms = forms.map((form, index) => {
+      const userEmail = form.userId?.email?.toLowerCase()?.trim();
+      const studentData = studentMap.get(userEmail) || { batch: "N/A", branch: "N/A" };
+
+      console.log(`🔍 Form ${index + 1} enrichment:`, {
+        userEmail,
+        foundMatch: studentMap.has(userEmail),
+        batch: studentData.batch,
+        branch: studentData.branch
+      });
+
+      return {
+        ...form,
+        batch: studentData.batch,
+        branch: studentData.branch
+      };
+    });
+
+    console.log(`✅ Successfully enriched ${enrichedForms.length} forms`);
+
+    const successfulMatches = enrichedForms.filter(form =>
+      form.batch !== "N/A" || form.branch !== "N/A"
+    ).length;
+
+    console.log(`📊 Successful matches: ${successfulMatches}/${enrichedForms.length}`);
+
+    res.status(200).json(enrichedForms);
+
   } catch (error) {
-    console.error("❌ Error fetching all alumni forms:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error("❌ Error in getAllAlumniForms:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };
