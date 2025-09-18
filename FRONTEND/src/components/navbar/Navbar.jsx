@@ -1,9 +1,6 @@
 import "./navbar.scss";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -28,7 +25,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
@@ -76,7 +72,6 @@ const Navbar = () => {
     };
   }, [mobileMenuOpen]);
 
-  // 👇 For mobile menu items: navigate & close sidebar
   const closeSidebarAndNavigate = (path) => {
     navigate(path);
     setMobileMenuOpen(false);
@@ -119,20 +114,6 @@ const Navbar = () => {
           <Link to="/home" className="logo">
             SISTec
           </Link>
-
-          <div
-            className="mobileSearchIcon"
-            onClick={() => setMobileSearchOpen(true)}
-          >
-            <SearchOutlinedIcon />
-          </div>
-        </div>
-
-        <div className="center">
-          <div className="search">
-            <SearchOutlinedIcon />
-            <input type="text" placeholder="Search..." />
-          </div>
         </div>
 
         <div className="right">
@@ -152,19 +133,6 @@ const Navbar = () => {
             >
               <PersonOutlinedIcon />
             </button>
-            <Link
-              to="#"
-              className={`iconWrapper ${isActive("#") ? "active" : ""}`}
-            >
-              <EmailOutlinedIcon className="mailIcon" />
-            </Link>
-
-            <Link
-              to="#"
-              className={`iconWrapper ${isActive("#") ? "active" : ""}`}
-            >
-              <NotificationsOutlinedIcon className="notificationIcon" />
-            </Link>
           </div>
 
           <div className="user">
@@ -210,20 +178,6 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-
-      {mobileSearchOpen && (
-        <div className="mobileSearchOverlay">
-          <div className="mobileSearchContainer">
-            <SearchOutlinedIcon />
-            <input
-              type="text"
-              placeholder="Search..."
-              autoFocus
-              onBlur={() => setMobileSearchOpen(false)}
-            />
-          </div>
-        </div>
-      )}
 
       {mobileMenuOpen && (
         <div className="mobileSidebar" ref={sidebarRef}>
