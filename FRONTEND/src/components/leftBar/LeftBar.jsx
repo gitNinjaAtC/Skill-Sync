@@ -67,6 +67,18 @@ const LeftBar = () => {
             <img src={home} alt="Home" />
             <span>Home</span>
           </div>
+
+          {/* ✅ Alumni Meet button - only visible to alumni */}
+          {currentUser?.role === "alumni" && (
+            <div
+              className={`item ${isActive("/alumni-form") ? "active" : ""}`}
+              onClick={() => navigate("/alumni-form")}
+            >
+              <img src={Events} alt="Alumni Meet" />
+              <span>Alumni Meet</span>
+            </div>
+          )}
+
           <div
             className={`item ${isActive("/people") ? "active" : ""}`}
             onClick={() => navigate("/people")}
