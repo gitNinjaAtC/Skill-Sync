@@ -1,7 +1,5 @@
 import "./share.scss";
 import Image from "../../assets/img.png";
-import Map from "../../assets/map.png";
-import Friend from "../../assets/tag.png";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import { useNavigate } from "react-router-dom";
@@ -16,11 +14,10 @@ const Share = () => {
   const navigate = useNavigate();
 
   const handleShare = async (e) => {
-    e.preventDefault();
+    e?.preventDefault?.();
 
     if (!currentUser) {
       setError("You must be logged in to share a post.");
-      console.log("No currentUser, redirecting to login");
       setTimeout(() => navigate("/login"), 2000);
       return;
     }
@@ -31,7 +28,6 @@ const Share = () => {
     }
 
     try {
-      console.log("Sending POST /API_B/posts with desc:", desc);
       const res = await axios.post(
         "https://skill-sync-backend-522o.onrender.com/API_B/posts",
         { desc },
@@ -39,14 +35,9 @@ const Share = () => {
       );
       setSuccess(res.data.message);
       setError(null);
-      setDesc(""); // Clear input
+      setDesc("");
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
-      console.error("Post error:", {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status,
-      });
       const errorMessage =
         err.response?.status === 401
           ? "Session expired. Please log in again."
@@ -54,9 +45,18 @@ const Share = () => {
       setError(errorMessage);
       setSuccess(null);
       if (err.response?.status === 401) {
-        console.log("401 error, redirecting to login");
         setTimeout(() => navigate("/login"), 2000);
       }
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleShare(e);
+    } else if (e.key === "Escape") {
+      setDesc("");
+      setError(null);
+      setSuccess(null);
     }
   };
 
@@ -88,6 +88,7 @@ const Share = () => {
               setError(null);
               setSuccess(null);
             }}
+            onKeyDown={handleKeyDown}
           />
         </div>
         <hr />
@@ -96,14 +97,6 @@ const Share = () => {
             <div className="item disabled">
               <img src={Image} alt="" />
               <span>Add Image (Coming Soon)</span>
-            </div>
-            <div className="item disabled">
-              <img src={Map} alt="" />
-              <span>Add Place (Coming Soon)</span>
-            </div>
-            <div className="item disabled">
-              <img src={Friend} alt="" />
-              <span>Tag Friends (Coming Soon)</span>
             </div>
           </div>
           <div className="right">
