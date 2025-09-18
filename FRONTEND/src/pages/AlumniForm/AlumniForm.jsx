@@ -245,12 +245,10 @@ const AlumniForm = () => {
               )}
             </>
           )}
-
           <button type="submit">Submit</button>
         </form>
       )}
     </div>
   );
 };
-
 export default AlumniForm;
