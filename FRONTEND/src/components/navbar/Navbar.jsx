@@ -1,7 +1,5 @@
 import "./navbar.scss";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
@@ -23,11 +21,9 @@ import home from "../../assets/home.png";
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
-import { DarkModeContext } from "../../context/darkModeContext";
 import { AuthContext } from "../../context/authContext";
 
 const Navbar = () => {
-  const { toggle, darkMode } = useContext(DarkModeContext);
   const { currentUser, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -57,12 +53,13 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-    const closedropdownAndNavigate = (path) => {
+
+  const closedropdownAndNavigate = (path) => {
     navigate(path);
     setUserDropdownOpen(false);
-  }
+  };
 
-    useEffect(() => {
+  useEffect(() => {
     const handleClickOutsideSidebar = (event) => {
       if (
         sidebarRef.current &&
@@ -83,7 +80,7 @@ const Navbar = () => {
   const closeSidebarAndNavigate = (path) => {
     navigate(path);
     setMobileMenuOpen(false);
-  }
+  };
 
   const handleLogout = async () => {
     try {
@@ -95,13 +92,14 @@ const Navbar = () => {
   };
 
   const handleProfile = () => {
-    closedropdownAndNavigate(`/profile/${currentUser?.id}`) ;
+    closedropdownAndNavigate(`/profile/${currentUser?.id}`);
   };
 
   const isActive = (path) => location.pathname === path;
 
   const getProfilePicUrl = () => {
-    if (!currentUser?.profilePic || currentUser.profilePic.trim() === "") return defaultAvatar;
+    if (!currentUser?.profilePic || currentUser.profilePic.trim() === "")
+      return defaultAvatar;
     return currentUser.profilePic.startsWith("http")
       ? currentUser.profilePic
       : `https://skill-sync-backend-522o.onrender.com${currentUser.profilePic}`;
@@ -144,12 +142,6 @@ const Navbar = () => {
           >
             <HomeOutlinedIcon className="homeIcon" />
           </Link>
-
-          {darkMode ? (
-            <WbSunnyOutlinedIcon onClick={toggle} className="themeIcon" />
-          ) : (
-            <DarkModeOutlinedIcon onClick={toggle} className="themeIcon" />
-          )}
 
           <div className="rightIconsDesktop">
             <button
@@ -236,7 +228,7 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="mobileSidebar" ref={sidebarRef}>
           <div className="container">
-            <div className="menu">              
+            <div className="menu">
               <div className="user">
                 <button
                   className={`profile-button ${
@@ -252,8 +244,12 @@ const Navbar = () => {
                     }}
                     alt="User"
                   />
-                  <span className={`${isActive(`/profile/${currentUser?.id}`) ? "active" : ""}`}
-                    onClick={() => closeSidebarAndNavigate({ handleProfile })}>
+                  <span
+                    className={`${
+                      isActive(`/profile/${currentUser?.id}`) ? "active" : ""
+                    }`}
+                    onClick={() => closeSidebarAndNavigate({ handleProfile })}
+                  >
                     {currentUser?.name}
                     <br />
                     <span className="role">{currentUser?.role}</span>
@@ -268,6 +264,17 @@ const Navbar = () => {
                 <img src={home} alt="Home" />
                 <span>Home</span>
               </div>
+              {currentUser?.role?.toLowerCase() === "alumni" && (
+                <div
+                  className={`item ${
+                    isActive("/alumni-form") ? "active" : ""
+                  }`}
+                  onClick={() => closeSidebarAndNavigate("/alumni-form")}
+                >
+                  <img src={Events} alt="Alumni Meet" />
+                  <span>Alumni Meet</span>
+                </div>
+              )}
               <div
                 className={`item ${isActive("/people") ? "active" : ""}`}
                 onClick={() => closeSidebarAndNavigate("/people")}
