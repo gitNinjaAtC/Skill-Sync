@@ -112,7 +112,6 @@ const AlumniForm = () => {
       payload.specialRequirements = formData.specialRequirements;
       payload.accommodation = {
         required: formData.accommodationRequired,
-        // store as strings to match your model
         dates: formData.accommodationDates.map((d) =>
           typeof d === "string" ? d : d.format("YYYY-MM-DD")
         ),
@@ -281,6 +280,7 @@ const AlumniForm = () => {
                       if (!allowed) return { disabled: true, style: { color: "#ccc" } };
                     }}
                     className="teal"
+                    inputClass="datepicker-input"
                   />
                 </div>
               )}
