@@ -5,63 +5,40 @@
   background-color: #0e1628;
   color: #d1d5db;
   font-size: 14px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   box-sizing: border-box;
+  text-align: left !important;
 
   .footer-top {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 60px;
-    margin-top: 30px;
-    padding-left: 50px;
-    margin-bottom: 40px;
+    padding: 2rem 10rem;
+    gap: 20px;
 
     @include tablet {
       padding-left: 0px;
+      padding-right: 0px;
       align-content: center;
-      flex-direction: column;
       gap: 30px;
     }
   }
-
-  .footer-section {
+  .footer-section-1{
     flex: 1;
-    min-width: 240px;
+    min-width: 350px;
+    max-width: 550px;
 
     h2 {
       color: #ffffff;
       font-size: 25px;
       font-weight: 700;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
-
-    h3 {
-      color: #ffffff;
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 20px;
-      position: relative;
-    }
-
     p {
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       line-height: 1.7;
       font-size: 15px;
     }
-
-    a {
-      display: block;
-      color: #d1d5db;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
-
-      &:hover {
-        color: #38bdf8;
-      }
-    }
-
     .contact-item {
       display: flex;
       align-items: center;
@@ -74,7 +51,8 @@
         color: #38bdf8;
       }
 
-      span,a {
+      span,
+      a {
         color: inherit;
         text-decoration: none;
         transition: color 0.3s;
@@ -83,31 +61,56 @@
           color: #38bdf8;
         }
       }
+    }
+  }
 
-      @include tablet {
-        padding-left: 0px;
-        align-content: center;
-        flex-direction: column;
-        gap: 5px;
-        justify-content: center;
-        text-align: center;
+  .footer-section-2{
+    flex: 1;
+    min-width: 150px;
+    max-width: 150px;
+    h3 {
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      position: relative;
+    }
+    a {
+      display: block;
+      color: #d1d5db;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+
+      &:hover {
+        color: #38bdf8;
       }
     }
-
+  }
+  .footer-section-3{
+    flex: 1;
+    min-width: 180px;
+    max-width: 180px;
+    h3 {
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 600;
+      position: relative;
+    }
     .social-icons {
       display: flex;
       gap: 15px;
-      margin-top: 30px;
+      margin-top: 10px;
+      justify-content: flex-start; /* Add this if missing */
 
       a {
-        font-size: 24px;
         color: #9ca3af;
         transition: all 0.3s ease;
         display: inline-flex;
 
         svg {
-          width: 36px;
-          height: 36px;
+          width: 30px;
+          height: 30px;
         }
 
         &:hover {
@@ -119,36 +122,36 @@
       @include tablet {
         padding-left: 0px;
         align-content: center;
-        justify-content: center;
+        justify-content: flex-start; /* Change this from center to flex-start */
       }
     }
-
-    @include tablet {
-      padding-left: 0px;
-      align-content: center;
-      text-align: center;
-    }
   }
-
-  .quick-link{
-    padding-bottom: 10px;
+  
+  .quick-link {
+    padding-bottom: 5px;
   }
 
   .footer-bottom {
-    border-top: 2px solid #1f2937;
-    padding-top: 30px;
-    text-align: center;
-    font-size: 13px;
-    color: #9ca3af;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 2px solid #1f2937;
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px 20px 0 20px;
+  text-align: center;
+  font-size: 13px;
+  color: #9ca3af;
+}
 
-    span {
-      color: #38bdf8;
-      font-weight: 600;
-    }
-  }
+.footer-bottom span {
+  color: #38bdf8;
+  font-weight: 600;
+}
+
 
   @media (min-width: 961px) {
-    .social-icons{
+    .social-icons {
       justify-content: center;
     }
   }

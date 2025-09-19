@@ -4,9 +4,14 @@ const EducationSection = ({ education }) => {
   let items = [];
 
   if (typeof education === "string") {
-    items = education.split("\n");
+    // split by both \n and \r\n
+    items = education.split(/\r?\n+/).map(s => s.trim()).filter(Boolean);
   } else if (Array.isArray(education)) {
-    items = education;
+    items = education
+      .map(e => (typeof e === "string" ? e.split(/\r?\n+/) : [String(e)]))
+      .flat()
+      .map(s => s.trim())
+      .filter(Boolean);
   } else if (education) {
     items = [String(education)];
   }
@@ -15,11 +20,11 @@ const EducationSection = ({ education }) => {
     <div className="education-section" id="education">
       <h3>Education</h3>
       {items.length > 0 ? (
-        <ul>
+        <div>
           {items.map((item, index) => (
-            <li key={index}>{item}</li>
+            <div key={index}>• {item}</div>
           ))}
-        </ul>
+        </div>
       ) : (
         <p>No education information available.</p>
       )}

@@ -67,6 +67,15 @@ const Dashboard = () => {
         </div>
       </div>
 
+      {/* Button to open Alumni Forms */}
+      <div style={{ margin: "20px 0" }}>
+        <Link to="/alumni-forms">
+          <button style={{ padding: "10px 20px", cursor: "pointer" }}>
+            Open Alumni Forms
+          </button>
+        </Link>
+      </div>
+
       <div className="recent-users">
         <div className="header">
           <h2>Recent Users</h2>

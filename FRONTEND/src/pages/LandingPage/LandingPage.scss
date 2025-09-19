@@ -136,7 +136,7 @@ button.btn {
     left: 0;
     width: 100%;
     z-index: 100000;
-    background-color: rgba(19, 17, 18, 0.8);
+    background-color: rgba(19, 17, 18, 0.5);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -314,7 +314,6 @@ button.btn {
 
     p {
       padding-top: 10px;
-      font-family: cursive;
       text-align: justify;
       font-size: 1.2rem;
       line-height: 1.6;

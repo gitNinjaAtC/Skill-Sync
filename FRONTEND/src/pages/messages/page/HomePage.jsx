@@ -6,6 +6,7 @@ import Sidebar from "../components/Sidebar";
 import NoChatSelected from "../components/NoChatSelected";
 import ChatContainer from "../components/ChatContainer";
 import "./home.scss";
+import message from "../../../assets/message.png";
 
 const HomePage = () => {
   const { selectedUser, setSelectedUser } = useChatStore();
@@ -14,11 +15,10 @@ const HomePage = () => {
   const isChatOpen = Boolean(selectedUser);
 
   useEffect(() => {
-  if (currentUser) {
-    setCurrentUser(currentUser); // Pass full user object here
-  }
-}, [currentUser, setCurrentUser]);
-
+    if (currentUser) {
+      setCurrentUser(currentUser); // Pass full user object here
+    }
+  }, [currentUser, setCurrentUser]);
 
   if (!currentUser) {
     return <div className="home">Please log in to continue.</div>;
@@ -27,19 +27,22 @@ const HomePage = () => {
   return (
     <div className="home">
       <div className="home-header">
-        <h1>Messages</h1>
+        <img src={message} alt="post" className="home-icon" />
+        <span className="home-title">Message</span>
       </div>
+
       <div className="home-wrapper">
         <div className="home-content">
           <div className="chat-wrapper">
             {/* Sidebar */}
-            <aside className={`chat-sidebar ${isChatOpen ? "mobile-hidden" : ""}`}>
+            <aside
+              className={`chat-sidebar ${isChatOpen ? "mobile-hidden" : ""}`}
+            >
               <Sidebar />
             </aside>
 
             {/* Chat Area */}
             <main className="chat-main">
-
               <div className="chat-body">
                 {isChatOpen ? <ChatContainer /> : <NoChatSelected />}
               </div>

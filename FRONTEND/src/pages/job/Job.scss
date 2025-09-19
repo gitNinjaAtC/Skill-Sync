@@ -1,90 +1,130 @@
-.item{
-  span{
-    padding-left: 12px;
-  }
-}
+@import "../../style.scss";
 .job-header {
-  flex: 3;
-  background: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: transparent;
+  padding: 1.5rem 1.5rem 0.5rem;
+
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
   margin-bottom: 1.5rem;
 
-  .job-header-icon {
+  /* LEFT: img + title */
+  .left-section {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    background-color: #fff;
-    border-radius: 8px;
+    gap: 0.75rem;
 
     img {
-        width: 30px;
-        height: 30px;
-        color: #fff;
+      width: 35px;
+      height: 35px;
+      object-fit: contain;
+      font-weight: 750;
+    }
+
+    span {
+      font-size: 1.8rem;
+      font-weight: 750;
+      color: #020202;
+
+      @media (max-width: 600px) {
+        font-size: 1.5rem;
+      }
     }
   }
 
-  h1 {
-    font-size: 1.8rem;
-    font-weight: 750;
-    color: #020202;
-    margin: 0;
+  .right-section {
+    display: flex;
+    flex-direction: column; /* stack button on top of filter */
+    align-items: flex-end; /* right-align */
+    gap: 1rem;
 
-    @media (max-width: 600px) {
-      font-size: 1.5rem;
+    .create-job-btn {
+      padding: 0.45rem 0.9rem;
+      font-size: 1rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #0056b3;
+      }
+
+      &:disabled {
+        background-color: #999;
+        cursor: not-allowed;
+      }
+
+      @include mobile {
+        padding: 0.35rem 0.7rem;
+        font-size: 0.7rem;
+      }
+      @include tablet {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    .filter-container {
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+
+      .filter-label {
+        font-size: 0.9rem;
+        color: #333;
+      }
+
+      select {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        outline: none;
+        font-size: 1rem;
+        min-width: 180px;
+
+        &:focus {
+          border-color: #007bff;
+        }
+      }
+    }
+  }
+
+  /* Stack everything nicely on mobile screens */
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+
+    .right-section {
+      align-items: stretch;
+
+      .create-job-btn,
+      .filter-container select {
+        width: 100%;
+      }
     }
   }
 }
 
 .job-main {
+  margin: 1rem 1.5rem 0.5rem;
   background: transparent;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-
-  .filter-container {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    margin-bottom: 1.25rem;
-
-    .filter-label {
-      margin-right: 0.5rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #555;
-    }
-
-    select {
-      padding: 0.4rem 0.6rem;
-      font-size: 0.9rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      cursor: pointer;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-
-      &:focus {
-        outline: none;
-        border-color: #7a59e0;
-        box-shadow: 0 0 5px rgba(122, 89, 224, 0.5);
-      }
-    }
-  }
 
   .job-card {
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 1rem 1.5rem;
     background: #fefefe;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     transition: box-shadow 0.3s ease;
-
-
 
     .job-card-header {
       display: flex;
@@ -209,69 +249,5 @@
     margin-top: 2rem;
     font-size: 0.9rem;
     color: #777;
-  }
-}
-
-.sidebar {
-  flex: 1;
-  margin-left: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-
-  .offer-note {
-    background: #fff;
-    padding: 1.25rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    text-align: center;
-
-    .illustration {
-      height: 100px;
-      background: url("../../assets/jobs.jpg") no-repeat center;
-      background-size: contain;
-      margin-bottom: 1rem;
-    }
-
-    h4 {
-      font-size: 1rem;
-      color: #000;
-      margin: 0.5rem 0;
-    }
-
-    p {
-      font-size: 0.875rem;
-      color: #555;
-      margin: 0;
-    }
-
-    .create-offer {
-      margin-top: 0.75rem;
-      background: none;
-      border: none;
-      color: #0866ff;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 1rem;
-      transition: color 0.3s ease;
-
-      &:hover,
-      &:focus-visible {
-        text-decoration: underline;
-        outline: none;
-      }
-    }
-  }
-}
-
-@media (max-width: 900px) {
-  .job-layout {
-    flex-direction: column;
-    padding: 1rem;
-  }
-
-  .sidebar {
-    margin-left: 0;
-    margin-top: 1.5rem;
   }
 }

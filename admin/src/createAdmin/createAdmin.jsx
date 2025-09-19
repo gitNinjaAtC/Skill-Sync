@@ -34,9 +34,10 @@ const CreateAdmin = ({ onClose }) => {
     setMessage({ type: "", text: "" });
 
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("adminToken");
+
       const res = await axios.post(
-        `${API_BASE_URL}/API_B/create`,
+        `${API_BASE_URL}/API_B/admin/create`,
         inputs,
         {
           headers: {
@@ -45,15 +46,21 @@ const CreateAdmin = ({ onClose }) => {
           },
         }
       );
+
       setMessage({
         type: "success",
         text: res.data.message || "Admin created successfully",
       });
+
+      // Reset form fields
       setInputs({ username: "", name: "", email: "", password: "" });
     } catch (err) {
       setMessage({
         type: "error",
-        text: err.response?.data?.message || "Error creating admin",
+        text:
+          err.response?.data?.message ||
+          err.message ||
+          "Something went wrong. Please try again.",
       });
     } finally {
       setLoading(false);

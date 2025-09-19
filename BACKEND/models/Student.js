@@ -5,18 +5,17 @@ const studentSchema = new mongoose.Schema(
     EnrollmentNo: {
       type: String,
       trim: true,
-      default: "unknown",
+      required: true,
     },
     StudentName: {
       type: String,
       trim: true,
-      default: "Unknown",
+      required: true,
     },
 
     EmailId: {
       type: String,
       trim: true,
-      lowercase: true,
       default: "unknown",
     },
     MobileNo: {
@@ -33,7 +32,7 @@ const studentSchema = new mongoose.Schema(
     branch: {
       type: String,
       trim: true,
-      default: "Unknown",
+      default: "unknown",
     },
     role: {
       type: String,

@@ -50,14 +50,22 @@
             border: none;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 20px;
             cursor: pointer;
             padding: 5px;
             border-radius: 8px;
             transition: background-color 0.3s ease;
+            span {
+              display: block;
+              text-align: left;
+            }
+            .role {
+              text-transform: uppercase;
+              font-size: 0.7rem;
+            }
 
             &:hover,
-            &.active {              
+            &.active {
               background-color: #e6f0ff;
 
               img {
@@ -66,6 +74,11 @@
 
               span {
                 color: #007bff;
+                .role {
+                  text-transform: uppercase;
+                  margin-right: 3rem;
+                  font-size: 0.7rem;
+                }
               }
             }
 
@@ -106,7 +119,9 @@
             color: #007bff;
 
             img {
-              filter: brightness(0) saturate(100%) invert(35%) sepia(98%) saturate(2955%) hue-rotate(202deg) brightness(94%) contrast(101%);
+              filter: brightness(0) saturate(100%) invert(35%) sepia(98%)
+                saturate(2955%) hue-rotate(202deg) brightness(94%)
+                contrast(101%);
             }
           }
 

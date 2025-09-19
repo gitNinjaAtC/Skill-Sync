@@ -4,9 +4,13 @@ const ProfessionalExperienceSection = ({ experience }) => {
   let items = [];
 
   if (typeof experience === "string") {
-    items = experience.split("\n");
+    items = experience.split(/\r?\n+/).map(s => s.trim()).filter(Boolean);
   } else if (Array.isArray(experience)) {
-    items = experience;
+    items = experience
+      .map(e => (typeof e === "string" ? e.split(/\r?\n+/) : [String(e)]))
+      .flat()
+      .map(s => s.trim())
+      .filter(Boolean);
   } else if (experience) {
     items = [String(experience)];
   }
@@ -15,11 +19,11 @@ const ProfessionalExperienceSection = ({ experience }) => {
     <div className="experience-section" id="experience">
       <h3>Professional Experience</h3>
       {items.length > 0 ? (
-        <ul>
+        <div>
           {items.map((item, index) => (
-            <li key={index}>{item}</li>
+            <div key={index}>• {item}</div>
           ))}
-        </ul>
+        </div>
       ) : (
         <p>No professional experience provided.</p>
       )}

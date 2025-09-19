@@ -5,6 +5,7 @@ import xlsx from "xlsx";
 import fs from "fs";
 import bcrypt from "bcrypt";
 import Student from "../models/Student.js";
+import AlumniForm from "../models/AlumniForm.js";
 
 // Admin approval route
 export const approveUser = async (req, res) => {
@@ -126,22 +127,22 @@ export const importFile = async (req, res) => {
       const errors = [];
       if (!student.EnrollmentNo || student.EnrollmentNo === "unknown")
         errors.push("Missing or invalid EnrollmentNo");
-      if (!student.StudentName || student.StudentName === "Unknown")
+      if (!student.StudentName || student.StudentName === "unknown")
         errors.push("Missing or invalid StudentName");
-      if (
-        !student.EmailId ||
-        student.EmailId === "unknown" ||
-        !/^\S+@\S+\.\S+$/.test(student.EmailId)
-      ) {
-        errors.push("Missing or invalid EmailId");
-      }
-      if (
-        !student.MobileNo ||
-        student.MobileNo === "0000000000" ||
-        !/^\d{10}$/.test(student.MobileNo)
-      ) {
-        errors.push("Missing or invalid MobileNo");
-      }
+      // if (
+      //   !student.EmailId ||
+      //   student.EmailId === "unknown" ||
+      //   !/^\S+@\S+\.\S+$/.test(student.EmailId)
+      // ) {
+      //   errors.push("Missing or invalid EmailId");
+      // }
+      // if (
+      //   !student.MobileNo ||
+      //   student.MobileNo === "0000000000" ||
+      //   !/^\d{10}$/.test(student.MobileNo)
+      // ) {
+      //   errors.push("Missing or invalid MobileNo");
+      // }
       return errors;
     };
     const checkDuplicates = async (student) => {
@@ -161,7 +162,7 @@ export const importFile = async (req, res) => {
           : "unknown",
         StudentName: row.StudentName
           ? String(row.StudentName).trim()
-          : "Unknown",
+          : "unknown",
         EmailId: row.EmailId
           ? String(row.EmailId).trim().toLowerCase()
           : `unknown_${index}_${Date.now()}`,
@@ -297,5 +298,130 @@ export const importFile = async (req, res) => {
     res.status(500).json({
       error: `Server error during file processing: ${error.message}`,
     });
+  }
+};
+// Get students by batch and branch
+export const getStudents = async (req, res) => {
+  try {
+    const { batch, branch } = req.query;
+
+    if (!batch || !branch) {
+      return res.status(400).json({ error: "Batch and Branch are required" });
+    }
+
+    const students = await Student.find({ batch, branch }).lean();
+
+    // Always return 200 with an array (even if empty)
+    return res.status(200).json(students);
+  } catch (err) {
+    console.error("❌ Error fetching students:", err);
+    return res
+      .status(500)
+      .json({ error: "Server error while fetching students" });
+  }
+};
+
+// // Debug version of getAllAlumniForms
+// import AlumniForm from "../models/AlumniForm.js";
+// import Student from "../models/Student.js";
+
+export const getAllAlumniForms = async (req, res) => {
+  try {
+    console.log("🎯 getAllAlumniForms endpoint called");
+    console.log("👤 User role:", req.user?.role);
+
+    // Check if the user is an admin
+    if (req.user.role !== "admin") {
+      console.log("⛔ Access denied - not admin");
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    console.log("✅ Admin access confirmed, fetching data...");
+
+    // Fetch all alumni forms and populate user info
+    const forms = await AlumniForm.find()
+      .populate("userId", "name email")
+      .lean();
+    console.log(`📋 Found ${forms.length} alumni forms`);
+
+    if (forms.length > 0) {
+      console.log("🔍 First form sample:", {
+        id: forms[0]._id,
+        userId: forms[0].userId,
+        attending: forms[0].attending,
+      });
+    }
+
+    // Fetch all students data for batch/branch lookup
+    const students = await Student.find(
+      {},
+      "EmailId StudentName batch branch"
+    ).lean();
+    console.log(`👥 Found ${students.length} student records`);
+
+    if (students.length > 0) {
+      console.log(
+        "🔍 Student samples:",
+        students.slice(0, 3).map((s) => ({
+          email: s.EmailId,
+          name: s.StudentName,
+          batch: s.batch,
+          branch: s.branch,
+        }))
+      );
+    }
+
+    // Create a map of email to student data for faster lookup
+    const studentMap = new Map();
+    students.forEach((student) => {
+      if (student.EmailId) {
+        const normalizedEmail = student.EmailId.toLowerCase().trim();
+        studentMap.set(normalizedEmail, {
+          batch: student.batch || "N/A",
+          branch: student.branch || "N/A",
+        });
+      }
+    });
+
+    console.log(`🗺️ Created student map with ${studentMap.size} entries`);
+
+    // Enrich forms with batch and branch data
+    const enrichedForms = forms.map((form, index) => {
+      const userEmail = form.userId?.email?.toLowerCase()?.trim();
+      const studentData = studentMap.get(userEmail) || {
+        batch: "N/A",
+        branch: "N/A",
+      };
+
+      console.log(`🔍 Form ${index + 1} enrichment:`, {
+        userEmail,
+        foundMatch: studentMap.has(userEmail),
+        batch: studentData.batch,
+        branch: studentData.branch,
+      });
+
+      return {
+        ...form,
+        batch: studentData.batch,
+        branch: studentData.branch,
+      };
+    });
+
+    console.log(`✅ Successfully enriched ${enrichedForms.length} forms`);
+
+    const successfulMatches = enrichedForms.filter(
+      (form) => form.batch !== "N/A" || form.branch !== "N/A"
+    ).length;
+
+    console.log(
+      `📊 Successful matches: ${successfulMatches}/${enrichedForms.length}`
+    );
+
+    res.status(200).json(enrichedForms);
+  } catch (error) {
+    console.error("❌ Error in getAllAlumniForms:", error);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };

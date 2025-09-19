@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../../../store/useAuthStore";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
-import { Users } from "lucide-react";
 import avatar from "../../../assets/avatar.png";
 import "./sidebar.scss";
 
@@ -13,15 +12,20 @@ const Sidebar = () => {
     selectedUser,
     setSelectedUser,
     isUsersLoading,
+    resetUnreadCount,
+    subscribeToMessages,
+    unsubscribeFromMessages,
   } = useChatStore();
 
   const { onlineUsers, authUser: currentUser } = useAuthStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("faculty"); // toggle between "faculty" and "students"
+  const [activeTab, setActiveTab] = useState("faculty");
 
   useEffect(() => {
     getUsers();
+    subscribeToMessages(); // listen for real-time messages
+    return () => unsubscribeFromMessages();
   }, []);
 
   // Exclude admins
@@ -41,11 +45,16 @@ const Sidebar = () => {
     user.name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Sort by lastMessageAt (latest first)
+  const sortedUsers = [...filteredUsers].sort(
+    (a, b) => new Date(b.lastMessageAt || 0) - new Date(a.lastMessageAt || 0)
+  );
+
   // Split into faculty vs. students
-  const facultyUsers = filteredUsers.filter(
+  const facultyUsers = sortedUsers.filter(
     (user) => user.role?.toLowerCase() === "faculty"
   );
-  const studentUsers = filteredUsers.filter(
+  const studentUsers = sortedUsers.filter(
     (user) => user.role?.toLowerCase() !== "faculty"
   );
 
@@ -58,6 +67,11 @@ const Sidebar = () => {
 
   if (isUsersLoading) return <SidebarSkeleton />;
 
+  const handleSelectUser = (user) => {
+    setSelectedUser(user);
+    resetUnreadCount(user._id); // clear unread when opening chat
+  };
+
   const renderUser = (user) => {
     const isOnline = onlineUsers.includes(user._id?.toString());
     const isCurrentUser = user._id?.toString() === currentUser?._id?.toString();
@@ -65,7 +79,7 @@ const Sidebar = () => {
     return (
       <button
         key={user._id}
-        onClick={() => setSelectedUser(user)}
+        onClick={() => handleSelectUser(user)}
         className={`contact-item ${selectedUser?._id === user._id ? "selected" : ""}`}
       >
         <div className="contact-content">
@@ -81,12 +95,34 @@ const Sidebar = () => {
             />
             {isOnline && <span className="online-dot" />}
           </div>
+
           <div className="user-info">
-            <div className="name">
-              {user.name}{" "}
-              {isCurrentUser && <strong style={{ color: "#4A90E2" }}>(YOU)</strong>}
+            <div className="name-row">
+              <span className="name">
+                {user.name}{" "}
+                {isCurrentUser && (
+                  <strong style={{ color: "#4A90E2" }}>(YOU)</strong>
+                )}
+              </span>
+
+              {/* Unread badge */}
+              {user.unreadCount > 0 && (
+                <span className="unread-badge">{user.unreadCount}</span>
+              )}
             </div>
-            <div className="status">{isOnline ? "Online" : "Offline"}</div>
+
+            <div className="status">
+              {isOnline ? "Online" : "Offline"}
+              {user.lastMessageAt && (
+                <span className="last-seen">
+                  {" • " +
+                    new Date(user.lastMessageAt).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </button>
@@ -96,11 +132,6 @@ const Sidebar = () => {
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
-        <div className="header-top">
-          <Users className="icon" />
-          <span className="title">Contacts</span>
-        </div>
-
         <div className="filter-row">
           <label className="filter-toggle">
             <input
@@ -108,12 +139,11 @@ const Sidebar = () => {
               checked={showOnlineOnly}
               onChange={(e) => setShowOnlineOnly(e.target.checked)}
             />
-            <span>Show online only</span>
+            <span>Show online user</span>
           </label>
           <span className="online-count">({onlineUsers.length - 1} online)</span>
         </div>
 
-        {/* Search Bar */}
         <div className="search-bar">
           <input
             type="text"
@@ -124,10 +154,8 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* Single horizontal line separating header & tabs + contact list */}
       <hr className="divider" />
 
-      {/* Tabs sit immediately below the horizontal line */}
       <div className="tabs">
         <button
           className={`tab ${activeTab === "faculty" ? "active" : ""}`}
