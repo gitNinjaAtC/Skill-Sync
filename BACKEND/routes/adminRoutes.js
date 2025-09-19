@@ -10,6 +10,7 @@ import {
   importFile,
   createAdmin,
   getAllAlumniForms,
+  deleteBranch,
 } from "../controllers/adminControllers.js";
 import { validateToken } from "../middleware/validateTokenHandler.js";
 import jwt from "jsonwebtoken";
@@ -20,6 +21,7 @@ const router = express.Router();
 router.post("/approve-user", validateToken, approveUser);
 router.get("/users", getUsers);
 router.post("/create", validateToken, createAdmin);
+router.post("/delete-branch", deleteBranch);
 
 // Nodemailer transporter (make sure env vars are set)
 // const transporter = nodemailer.createTransport({

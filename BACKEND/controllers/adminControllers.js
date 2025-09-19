@@ -425,3 +425,43 @@ export const getAllAlumniForms = async (req, res) => {
       .json({ message: "Internal Server Error", error: error.message });
   }
 };
+
+// delete branch from the students table
+export const deleteBranch = async (req, res) => {
+  try {
+    const { role, batch, branch } = req.body;
+
+    // Build a dynamic query object
+    const query = {};
+    if (role) query.role = role;
+    if (batch) query.batch = batch;
+    if (branch) query.branch = branch;
+
+    if (Object.keys(query).length === 0) {
+      return res
+        .status(400)
+        .json({
+          message: "At least one of role, batch, or branch is required",
+        });
+    }
+
+    // Delete students that match the given filters
+    const result = await Student.deleteMany(query);
+
+    if (result.deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ message: "No students found with the given criteria" });
+    }
+
+    return res.status(200).json({
+      message: "Students deleted successfully",
+      deletedCount: result.deletedCount,
+    });
+  } catch (error) {
+    console.error("Error deleting students:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
+  }
+};
