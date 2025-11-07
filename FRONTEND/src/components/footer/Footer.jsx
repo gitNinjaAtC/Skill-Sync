@@ -90,15 +90,30 @@ const Footer = () => {
       <div className="footer-bottom">
         <p>
           © 2025 Designed & Developed by{" "}
-          <a href="https://shivam-brrc.onrender.com/" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://shivam-brrc.onrender.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <span>Shivam</span>
           </a>
           ,{" "}
-          <a href="https://portfolio-next-eight-rose.vercel.app/" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://portfolio-next-eight-rose.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <span>Sahil</span>
           </a>{" "}
-          and <span>Purushottam</span> under the Guidance of{" "}
-          <span>Prof. Nargish Gupta</span>.
+          and{" "}
+          <a
+            href="https://portfolio-purushottamkr06.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>Purushottam</span>
+          </a>{" "}
+          under the Guidance of <span>Prof. Nargish Gupta</span>.
         </p>
       </div>
     </footer>
