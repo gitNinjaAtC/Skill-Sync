@@ -23,6 +23,12 @@ const userSchema = new mongoose.Schema({
   isActive: { type: Boolean, default: false },
   resetToken: { type: String, default: null },
   resetTokenExpiry: { type: Date, default: null },
+
+  // Address fields
+  village: { type: String, default: null },
+  district: { type: String, default: null },
+  state: { type: String, default: null },
+  pincode: { type: String, default: null },
 });
 
 userSchema.add({ isActive: { type: Boolean, default: false } }); // 👈 added

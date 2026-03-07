@@ -21,6 +21,7 @@ import { useAuthStore } from "./store/useAuthStore";
 import Navbar from "./components/navbar/Navbar";
 import LeftBar from "./components/leftBar/LeftBar";
 import Footer from "./components/footer/Footer";
+import AddressBanner from "./components/AddressBanner/AddressBanner";
 
 // Pages
 import LandingPage from "./pages/LandingPage/LandingPage";
@@ -72,6 +73,8 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <div className={`theme-${darkMode ? "dark" : "light"}`}>
           <Navbar />
+          <AddressBanner userId={currentUser?._id} />
+
           <div
             style={{
               display: "flex",
