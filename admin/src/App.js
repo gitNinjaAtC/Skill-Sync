@@ -13,6 +13,7 @@ import CreateAdmin from "./createAdmin/createAdmin";
 import Posts from "./pages/posts";
 import AlumniForms from "./pages/AlumniForms";
 import AlumniUpdates from "./pages/AlumniUpdates";
+import JobDetail from "./pages/JobDetail";
 
 const App = () => {
   const [admin, setAdmin] = useState(null);
@@ -52,6 +53,7 @@ const App = () => {
                       <Route path="/" element={<Dashboard />} />
                       <Route path="/users" element={<Users />} />
                       <Route path="/jobs" element={<JobsDashboard />} />
+                      <Route path="/jobs/:id" element={<JobDetail />} />
                       <Route path="/posts" element={<Posts />} />
                       <Route path="/gallery" element={<Gallery />} />
                       <Route path="/batches" element={<Batches />} />

@@ -6,7 +6,7 @@ import User from "../models/Users.js";
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "Uploads/");
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
@@ -39,10 +39,9 @@ export const createJob = async (req, res) => {
     const userId = req.user.id;
 
     try {
-      const user = await User.findById(userId);
-      if (!user) return res.status(404).json({ message: "User not found" });
-      if (user.role !== "alumni" )
-        return res.status(403).json({ message: "Access denied: Alumni only" });
+      const user = req.user;
+      if (!["alumni", "admin", "faculty"].includes(user.role?.toLowerCase()))
+        return res.status(403).json({ message: "Access denied: Authorized users only" });
 
       const {
         job_title,
@@ -65,13 +64,13 @@ export const createJob = async (req, res) => {
       } = req.body;
 
       const offer_letter_path = req.files?.offer_letter_path
-        ? `/Uploads/${req.files.offer_letter_path[0].filename}`
+        ? `/uploads/${req.files.offer_letter_path[0].filename}`
         : null;
       const letter_of_intent_path = req.files?.letter_of_intent_path
-        ? `/Uploads/${req.files.letter_of_intent_path[0].filename}`
+        ? `/uploads/${req.files.letter_of_intent_path[0].filename}`
         : null;
       const logo_path = req.files?.logo_path
-        ? `/Uploads/${req.files.logo_path[0].filename}`
+        ? `/uploads/${req.files.logo_path[0].filename}`
         : null;
 
       if (!job_title || !organisation_name) {
@@ -151,10 +150,37 @@ export const approveJob = async (req, res) => {
   }
 };
 
+// REJECT JOB
+export const rejectJob = async (req, res) => {
+  if (!req.user || req.user.role !== "admin") {
+    return res.status(403).json({ message: "Access denied: Admins only" });
+  }
+
+  const jobId = req.params.jobId;
+
+  try {
+    const job = await Job.findById(jobId);
+    if (!job) return res.status(404).json({ message: "Job not found" });
+
+    job.approval_status = "Rejected";
+    await job.save();
+
+    res.status(200).json({ success: true, message: "Job rejected successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 // GET ALL APPROVED JOBS
 export const getJobs = async (req, res) => {
   try {
-    const jobs = await Job.find({ approval_status: "Approved" })
+    const jobs = await Job.find({ 
+      approval_status: "Approved",
+      $or: [
+        { registration_end_date: { $gte: new Date() } },
+        { registration_end_date: null }
+      ]
+    })
       .populate("user_id", "name username")
       .sort({ created_at: -1 });
 
@@ -196,13 +222,18 @@ export const getJobById = async (req, res) => {
   const jobId = req.params.id;
 
   try {
-    const job = await Job.findOne({
-      _id: jobId,
-      approval_status: "Approved",
-    }).populate("user_id", "name username");
+    const job = await Job.findById(jobId).populate("user_id", "name username");
 
     if (!job) {
       return res.status(404).json({ message: "Job not found" });
+    }
+
+    // Only allow viewing if Approved, or if user is Admin, or if user is the Owner
+    const isAdmin = req.user?.role === "admin";
+    const isOwner = req.user?.id?.toString() === job.user_id?._id?.toString();
+
+    if (job.approval_status !== "Approved" && !isAdmin && !isOwner) {
+      return res.status(403).json({ message: "Access denied" });
     }
 
     // Convert Decimal128 fields to strings
@@ -218,6 +249,121 @@ export const getJobById = async (req, res) => {
     res.status(200).json(result);
   } catch (error) {
     console.error("Error fetching job by ID:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// GET JOBS POSTED BY CURRENT USER (Alumni/Faculty)
+export const getMyJobs = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const jobs = await Job.find({ user_id: userId }).sort({ created_at: -1 });
+    
+    const sanitizedJobs = jobs.map(job => {
+      const obj = job.toObject();
+      return {
+        ...obj,
+        cost_to_company: job.cost_to_company?.toString(),
+        fixed_gross: job.fixed_gross?.toString()
+      };
+    });
+
+    res.status(200).json(sanitizedJobs);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// GET PENDING JOBS (Admin Only)
+export const getPendingJobs = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied: Admins only" });
+    }
+    const jobs = await Job.find({ approval_status: "Pending" })
+      .populate("user_id", "name username")
+      .sort({ created_at: -1 });
+
+    const result = jobs.map((job) => {
+      const obj = job.toObject();
+      return {
+        ...obj,
+        cost_to_company: job.cost_to_company?.toString(),
+        fixed_gross: job.fixed_gross?.toString(),
+        posted_by: job.user_id?.name || job.user_id?.username || "Unknown",
+      };
+    });
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// GET JOB STATS (Admin Only)
+export const getJobStats = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const stats = await Job.aggregate([
+      {
+        $group: {
+          _id: "$approval_status",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const result = {
+      Pending: 0,
+      Approved: 0,
+      Rejected: 0,
+      Total: 0,
+    };
+
+    stats.forEach((s) => {
+      if (s._id) {
+        result[s._id] = s.count;
+        result.Total += s.count;
+      }
+    });
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error fetching job stats:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// GET ALL JOBS FOR ADMIN (With status filter)
+export const getAdminJobs = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const { status } = req.query; // Pending, Approved, Rejected
+    const query = status ? { approval_status: status } : {};
+
+    const jobs = await Job.find(query)
+      .populate("user_id", "name username")
+      .sort({ created_at: -1 });
+
+    const result = jobs.map((job) => {
+      const obj = job.toObject();
+      return {
+        ...obj,
+        cost_to_company: job.cost_to_company?.toString(),
+        fixed_gross: job.fixed_gross?.toString(),
+        posted_by: job.user_id?.name || job.user_id?.username || "Unknown",
+      };
+    });
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error fetching admin jobs:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

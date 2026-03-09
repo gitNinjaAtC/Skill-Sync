@@ -1,21 +1,42 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { makeRequest, apiBaseUrl } from "../../axios";
 import "./JobDescription.scss";
+import { AuthContext } from "../../context/authContext";
 import defaultLogo from "../../assets/default_logo.jpg"; // ✅ import default logo
 
 const JobDescription = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { currentUser } = useContext(AuthContext);
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [applied, setApplied] = useState(false);
+  const [applying, setApplying] = useState(false);
+  const [message, setMessage] = useState("");
+  const [applicants, setApplicants] = useState([]);
+  const [fetchingApplicants, setFetchingApplicants] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(null);
+
+  const isOwner = currentUser && job && String(currentUser.id) === String(job.user_id?._id || job.user_id);
+
+  const fetchApplicants = async () => {
+    if (!id) return;
+    setFetchingApplicants(true);
+    try {
+      const response = await makeRequest.get(`/API_B/jobs/${id}/applications`);
+      setApplicants(response.data || []);
+    } catch (error) {
+      console.error("Error fetching applicants:", error);
+    } finally {
+      setFetchingApplicants(false);
+    }
+  };
 
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const response = await axios.get(
-          `https://skill-sync-backend-522o.onrender.com/API_B/jobs/${id}`
-        );
+        const response = await makeRequest.get(`/API_B/jobs/${id}`);
         setJob(response.data);
       } catch (error) {
         console.error("Error fetching job details:", error);
@@ -25,6 +46,54 @@ const JobDescription = () => {
     };
     fetchJob();
   }, [id]);
+
+  useEffect(() => {
+    if (isOwner) {
+      fetchApplicants();
+    }
+  }, [isOwner, id]);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      if (currentUser && currentUser.role === "student" && id) {
+        try {
+          const response = await makeRequest.get(`/API_B/jobs/${id}/my-status`);
+          setApplied(response.data.applied);
+        } catch (error) {
+          console.error("Error checking application status:", error);
+        }
+      }
+    };
+    checkStatus();
+  }, [currentUser, id]);
+
+  const handleApply = async () => {
+    if (!currentUser) return navigate("/login");
+    setApplying(true);
+    try {
+      await makeRequest.post(`/API_B/jobs/${id}/apply`, {});
+      setApplied(true);
+      setMessage("Applied successfully!");
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Failed to apply.");
+    } finally {
+      setApplying(false);
+    }
+  };
+
+  const handleStatusChange = async (applicationId, newStatus) => {
+    setUpdatingStatus(applicationId);
+    try {
+      await makeRequest.put(`/API_B/jobs/application/${applicationId}/status`, { status: newStatus });
+      alert("Status updated successfully!");
+      fetchApplicants();
+    } catch (error) {
+      console.error("Error updating status:", error);
+      alert("Failed to update status.");
+    } finally {
+      setUpdatingStatus(null);
+    }
+  };
 
   if (loading) return <div>Loading...</div>;
   if (!job) return <div>Job not found</div>;
@@ -46,9 +115,9 @@ const JobDescription = () => {
           <div className="job-header">
             <img
               src={
-                job.logo_path?.startsWith("/Uploads")
-                  ? `https://skill-sync-backend-522o.onrender.com${job.logo_path}`
-                  : defaultLogo
+                job.logo_path?.toLowerCase().includes("/uploads/")
+                  ? `${apiBaseUrl}${job.logo_path}`
+                  : job.logo_path || defaultLogo
               }
               alt="Company Logo"
               className="job-logo"
@@ -61,13 +130,18 @@ const JobDescription = () => {
               <h1>{job.job_title}</h1>
               <p className="company-name">{job.organisation_name}</p>
             </div>
-            {job.created_at && (
-              <span className="job-tag green">
-                <time dateTime={job.created_at}>
-                  {new Date(job.created_at).toDateString()}
-                </time>
+            <div className="job-header-meta">
+              <span className={`status-pill ${job.approval_status?.toLowerCase()}`}>
+                {job.approval_status}
               </span>
-            )}
+              {job.created_at && (
+                <span className="job-tag green">
+                  <time dateTime={job.created_at}>
+                    {new Date(job.created_at).toDateString()}
+                  </time>
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="job-info">
@@ -147,6 +221,25 @@ const JobDescription = () => {
 
         {/* Sidebar */}
         <div className="sidebar">
+          {currentUser?.role === "student" && (
+            <div className="card application-card">
+              {applied ? (
+                <button className="apply-btn applied" disabled>
+                  Applied
+                </button>
+              ) : (
+                <button
+                  className="apply-btn"
+                  onClick={handleApply}
+                  disabled={applying}
+                >
+                  {applying ? "Applying..." : "Apply Now"}
+                </button>
+              )}
+              {message && <p className="apply-message">{message}</p>}
+            </div>
+          )}
+
           <div className="card">
             <h4>REGISTRATION SCHEDULE</h4>
             <p>
@@ -168,7 +261,15 @@ const JobDescription = () => {
           {job.offer_letter_path && (
             <div className="card">
               <h4>OFFER LETTER</h4>
-              <a href={job.offer_letter_path} target="_blank" rel="noreferrer">
+              <a
+                href={
+                  job.offer_letter_path?.toLowerCase().includes("/uploads/")
+                    ? `${apiBaseUrl}${job.offer_letter_path}`
+                    : job.offer_letter_path
+                }
+                target="_blank"
+                rel="noreferrer"
+              >
                 View Document
               </a>
             </div>
@@ -178,7 +279,11 @@ const JobDescription = () => {
             <div className="card">
               <h4>LETTER OF INTENT</h4>
               <a
-                href={job.letter_of_intent_path}
+                href={
+                  job.letter_of_intent_path?.toLowerCase().includes("/uploads/")
+                    ? `${apiBaseUrl}${job.letter_of_intent_path}`
+                    : job.letter_of_intent_path
+                }
                 target="_blank"
                 rel="noreferrer"
               >

@@ -1,64 +1,578 @@
 .jobs-dashboard {
-  padding: 0rem 0.5rem 2rem 2rem;
-  h2 {
-    margin-bottom: 1.5rem;
-    border-bottom: 2px solid #929292;
-    font-size: 2rem;
-    color: #111827;
+  padding: 1.5rem 2rem;
+  background-color: #f9fafb;
+  min-height: 100vh;
+
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+
+    h2 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: #111827;
+      margin: 0;
+    }
+
+    .admin-tabs {
+      display: flex;
+      background: #f3f4f6;
+      padding: 4px;
+      border-radius: 8px;
+      gap: 4px;
+
+      .tab-btn {
+        padding: 8px 16px;
+        border: none;
+        background: transparent;
+        color: #6b7280;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+          color: #111827;
+        }
+
+        &.active {
+          background: white;
+          color: #111827;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
   }
 
   .job-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 2rem;
-  }
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
 
-  .job-card {
-    background-color: #d8e3ec;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    text-align: center;
-    transition: transform 0.2s ease;
-
-    &.new { background-color: #dbeafe; }
-    &.approved { background-color: #fef9c3; }
-    &.cancelled { background-color: #fcd7d7; }
-    &.total { background-color: #e5e7eb; }
-
-    &:hover {
-      transform: translateY(-4px);
-    }
-
-    .icon {
-      font-size: 2rem;
-      margin-bottom: 0.8rem;
-    }
-
-    h3 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-
-    p {
-      font-size: 1rem;
-      color: #555;
-      margin-bottom: 1rem;
-    }
-
-    button {
-      background-color: #2563eb;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
+    .job-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      text-align: left;
       cursor: pointer;
-      font-weight: 500;
-      font-size: 0.9rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: transparent;
+        transition: background 0.3s;
+      }
 
       &:hover {
-        opacity: 0.9;
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+
+      &.selected {
+        border-color: #2563eb;
+        background-color: #eff6ff;
+        &::after { background: #2563eb; }
+      }
+
+      &.total::after { background: #6b7280; }
+      &.new::after { background: #3b82f6; }
+      &.approved::after { background: #10b981; }
+      &.cancelled::after { background: #ef4444; }
+
+      .icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        font-size: 1.5rem;
+        margin-bottom: 1.25rem;
+        background: #f3f4f6;
+      }
+
+      h3 {
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: #111827;
+        margin: 0 0 0.25rem 0;
+      }
+
+      p {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #6b7280;
+        margin: 0;
       }
     }
   }
+
+  .jobs-section {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+
+    .section-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+      }
+
+      .count-badge {
+        background: #f3f4f6;
+        color: #4b5563;
+        padding: 2px 10px;
+        border-radius: 999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+    }
+
+    .no-data {
+      padding: 4rem 2rem;
+      text-align: center;
+      color: #6b7280;
+      p { margin: 0; font-size: 1rem; }
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    .jobs-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+
+      th {
+        background: #f9fafb;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #6b7280;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      td {
+        padding: 1rem 1.5rem;
+        vertical-align: middle;
+        font-size: 0.875rem;
+        color: #374151;
+        border-bottom: 1px solid #f3f4f6;
+
+        strong {
+          color: #111827;
+          font-weight: 600;
+        }
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 10px;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+
+        &.pending { background: #eff6ff; color: #1e40af; }
+        &.approved { background: #ecfdf5; color: #065f46; }
+        &.rejected { background: #fef2f2; color: #991b1b; }
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+
+        button {
+          padding: 6px 16px;
+          border-radius: 6px;
+          font-size: 0.75rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+          border: 1px solid;
+
+          &:disabled { opacity: 0.5; cursor: not-allowed; }
+        }
+
+        .btn-view {
+          background: #f3f4f6;
+          color: #4b5563;
+          border-color: #d1d5db;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          &:hover { 
+            background: #e5e7eb;
+            color: #111827;
+          }
+        }
+
+        .btn-approve {
+          background: #10b981;
+          color: white;
+          border-color: #10b981;
+          &:hover:not(:disabled) { background: #059669; }
+        }
+
+        .btn-reject {
+          background: #ef4444;
+          color: white;
+          border-color: #ef4444;
+          &:hover:not(:disabled) { background: #dc2626; }
+        }
+      }
+    }
+  }
+
+  // --- Modal Styling ---
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-content {
+    background: white;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    border-radius: 16px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    animation: modalAppear 0.3s ease-out;
+
+    .close-btn {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: #f3f4f6;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b7280;
+      transition: all 0.2s;
+      z-index: 10;
+      &:hover { background: #e5e7eb; color: #111827; }
+    }
+  }
+
+  .modal-header {
+    padding: 2rem;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    .org-info {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+
+      .org-logo {
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
+        object-fit: contain;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #111827;
+        margin: 0 0 0.25rem 0;
+        border-bottom: none;
+      }
+
+      .org-name {
+        font-size: 1rem;
+        color: #6b7280;
+        margin: 0;
+      }
+    }
+  }
+
+  .modal-body {
+    padding: 2rem;
+    overflow-y: auto;
+    flex: 1;
+
+    h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #111827;
+      margin: 0 0 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+
+      .detail-item {
+        label {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.75rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          color: #6b7280;
+          margin-bottom: 0.5rem;
+        }
+        span {
+          font-size: 1rem;
+          font-weight: 500;
+          color: #111827;
+        }
+      }
+    }
+
+    .description-section {
+      margin-bottom: 2.5rem;
+      .rich-text {
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        color: #374151;
+        white-space: pre-wrap;
+      }
+    }
+
+    .skills-section {
+      margin-bottom: 2.5rem;
+      .skill-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        .skill-tag {
+          background: #f3f4f6;
+          color: #111827;
+          padding: 4px 12px;
+          border-radius: 6px;
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .documents-section {
+      .doc-links {
+        display: flex;
+        gap: 1rem;
+        .doc-link {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 16px;
+          background: #eff6ff;
+          color: #1d4ed8;
+          border-radius: 8px;
+          text-decoration: none;
+          font-size: 0.875rem;
+          font-weight: 600;
+          transition: background 0.2s;
+          border: 1px solid #dbeafe;
+          &:hover { background: #dbeafe; }
+        }
+      }
+    }
+  }
+
+  .modal-footer {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+    border-radius: 0 0 16px 16px;
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+
+      button {
+        flex: 1;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: transform 0.1s;
+        border: none;
+        &:active { transform: scale(0.98); }
+      }
+
+      .btn-approve-large {
+        background: #10b981;
+        color: white;
+        &:hover { background: #059669; }
+      }
+
+      .btn-reject-large {
+        background: #ef4444;
+        color: white;
+        &:hover { background: #dc2626; }
+      }
+    }
+
+    .final-status {
+      text-align: center;
+      color: #6b7280;
+      margin: 0;
+      strong { color: #111827; text-transform: capitalize; }
+    }
+  }
+  // --- Applicant Management Styles ---
+  .applicants-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #f3f4f6;
+
+    .section-header-apps {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+
+      h3 {
+        margin: 0;
+        color: #111827;
+      }
+
+      .app-count {
+        background: #eef2ff;
+        color: #4f46e5;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+    }
+
+    .loading-text, .no-applicants {
+      text-align: center;
+      padding: 2rem;
+      color: #6b7280;
+      font-style: italic;
+    }
+
+    .applicants-list {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .applicants-table {
+      width: 100%;
+      border-collapse: collapse;
+      
+      th {
+        background: #f9fafb;
+        padding: 12px 16px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+      }
+
+      td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #f3f4f6;
+        font-size: 0.875rem;
+      }
+
+      .student-info {
+        display: flex;
+        flex-direction: column;
+        span { font-weight: 600; color: #111827; }
+        small { color: #6b7280; }
+      }
+
+      .status-pill {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        
+        &.registered { background: #e0f2fe; color: #0369a1; }
+        &.in-progress { background: #fdf4ff; color: #a21caf; }
+        &.rejected { background: #fef2f2; color: #b91c1c; }
+        &.selected { background: #f0fdf4; color: #15803d; }
+        &.offered { background: #fffbeb; color: #b45309; }
+      }
+
+      .status-select {
+        padding: 4px 8px;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+        font-size: 0.875rem;
+        outline: none;
+        cursor: pointer;
+        &:focus { border-color: #2563eb; }
+      }
+    }
+  }
+}
+
+@keyframes modalAppear {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }

@@ -27,8 +27,8 @@ const jobSchema = new mongoose.Schema({
   logo_path: { type: String, maxlength: 500, default: null },
   approval_status: {
     type: String,
-    enum: ["Pending", "Approved"],
-    default: "Approved",
+    enum: ["Pending", "Approved", "Rejected"],
+    default: "Pending",
     required: true,
   },
   user_id: {

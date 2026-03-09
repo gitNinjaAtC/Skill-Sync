@@ -113,6 +113,53 @@
   }
 }
 
+.job-tabs {
+  display: flex;
+  gap: 1rem;
+  margin: 0 1.5rem 1.5rem;
+  border-bottom: 2px solid #eee;
+
+  button {
+    background: none;
+    border: none;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s;
+
+    &:hover {
+      color: #0866ff;
+    }
+
+    &.active {
+      color: #0866ff;
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: #0866ff;
+      }
+    }
+
+    .tab-count-badge {
+      background: #eef4ff;
+      color: #0866ff;
+      padding: 0.1rem 0.5rem;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+      border: 1px solid #d0e2ff;
+    }
+  }
+}
+
 .job-main {
   margin: 1rem 1.5rem 0.5rem;
   background: transparent;
@@ -120,26 +167,32 @@
 
   .job-card {
     border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 1rem 1.5rem;
-    background: #fefefe;
-    margin-bottom: 1rem;
-    transition: box-shadow 0.3s ease;
+    border-radius: 12px;
+    padding: 1.5rem;
+    background: #fff;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
 
     .job-card-header {
       display: flex;
       align-items: center;
-      gap: 1rem;
-      margin-bottom: 1rem;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
 
       .job-logo {
-        width: 48px;
-        height: 48px;
-        border-radius: 8px;
-        background: #fff;
-        padding: 4px;
+        width: 52px;
+        height: 52px;
+        border-radius: 10px;
+        background: #f8f9fa;
+        padding: 6px;
         object-fit: contain;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid #eee;
       }
 
       .job-title-company {
@@ -147,39 +200,49 @@
 
         h2 {
           margin: 0;
-          font-size: 1.15rem;
+          font-size: 1.25rem;
           font-weight: 700;
-          color: #222;
+          color: #1a1a1a;
         }
 
         .job-company {
-          font-size: 0.9rem;
+          font-size: 0.95rem;
           color: #666;
-          margin-top: 0.2rem;
+          margin-top: 0.25rem;
         }
       }
 
       .job-posted-status {
-        text-align: right;
-        font-size: 0.85rem;
-        color: #999;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.5rem;
 
         time {
-          display: block;
-          margin-bottom: 0.3rem;
+          font-size: 0.85rem;
+          color: #888;
         }
 
-        .job-status {
-          background: #ffe6ca;
-          color: #d48a00;
+        .status-badge {
           font-size: 0.75rem;
-          font-weight: 600;
+          font-weight: 700;
           padding: 0.25rem 0.75rem;
           border-radius: 20px;
-          white-space: nowrap;
+          text-transform: capitalize;
+
+          &.pending { background: #fff4e6; color: #ff922b; }
+          &.approved { background: #ebfbee; color: #40c057; }
+          &.rejected { background: #fff5f5; color: #fa5252; }
+          
+          /* Student Application Statuses */
+          &.registered { background: #e7f5ff; color: #228be6; }
+          &.in-progress { background: #f3f0ff; color: #7950f2; }
+          &.selected { background: #e6fffa; color: #087f5b; font-weight: 800; border: 1px solid #c6f6d5; }
+          &.offered { background: #fff9db; color: #f08c00; font-weight: 800; border: 1px solid #fef3c7; }
         }
       }
     }
+    /* ... rest of existing styles ... */
 
     .job-tags {
       display: flex;
@@ -225,7 +288,10 @@
     }
 
     .view-details {
-      text-align: right;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
 
       .view-details-link {
         color: #0866ff;
@@ -240,6 +306,422 @@
           color: #004bb5;
           outline: none;
         }
+      }
+
+      .apply-btn-card {
+        padding: 0.5rem 1.25rem;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.15rem;
+        line-height: 1.3;
+
+        &:hover {
+          background-color: #218838;
+        }
+
+        .apply-deadline {
+          font-size: 0.7rem;
+          font-weight: 400;
+          opacity: 0.85;
+        }
+      }
+
+      /* ── Applied badge ── */
+      .applied-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: #f0fff4;
+        border: 1.5px solid #68d391;
+        border-radius: 20px;
+        padding: 0.4rem 0.9rem;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #276749;
+
+        .applied-check {
+          color: #38a169;
+          font-size: 1rem;
+        }
+
+        .applied-status {
+          font-size: 0.72rem;
+          font-weight: 600;
+          padding: 0.15rem 0.5rem;
+          border-radius: 10px;
+          background: #c6f6d5;
+          color: #276749;
+
+          &.status-registered   { background: #bee3f8; color: #2b6cb0; }
+          &.status-in-progress  { background: #e9d8fd; color: #553c9a; }
+          &.status-selected     { background: #c6f6d5; color: #276749; }
+          &.status-offered      { background: #fefcbf; color: #744210; }
+        }
+      }
+
+      /* ── Registration Closed notice ── */
+      .registration-closed {
+        display: inline-flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        background: #fff5f5;
+        border: 1.5px solid #fc8181;
+        border-radius: 8px;
+        padding: 0.4rem 0.85rem;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #c53030;
+
+        .closed-icon {
+          font-size: 0.9rem;
+        }
+
+        .closed-date {
+          font-size: 0.75rem;
+          font-weight: 500;
+          color: #e53e3e;
+          opacity: 0.85;
+        }
+      }
+    }
+
+    /* ── Applicant Job Card (new job-centric style) ── */
+    &.applicant-job-card {
+      border-left: 4px solid #3182ce;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+  }
+
+  /* ── Applicant Job Header ── */
+  .applicant-job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+
+    .ajh-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .job-logo {
+        width: 56px;
+        height: 56px;
+        object-fit: contain;
+        border-radius: 10px;
+        background: #f8f9fa;
+        border: 1px solid #e2e8f0;
+        padding: 6px;
+        flex-shrink: 0;
+      }
+
+      h2 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #1a202c;
+        margin: 0;
+      }
+      .job-company {
+        font-size: 0.9rem;
+        color: #718096;
+        margin-top: 0.2rem;
+      }
+    }
+
+    .ajh-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-shrink: 0;
+
+      .ajh-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+        text-align: right;
+
+        span {
+          font-size: 0.85rem;
+          color: #4a5568;
+
+          strong {
+            color: #718096;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.02em;
+            margin-right: 0.3rem;
+          }
+        }
+      }
+
+      .applicant-count-badge {
+        background: linear-gradient(135deg, #3182ce, #2b6cb0);
+        border-radius: 12px;
+        padding: 0.6rem 1.1rem;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(49, 130, 206, 0.3);
+
+        .count-num {
+          display: block;
+          font-size: 1.6rem;
+          font-weight: 800;
+          color: #fff;
+          line-height: 1;
+        }
+        .count-label {
+          display: block;
+          font-size: 0.7rem;
+          color: rgba(255, 255, 255, 0.8);
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          margin-top: 0.2rem;
+        }
+      }
+    }
+  }
+
+  /* ── Applicants Table ── */
+  .applicants-table-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid #edf2f7;
+    margin-top: 0.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  .applicants-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+
+    thead tr {
+      background: #f7fafc;
+      border-bottom: 2px solid #edf2f7;
+
+      th {
+        padding: 0.9rem 1rem;
+        text-align: left;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #718096;
+        white-space: nowrap;
+      }
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #f0f4f8;
+      transition: background 0.2s;
+
+      &:last-child { border-bottom: none; }
+
+      &:hover { background: #f7fafc; }
+
+      td {
+        padding: 0.9rem 1rem;
+        vertical-align: middle;
+        color: #2d3748;
+      }
+    }
+
+    .row-num {
+      color: #a0aec0;
+      font-weight: 600;
+      font-size: 0.85rem;
+      width: 36px;
+    }
+
+    .student-name {
+      font-weight: 600;
+      color: #2d3748;
+      white-space: nowrap;
+
+      .student-profile-link {
+        color: #2d3748;
+        text-decoration: none;
+        font-weight: 700;
+        transition: color 0.2s;
+
+        &:hover {
+          color: #3182ce;
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .applied-date {
+      color: #718096;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    .email-link {
+      color: #3182ce;
+      text-decoration: none;
+      font-weight: 500;
+      &:hover { text-decoration: underline; }
+    }
+  }
+
+  /* ── Mini Tracker (inline in table) ── */
+  .mini-tracker {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    min-width: 220px;
+  }
+
+  .mini-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    transition: background 0.2s;
+
+    &:hover { background: #edf2f7; }
+
+    .mini-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #a0aec0;
+      transition: all 0.2s;
+    }
+
+    .mini-label {
+      font-size: 0.6rem;
+      color: #a0aec0;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    &.completed {
+      .mini-dot {
+        background: #ebf8ff;
+        border-color: #3182ce;
+        color: #3182ce;
+      }
+      .mini-label { color: #4a5568; }
+    }
+
+    &.current {
+      .mini-dot {
+        background: #3182ce;
+        border-color: #3182ce;
+        color: #fff;
+        box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.3);
+      }
+      .mini-label { color: #3182ce; font-weight: 700; }
+    }
+  }
+
+  .mini-line {
+    width: 18px;
+    height: 2px;
+    background: #e2e8f0;
+    flex-shrink: 0;
+    border-radius: 1px;
+    transition: background 0.2s;
+
+    &.filled { background: #3182ce; }
+  }
+
+  /* ── Status Select Dropdown ── */
+  .status-select-dropdown {
+    padding: 0.4rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    font-size: 0.85rem;
+    color: #2d3748;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+
+    &:hover, &:focus { border-color: #3182ce; }
+  }
+
+  /* ── Status Filter Bar ── */
+  .applicant-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    padding: 1rem 0 1.25rem;
+
+    .filter-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #718096;
+      margin-right: 0.25rem;
+    }
+
+    .filter-status-btn {
+      padding: 0.35rem 0.9rem;
+      border-radius: 20px;
+      border: 1.5px solid #e2e8f0;
+      background: #fff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #718096;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        border-color: #3182ce;
+        color: #3182ce;
+      }
+
+      &.active {
+        border-color: #3182ce;
+        background: #ebf8ff;
+        color: #3182ce;
+      }
+
+      &.status-rejected.active {
+        border-color: #e53e3e;
+        background: #fff5f5;
+        color: #e53e3e;
+      }
+
+      &.status-offered.active {
+        border-color: #d69e2e;
+        background: #fffff0;
+        color: #d69e2e;
+      }
+
+      &.status-selected.active {
+        border-color: #38a169;
+        background: #f0fff4;
+        color: #38a169;
       }
     }
   }

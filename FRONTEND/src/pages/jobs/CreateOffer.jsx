@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
-import axios from "axios";
+import { makeRequest } from "../../axios";
 import "./createOffer.scss";
 
 const CreateOffer = () => {
@@ -59,9 +59,9 @@ const handleSubmit = async (e) => {
   setSuccess(null);
   setLoading(true);
 
-  if (!currentUser || currentUser.role !== "alumni" ) {
+  if (!currentUser || !["alumni", "admin", "faculty"].includes(currentUser.role?.toLowerCase())) {
     setLoading(false);
-    return setError("Only Alumni can create job offers.");
+    return setError("Access denied: Authorized users only.");
   }
 
   try {
@@ -70,8 +70,7 @@ const handleSubmit = async (e) => {
       if (value) data.append(key, value);
     });
 
-    await axios.post("https://skill-sync-backend-522o.onrender.com/API_B/jobs", data, {
-      withCredentials: true,
+    await makeRequest.post("/API_B/jobs", data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

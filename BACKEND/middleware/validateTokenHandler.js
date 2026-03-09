@@ -7,9 +7,7 @@ dotenv.config();
 // ✅ Middleware: Validate JWT Token
 export const validateToken = async (req, res, next) => {
   try {
-    console.log("🛑 Running validateToken middleware...");
-    console.log("Request cookies:", req.cookies);
-    console.log("Request headers:", req.headers);
+    console.log("� validateToken: Checking credentials...");
 
     // Get token from cookies or Authorization header
     const cookieToken = req.cookies?.accessToken;
@@ -17,7 +15,7 @@ export const validateToken = async (req, res, next) => {
       ? req.headers.authorization.split(" ")[1]
       : null;
 
-    const token = cookieToken || headerToken;
+    const token = headerToken || cookieToken;
 
     if (!token) {
       console.log("❌ No token found in cookies or Authorization header.");
@@ -40,6 +38,7 @@ export const validateToken = async (req, res, next) => {
     }
 
     req.user = user;
+    console.log(`✅ User verified: ${user.name} (${user.role})`);
     next();
   } catch (error) {
     console.error("❌ validateToken error:", error.message);

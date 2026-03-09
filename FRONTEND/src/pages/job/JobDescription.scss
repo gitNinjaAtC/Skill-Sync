@@ -69,8 +69,34 @@
       margin-top: 0.3rem;
     }
 
-    .job-tag {
+    .job-header-meta {
       margin-left: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5rem;
+    }
+
+    .status-pill {
+      padding: 0.25rem 0.75rem;
+      font-weight: 700;
+      font-size: 0.75rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+
+      &.pending { background: #fee2e2; color: #991b1b; }
+      &.approved { background: #dcfce7; color: #166534; }
+      &.rejected { background: #f1f5f9; color: #475569; }
+
+      // Application statuses
+      &.registered { background: #ecfeff; color: #0891b2; }
+      &.in-progress { background: #fef9c3; color: #854d0e; }
+      &.selected { background: #dcfce7; color: #166534; }
+      &.offered { background: #e0f2fe; color: #075985; }
+    }
+
+    .job-tag {
       padding: 0.25rem 0.75rem;
       background: #e0f8ed;
       color: #22aa77;
@@ -92,6 +118,8 @@
     font-size: 0.95rem;
     color: #333;
     margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #f0f0f5;
 
     div {
       min-width: 180px;
@@ -101,6 +129,22 @@
 
   .section {
     margin-top: 2rem;
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      h3 { margin: 0; }
+      .count-badge {
+        background: #eff6ff;
+        color: #1d4ed8;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+    }
 
     h3 {
       margin-bottom: 0.75rem;
@@ -133,6 +177,55 @@
         font-size: 0.85rem;
         color: #444;
         border: 1px solid #ddd;
+      }
+    }
+
+    &.applicants-section {
+      background: #fafbff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid #eef2ff;
+      margin-top: 3rem;
+
+      .table-wrapper {
+        overflow-x: auto;
+        margin-top: 1rem;
+      }
+
+      .applicants-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+
+        th {
+          padding: 1rem;
+          color: #64748b;
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          border-bottom: 1px solid #e2e8f0;
+        }
+
+        td {
+          padding: 1rem;
+          border-bottom: 1px solid #f1f5f9;
+        }
+
+        .student-cell {
+          display: flex;
+          flex-direction: column;
+          strong { color: #1e293b; display: block; }
+          span { font-size: 0.8rem; color: #64748b; }
+        }
+
+        .status-select {
+          padding: 6px 10px;
+          border-radius: 8px;
+          border: 1px solid #e2e8f0;
+          font-size: 0.85rem;
+          outline: none;
+          cursor: pointer;
+          &:focus { border-color: #6c63ff; }
+        }
       }
     }
   }
@@ -172,6 +265,56 @@
       margin-bottom: 0.5rem;
       line-height: 1.4;
     }
+
+    &.application-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .apply-btn {
+      width: 100%;
+      padding: 0.8rem;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+      }
+
+      &:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      &.applied {
+        background-color: #e6f7f0;
+        color: #28a745;
+        border: 1px solid #28a745;
+        cursor: default;
+        &:hover {
+          transform: none;
+        }
+      }
+    }
+
+    .apply-message {
+      font-size: 0.85rem;
+      text-align: center;
+      margin: 0;
+      color: #28a745;
+      &.error {
+        color: #dc3545;
+      }
+    }
   }
 }
 
@@ -202,8 +345,10 @@
     flex-direction: column;
     align-items: flex-start;
 
-    .job-tag {
+    .job-header-meta {
       margin-left: 0;
+      align-items: flex-start;
+      margin-top: 1rem;
     }
   }
 

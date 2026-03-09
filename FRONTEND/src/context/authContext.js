@@ -1,5 +1,5 @@
-import { createContext, useEffect, useState } from "react";
-import axios from "axios";
+import { createContext, useEffect, useState, useCallback } from "react";
+import { makeRequest } from "../axios";
 
 export const AuthContext = createContext();
 
@@ -20,10 +20,9 @@ export const AuthContextProvider = ({ children }) => {
 
   const login = async (inputs) => {
     try {
-      const res = await axios.post(
-        "https://skill-sync-backend-522o.onrender.com/API_B/auth/login",
-        inputs,
-        { withCredentials: true }
+      const res = await makeRequest.post(
+        "/API_B/auth/login",
+        inputs
       );
 
       const normalized = normalizeUser(res.data);
@@ -38,9 +37,7 @@ export const AuthContextProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post("https://skill-sync-backend-522o.onrender.com/API_B/auth/logout", null, {
-        withCredentials: true,
-      });
+      await makeRequest.post("/API_B/auth/logout", null);
     } catch (err) {
       console.error("Logout failed:", err.response?.data || err.message);
     } finally {
@@ -50,12 +47,10 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
-  const verifyToken = async () => {
+  const verifyToken = useCallback(async () => {
     try {
       console.log("Verifying token, checking cookies...");
-      const res = await axios.get("https://skill-sync-backend-522o.onrender.com/API_B/auth/verify", {
-        withCredentials: true,
-      });
+      const res = await makeRequest.get("/API_B/auth/verify");
 
       const normalized = normalizeUser(res.data.user);
       setCurrentUser(normalized);
@@ -71,7 +66,7 @@ export const AuthContextProvider = ({ children }) => {
       localStorage.removeItem("user");
       throw err;
     }
-  };
+  }, []);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -91,7 +86,7 @@ export const AuthContextProvider = ({ children }) => {
     };
 
     checkSession();
-  }, []);
+  }, [verifyToken]);
 
   useEffect(() => {
     if (currentUser) {
