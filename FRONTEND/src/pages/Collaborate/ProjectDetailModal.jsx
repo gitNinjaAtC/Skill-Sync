@@ -2,10 +2,15 @@ import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 
 const API = process.env.REACT_APP_API_URL || "https://skill-sync-backend-522o.onrender.com";
+const WITH_CREDS = { withCredentials: true };
 
 const Avatar = ({ user, size = 32 }) =>
   user?.profilePic ? (
-    <img src={user.profilePic} alt={user.name} style={{ width: size, height: size, borderRadius: "50%", objectFit: "cover" }} />
+    <img
+      src={user.profilePic}
+      alt={user.name}
+      style={{ width: size, height: size, borderRadius: "50%", objectFit: "cover" }}
+    />
   ) : (
     <div className="avatar-fallback" style={{ width: size, height: size }}>
       {user?.name?.[0]?.toUpperCase() || "?"}
@@ -26,20 +31,24 @@ const ProjectDetailModal = ({ project, currentUser, onClose, onProjectUpdated })
 
   const isOwner = String(project.postedBy?._id) === String(currentUser?._id);
   const isStudent = currentUser?.role === "student";
-  const token = localStorage.getItem("token");
-  const authHeader = { headers: { Authorization: `Bearer ${token}` } };
 
   const fetchApplications = useCallback(async () => {
     if (!isOwner) return;
     try {
-      const res = await axios.get(`${API}/API_B/collaborate/${project._id}/applications`, authHeader);
+      const res = await axios.get(
+        `${API}/API_B/collaborate/${project._id}/applications`,
+        WITH_CREDS
+      );
       setApplications(res.data);
     } catch {}
   }, [project._id, isOwner]);
 
   const fetchUpdates = useCallback(async () => {
     try {
-      const res = await axios.get(`${API}/API_B/collaborate/${project._id}/updates`, authHeader);
+      const res = await axios.get(
+        `${API}/API_B/collaborate/${project._id}/updates`,
+        WITH_CREDS
+      );
       setUpdates(res.data);
     } catch {}
   }, [project._id]);
@@ -47,8 +56,13 @@ const ProjectDetailModal = ({ project, currentUser, onClose, onProjectUpdated })
   const fetchMyApp = useCallback(async () => {
     if (!isStudent) return;
     try {
-      const res = await axios.get(`${API}/API_B/collaborate/me/applications`, authHeader);
-      const found = res.data.find((a) => String(a.projectId?._id) === String(project._id));
+      const res = await axios.get(
+        `${API}/API_B/collaborate/me/applications`,
+        WITH_CREDS
+      );
+      const found = res.data.find(
+        (a) => String(a.projectId?._id) === String(project._id)
+      );
       if (found) setMyApp(found);
     } catch {}
   }, [project._id, isStudent]);
@@ -63,7 +77,11 @@ const ProjectDetailModal = ({ project, currentUser, onClose, onProjectUpdated })
     if (!applyNote.trim()) { alert("Please write a short note."); return; }
     setLoadingApply(true);
     try {
-      await axios.post(`${API}/API_B/collaborate/${project._id}/apply`, { note: applyNote }, authHeader);
+      await axios.post(
+        `${API}/API_B/collaborate/${project._id}/apply`,
+        { note: applyNote },
+        WITH_CREDS
+      );
       await fetchMyApp();
       setApplyNote("");
     } catch (err) {
@@ -75,7 +93,11 @@ const ProjectDetailModal = ({ project, currentUser, onClose, onProjectUpdated })
 
   const handleUpdateStatus = async (newStatus) => {
     try {
-      await axios.patch(`${API}/API_B/collaborate/${project._id}/status`, { status: newStatus }, authHeader);
+      await axios.patch(
+        `${API}/API_B/collaborate/${project._id}/status`,
+        { status: newStatus },
+        WITH_CREDS
+      );
       onProjectUpdated();
     } catch {}
   };
@@ -85,7 +107,7 @@ const ProjectDetailModal = ({ project, currentUser, onClose, onProjectUpdated })
       await axios.patch(
         `${API}/API_B/collaborate/${project._id}/applications/${appId}`,
         { status },
-        authHeader
+        WITH_CREDS
       );
       setApplications((prev) =>
         prev.map((a) => (String(a._id) === String(appId) ? { ...a, status } : a))
@@ -103,7 +125,7 @@ const ProjectDetailModal = ({ project, currentUser, onClose, onProjectUpdated })
       const res = await axios.post(
         `${API}/API_B/collaborate/${project._id}/updates`,
         { content: updateText },
-        authHeader
+        WITH_CREDS
       );
       setUpdates((prev) => [res.data, ...prev]);
       setUpdateText("");
@@ -144,7 +166,9 @@ const ProjectDetailModal = ({ project, currentUser, onClose, onProjectUpdated })
                 textTransform: "capitalize",
               }}
             >
-              {tab === "applicants" ? `Applicants (${applications.length})` : tab.charAt(0).toUpperCase() + tab.slice(1)}
+              {tab === "applicants"
+                ? `Applicants (${applications.length})`
+                : tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
           ))}
         </div>
@@ -161,7 +185,9 @@ const ProjectDetailModal = ({ project, currentUser, onClose, onProjectUpdated })
 
             <div className="modal__section">
               <h4>About</h4>
-              <p style={{ fontSize: 14, color: "#374151", lineHeight: 1.65, margin: 0 }}>{project.description}</p>
+              <p style={{ fontSize: 14, color: "#374151", lineHeight: 1.65, margin: 0 }}>
+                {project.description}
+              </p>
             </div>
 
             {project.techStack?.length > 0 && (
@@ -182,7 +208,7 @@ const ProjectDetailModal = ({ project, currentUser, onClose, onProjectUpdated })
               </div>
             </div>
 
-            {/* Alumni: change status */}
+            {/* Owner: change project status */}
             {isOwner && (
               <div className="modal__section">
                 <h4>Project Status</h4>
@@ -212,7 +238,9 @@ const ProjectDetailModal = ({ project, currentUser, onClose, onProjectUpdated })
                     </span>
                   </p>
                 ) : project.status !== "open" ? (
-                  <p style={{ fontSize: 14, color: "#6b7280" }}>This project is no longer accepting applications.</p>
+                  <p style={{ fontSize: 14, color: "#6b7280" }}>
+                    This project is no longer accepting applications.
+                  </p>
                 ) : project.slotsRemaining <= 0 ? (
                   <p style={{ fontSize: 14, color: "#6b7280" }}>All slots are filled.</p>
                 ) : (
@@ -225,7 +253,11 @@ const ProjectDetailModal = ({ project, currentUser, onClose, onProjectUpdated })
                         rows={3}
                       />
                     </div>
-                    <button className="btn btn--primary" onClick={handleApply} disabled={loadingApply}>
+                    <button
+                      className="btn btn--primary"
+                      onClick={handleApply}
+                      disabled={loadingApply}
+                    >
                       {loadingApply ? "Submitting…" : "Submit Application"}
                     </button>
                   </>
@@ -246,26 +278,46 @@ const ProjectDetailModal = ({ project, currentUser, onClose, onProjectUpdated })
                   {app.studentId?.profilePic ? (
                     <img src={app.studentId.profilePic} alt={app.studentId.name} />
                   ) : (
-                    <div className="avatar-fallback">{app.studentId?.name?.[0]?.toUpperCase()}</div>
+                    <div className="avatar-fallback">
+                      {app.studentId?.name?.[0]?.toUpperCase()}
+                    </div>
                   )}
                   <div className="applicant-card__info">
                     <p className="applicant-card__name">{app.studentId?.name}</p>
-                    <p style={{ fontSize: 12, color: "#6b7280", margin: "1px 0" }}>{app.studentId?.email}</p>
-                    {app.note && <p className="applicant-card__note">"{app.note}"</p>}
+                    <p style={{ fontSize: 12, color: "#6b7280", margin: "1px 0" }}>
+                      {app.studentId?.email}
+                    </p>
+                    {app.note && (
+                      <p className="applicant-card__note">"{app.note}"</p>
+                    )}
                     {app.studentId?.skills?.length > 0 && (
                       <div className="applicant-card__skills">
-                        {app.studentId.skills.slice(0, 5).map((s) => <span key={s}>{s}</span>)}
+                        {app.studentId.skills.slice(0, 5).map((s) => (
+                          <span key={s}>{s}</span>
+                        ))}
                       </div>
                     )}
                   </div>
                   <div className="applicant-card__actions">
                     {app.status === "pending" ? (
                       <>
-                        <button className="btn btn--success btn--sm" onClick={() => handleApplicationAction(app._id, "accepted")}>Accept</button>
-                        <button className="btn btn--danger btn--sm" onClick={() => handleApplicationAction(app._id, "rejected")}>Reject</button>
+                        <button
+                          className="btn btn--success btn--sm"
+                          onClick={() => handleApplicationAction(app._id, "accepted")}
+                        >
+                          Accept
+                        </button>
+                        <button
+                          className="btn btn--danger btn--sm"
+                          onClick={() => handleApplicationAction(app._id, "rejected")}
+                        >
+                          Reject
+                        </button>
                       </>
                     ) : (
-                      <span className={`applicant-card__status applicant-card__status--${app.status}`}>{app.status}</span>
+                      <span className={`applicant-card__status applicant-card__status--${app.status}`}>
+                        {app.status}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -284,7 +336,11 @@ const ProjectDetailModal = ({ project, currentUser, onClose, onProjectUpdated })
                   value={updateText}
                   onChange={(e) => setUpdateText(e.target.value)}
                 />
-                <button className="btn btn--primary" onClick={handlePostUpdate} disabled={loadingUpdate || !updateText.trim()}>
+                <button
+                  className="btn btn--primary"
+                  onClick={handlePostUpdate}
+                  disabled={loadingUpdate || !updateText.trim()}
+                >
                   {loadingUpdate ? "…" : "Post"}
                 </button>
               </div>
@@ -298,7 +354,12 @@ const ProjectDetailModal = ({ project, currentUser, onClose, onProjectUpdated })
                     <Avatar user={u.postedBy} />
                     <div className="update-feed__bubble">
                       <p>{u.content}</p>
-                      <time>{new Date(u.createdAt).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</time>
+                      <time>
+                        {new Date(u.createdAt).toLocaleString("en-IN", {
+                          day: "numeric", month: "short",
+                          hour: "2-digit", minute: "2-digit",
+                        })}
+                      </time>
                     </div>
                   </div>
                 ))
