@@ -36,6 +36,9 @@ const Sidebar = () => {
             <Link to="/manageUsers" className={isActive("/manageUsers") ? "active" : ""}>Registration Approval</Link>
           </li>
           <li>
+            <Link to="/alumni-updates" className={isActive("/alumni-updates") ? "active" : ""}>Alumni Updates</Link>
+          </li>
+          <li>
             <Link to="/reports" className={isActive("/reports") ? "active" : ""}>Report</Link>
           </li>
         </ul>

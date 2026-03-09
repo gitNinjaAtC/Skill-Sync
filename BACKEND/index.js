@@ -23,6 +23,7 @@ import jobRoutes from "./routes/job.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import messageRoutes from "./routes/message.route.js";
 import alumniFormRoutes from "./routes/alumniFormRoutes.js";
+import alumniUpdateRoutes from "./routes/alumniUpdateRoutes.js";
 
 
 dotenv.config();
@@ -101,6 +102,7 @@ app.use("/API_B/profile", profileRoutes);
 app.use("/API_B/admin", adminRoutes);
 app.use("/API_B/messages", messageRoutes);
 app.use("/API_B", alumniFormRoutes); 
+app.use("/API_B", alumniUpdateRoutes);
 
 
 // Start socket server

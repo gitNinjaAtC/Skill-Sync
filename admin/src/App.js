@@ -11,7 +11,8 @@ import Users from "./pages/Users";
 import AdminLogin from "./pages/adminLogin/adminLogin";
 import CreateAdmin from "./createAdmin/createAdmin";
 import Posts from "./pages/posts";
-import AlumniForms from "./pages/AlumniForms"; // ✅ Correct import
+import AlumniForms from "./pages/AlumniForms";
+import AlumniUpdates from "./pages/AlumniUpdates";
 
 const App = () => {
   const [admin, setAdmin] = useState(null);
@@ -56,7 +57,8 @@ const App = () => {
                       <Route path="/batches" element={<Batches />} />
                       <Route path="/create-admin" element={<CreateAdmin />} />
                       <Route path="/manageUsers" element={<ManageUsers />} />
-                      <Route path="/alumni-forms" element={<AlumniForms />} /> {/* ✅ Correct usage */}
+                      <Route path="/alumni-forms" element={<AlumniForms />} />
+                      <Route path="/alumni-updates" element={<AlumniUpdates />} />
                     </Routes>
                   </main>
                 </div>
