@@ -24,6 +24,7 @@ import adminRoutes from "./routes/adminRoutes.js";
 import messageRoutes from "./routes/message.route.js";
 import alumniFormRoutes from "./routes/alumniFormRoutes.js";
 import alumniUpdateRoutes from "./routes/alumniUpdateRoutes.js";
+import collaborateRoutes from "./routes/collaborateRoutes.js";
 
 
 dotenv.config();
@@ -89,6 +90,7 @@ app.get("/health", (req, res) => {
 
 // ✅ Apply rate limit to login route only
 app.use("/API_B/auth/login", loginLimiter);
+app.use("/API_B/collaborate", collaborateRoutes);
 
 // API Routes
 app.use("/API_B/auth", authRoutes);
