@@ -18,6 +18,10 @@ const EditProfile = () => {
     education: "",
     experience: "",
     others: "",
+    village: "",
+    district: "",
+    state: "",
+    pincode: "",
   });
 
   const [originalData, setOriginalData] = useState({});
@@ -46,6 +50,10 @@ const EditProfile = () => {
           education: data.education || "",
           experience: data.experience || "",
           others: data.others || "",
+          village: data.village || "",
+          district: data.district || "",
+          state: data.state || "",
+          pincode: data.pincode || "",
         };
         setFormData(safeData);
         setOriginalData(safeData);
@@ -102,6 +110,10 @@ const EditProfile = () => {
         education: String(formData.education || "").trim(),
         experience: String(formData.experience || "").trim(),
         others: String(formData.others || "").trim(),
+        village: String(formData.village || "").trim(),
+        district: String(formData.district || "").trim(),
+        state: String(formData.state || "").trim(),
+        pincode: String(formData.pincode || "").trim(),
         socialLinks: {
           facebook: String(formData.facebook || "").trim(),
           instagram: String(formData.instagram || "").trim(),
@@ -177,6 +189,26 @@ const EditProfile = () => {
             name: "others",
             type: "textarea",
             placeholder: "Certifications, volunteering, etc.",
+          },
+          {
+            label: "Village / Area",
+            name: "village",
+            placeholder: "e.g. Ratibad, Bhopal",
+          },
+          {
+            label: "District",
+            name: "district",
+            placeholder: "e.g. Bhopal",
+          },
+          {
+            label: "State",
+            name: "state",
+            placeholder: "e.g. Madhya Pradesh",
+          },
+          {
+            label: "Pincode",
+            name: "pincode",
+            placeholder: "e.g. 462044",
           },
           {
             label: "Facebook URL",

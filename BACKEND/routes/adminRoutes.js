@@ -4,6 +4,7 @@ import path from "path";
 import fs from "fs";
 import User from "../models/Users.js";
 import Student from "../models/Student.js";
+
 import {
   getUsers,
   approveUser,
@@ -11,6 +12,7 @@ import {
   createAdmin,
   getAllAlumniForms,
   deleteBranch,
+  getEnrichedStudents,
 } from "../controllers/adminControllers.js";
 import { validateToken } from "../middleware/validateTokenHandler.js";
 import jwt from "jsonwebtoken";
@@ -261,5 +263,6 @@ router.get("/students", async (req, res) => {
 
 // ✅ New route to fetch all alumni forms (admin only)
 router.get("/alumni-forms", validateToken, getAllAlumniForms);
+router.get("/students/enriched", getEnrichedStudents);
 
 export default router;

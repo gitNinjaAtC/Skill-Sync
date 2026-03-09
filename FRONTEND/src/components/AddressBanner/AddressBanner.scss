@@ -1,0 +1,41 @@
+.address-banner {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: linear-gradient(90deg, #1d4ed8, #2563eb);
+  color: white;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+
+  span { flex: 1; }
+
+  &__cta {
+    background: white;
+    color: #1d4ed8;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+    white-space: nowrap;
+
+    &:hover { background: #e0e7ff; }
+  }
+
+  &__dismiss {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 2px 6px;
+    opacity: 0.8;
+
+    &:hover { opacity: 1; }
+  }
+}

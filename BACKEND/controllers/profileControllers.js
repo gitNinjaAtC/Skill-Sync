@@ -40,7 +40,7 @@ export const getProfileInfo = async (req, res) => {
 
   try {
     const user = await User.findById(userId).select(
-      "name email about facebook instagram twitter linkedin skills education experience others profilePic coverPhoto"
+      "name email about facebook instagram twitter linkedin skills education experience others profilePic coverPhoto village district state pincode"
     );
     if (!user) return res.status(404).json({ message: "User not found" });
 
@@ -64,6 +64,10 @@ export const getProfileInfo = async (req, res) => {
       coverPhoto: user.coverPhoto || null,
       branch: student?.branch || "N/A", // ✅ added
       batch: student?.batch || "N/A", // ✅ added
+      village: user.village || "",
+      district: user.district || "",
+      state: user.state || "",
+      pincode: user.pincode || "",
     };
 
     res.status(200).json(profileData);
@@ -79,15 +83,7 @@ export const updateProfile = async (req, res) => {
   if (!userId) return res.status(400).json({ message: "User ID is required" });
 
   try {
-    const {
-      name,
-      description,
-      skills,
-      education,
-      experience,
-      others,
-      socialLinks = {},
-    } = req.body;
+    const { name, description, skills, education, experience, others, socialLinks = {}, village, district, state, pincode } = req.body;
 
     const updateFields = {
       ...(name && { name }),
@@ -105,6 +101,11 @@ export const updateProfile = async (req, res) => {
       ...(socialLinks.linkedin !== undefined && {
         linkedin: socialLinks.linkedin,
       }),
+      // Add to updateFields:
+      ...(village !== undefined && { village }),
+      ...(district !== undefined && { district }),
+      ...(state !== undefined && { state }),
+      ...(pincode !== undefined && { pincode }),
     };
 
     // ✅ Update logic to allow both strings and arrays

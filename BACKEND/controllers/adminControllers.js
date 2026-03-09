@@ -465,3 +465,49 @@ export const deleteBranch = async (req, res) => {
       .json({ message: "Server error", error: error.message });
   }
 };
+
+
+// Add this new export at the bottom of adminControllers.js
+export const getEnrichedStudents = async (req, res) => {
+  try {
+    const { batch, branch, state, district } = req.query;
+
+    const studentQuery = {};
+    if (batch) studentQuery.batch = batch;
+    if (branch) studentQuery.branch = branch;
+
+    const students = await Student.find(studentQuery).lean();
+
+    // Get all users to enrich with address
+    const emails = students.map(s => s.EmailId?.toLowerCase()).filter(Boolean);
+    const users = await User.find(
+      { email: { $in: emails } },
+      "email village district state pincode"
+    ).lean();
+
+    const userMap = new Map();
+    users.forEach(u => {
+      if (u.email) userMap.set(u.email.toLowerCase(), u);
+    });
+
+    let enriched = students.map(student => {
+      const userData = userMap.get(student.EmailId?.toLowerCase()) || {};
+      return {
+        ...student,
+        village: userData.village || "N/A",
+        district: userData.district || "N/A",
+        state: userData.state || "N/A",
+        pincode: userData.pincode || "N/A",
+      };
+    });
+
+    // Filter by state/district if provided
+    if (state) enriched = enriched.filter(s => s.state?.toLowerCase() === state.toLowerCase());
+    if (district) enriched = enriched.filter(s => s.district?.toLowerCase() === district.toLowerCase());
+
+    return res.status(200).json(enriched);
+  } catch (error) {
+    console.error("Error fetching enriched students:", error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
