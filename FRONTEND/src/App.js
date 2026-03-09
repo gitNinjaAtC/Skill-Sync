@@ -39,6 +39,7 @@ import PeopleSection from "./pages/people/PeopleSection";
 import HomePage from "./pages/messages/page/HomePage";
 import ErrorPage from "./pages/ErrorPage";
 import ComingSoon from "./pages/Comingsoon/Comingsoon";
+import Collaborate from "./pages/Collaborate/Collaborate";
 
 // Forgot/Reset Password Pages
 import ForgotPassword from "./pages/Update Password/ForgotPassword";
@@ -127,6 +128,7 @@ function App() {
         { path: "/resume-builder", element: <ComingSoon /> },
         // ✅ Alumni Form Route Added
         { path: "/alumni-form", element: <AlumniForm /> },
+        { path: "/collaborate", element: <Collaborate /> },
       ],
     },
     { path: "/forgot-password", element: <ForgotPassword /> },

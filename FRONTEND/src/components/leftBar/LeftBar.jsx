@@ -128,10 +128,10 @@ const LeftBar = () => {
         <div className="menu">
           <span>Others</span>
           <div
-            className={`item ${isActive("/Fundraiser") ? "active" : ""}`}
-            onClick={() => navigate("/Fundraiser")}
+            className={`item ${isActive("/collaborate") ? "active" : ""}`}
+            onClick={() => navigate("/collaborate")}
           >
-            <img src={Fund} alt="Fundraiser" />
+            <img src={Fund} alt="Collaborate" />
             <span>Collaborate</span>
           </div>
           <div
