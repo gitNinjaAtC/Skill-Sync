@@ -175,11 +175,7 @@ export const rejectJob = async (req, res) => {
 export const getJobs = async (req, res) => {
   try {
     const jobs = await Job.find({ 
-      approval_status: "Approved",
-      $or: [
-        { registration_end_date: { $gte: new Date() } },
-        { registration_end_date: null }
-      ]
+      approval_status: "Approved"
     })
       .populate("user_id", "name username")
       .sort({ created_at: -1 });
