@@ -217,14 +217,16 @@ export const updateApplicationStatus = async (req, res) => {
       return res.status(400).json({ message: "Invalid status" });
     }
 
-    const application = await Application.findById(req.params.appId).populate("projectId");
+    const application = await Application.findById(req.params.appId)
+      .populate({ path: "projectId", populate: { path: "postedBy", select: "_id" } });
+
     if (!application) return res.status(404).json({ message: "Application not found" });
 
-    if (String(application.projectId.postedBy) !== String(req.user._id)) {
+    // Compare postedBy._id instead of postedBy directly
+    if (String(application.projectId.postedBy._id) !== String(req.user._id)) {
       return res.status(403).json({ message: "Not authorized" });
     }
 
-    // If accepting, check slots haven't already been filled
     if (status === "accepted") {
       const acceptedCount = await Application.countDocuments({
         projectId: application.projectId._id,
@@ -239,10 +241,10 @@ export const updateApplicationStatus = async (req, res) => {
     await application.save();
     res.status(200).json(application);
   } catch (err) {
-    res.status(500).json({ message: "Server error" });
+    console.error("updateApplicationStatus error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
-
 // ── Project Updates (feed) ────────────────────────────────────────────────────
 
 export const getProjectUpdates = async (req, res) => {

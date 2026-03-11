@@ -1,11 +1,13 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import axios from "axios";
 import "./Collaborate.scss";
 import ProjectCard from "./ProjectCard";
 import ProjectDetailModal from "./ProjectDetailModal";
 import PostProjectModal from "./PostProjectModal";
+import { AuthContext } from "../../context/authContext";
 
 const API = process.env.REACT_APP_API_URL || "https://skill-sync-backend-522o.onrender.com";
+const WITH_CREDS = { withCredentials: true };
 
 const Collaborate = () => {
   const [projects, setProjects] = useState([]);
@@ -16,10 +18,7 @@ const Collaborate = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const rawUser = localStorage.getItem("user") || localStorage.getItem("userData");
-  const currentUser = rawUser ? JSON.parse(rawUser) : null;
-  const token = localStorage.getItem("token");
-  const authHeader = { headers: { Authorization: `Bearer ${token}` } };
+  const { currentUser } = useContext(AuthContext);
 
   const canPost = currentUser?.role === "alumni" || currentUser?.role === "faculty";
   const isStudent = currentUser?.role === "student";
@@ -30,7 +29,7 @@ const Collaborate = () => {
       const params = {};
       if (techFilter) params.tech = techFilter;
       if (statusFilter) params.status = statusFilter;
-      const res = await axios.get(`${API}/API_B/collaborate`, { params });
+      const res = await axios.get(`${API}/API_B/collaborate`, { ...WITH_CREDS, params });
       setProjects(res.data);
     } catch (err) {
       console.error("Failed to fetch projects", err);
@@ -40,12 +39,12 @@ const Collaborate = () => {
   }, [techFilter, statusFilter]);
 
   const fetchMyApplications = useCallback(async () => {
-    if (!isStudent || !token) return;
+    if (!isStudent) return;
     try {
-      const res = await axios.get(`${API}/API_B/collaborate/me/applications`, authHeader);
+      const res = await axios.get(`${API}/API_B/collaborate/me/applications`, WITH_CREDS);
       setMyApplications(res.data);
     } catch {}
-  }, [isStudent, token]);
+  }, [isStudent]);
 
   useEffect(() => {
     fetchProjects();
@@ -57,7 +56,7 @@ const Collaborate = () => {
 
   const handlePostProject = async (data) => {
     try {
-      await axios.post(`${API}/API_B/collaborate`, data, authHeader);
+      await axios.post(`${API}/API_B/collaborate`, data, WITH_CREDS);
       setShowPostModal(false);
       fetchProjects();
     } catch (err) {
@@ -103,7 +102,10 @@ const Collaborate = () => {
         </select>
         <button className="btn btn--ghost" onClick={fetchProjects}>Search</button>
         {(techFilter || statusFilter) && (
-          <button className="btn btn--ghost" onClick={() => { setTechFilter(""); setStatusFilter(""); }}>
+          <button
+            className="btn btn--ghost"
+            onClick={() => { setTechFilter(""); setStatusFilter(""); }}
+          >
             Clear
           </button>
         )}
@@ -111,11 +113,16 @@ const Collaborate = () => {
 
       {/* Project grid */}
       {loading ? (
-        <p style={{ textAlign: "center", color: "#6b7280", padding: "40px 0" }}>Loading projects…</p>
+        <p style={{ textAlign: "center", color: "#6b7280", padding: "40px 0" }}>
+          Loading projects…
+        </p>
       ) : projects.length === 0 ? (
         <div className="collaborate-page__empty">
           <p style={{ fontSize: "2rem" }}>🛠️</p>
-          <p>No projects found. {canPost ? "Be the first to post one!" : "Check back soon."}</p>
+          <p>
+            No projects found.{" "}
+            {canPost ? "Be the first to post one!" : "Check back soon."}
+          </p>
         </div>
       ) : (
         <div className="collaborate-page__grid">
@@ -140,7 +147,9 @@ const Collaborate = () => {
                 {app.projectId?.title || "Project"}
                 <span>by {app.projectId?.postedBy?.name}</span>
               </div>
-              <span className={`applicant-card__status applicant-card__status--${app.status}`}>
+              <span
+                className={`applicant-card__status applicant-card__status--${app.status}`}
+              >
                 {app.status}
               </span>
             </div>

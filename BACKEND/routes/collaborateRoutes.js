@@ -16,6 +16,9 @@ import {
 
 const router = express.Router();
 
+// ⚠️ Static routes MUST come before dynamic /:id routes
+router.get("/me/applications", validateToken, getMyApplications);
+
 // Projects
 router.get("/", getAllProjects);
 router.get("/:id", validateToken, getProjectById);
@@ -25,7 +28,6 @@ router.delete("/:id", validateToken, deleteProject);
 
 // Applications
 router.post("/:id/apply", validateToken, applyToProject);
-router.get("/me/applications", validateToken, getMyApplications);
 router.get("/:id/applications", validateToken, getProjectApplications);
 router.patch("/:id/applications/:appId", validateToken, updateApplicationStatus);
 
