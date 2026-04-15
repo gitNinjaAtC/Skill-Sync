@@ -15,7 +15,7 @@
 
       .top {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 20px;
 
         img {
@@ -23,20 +23,69 @@
           height: 40px;
           border-radius: 50%;
           object-fit: cover;
+          flex-shrink: 0;
         }
 
-        input {
+        textarea {
           border: none;
           outline: none;
-          padding: 20px 10px;
+          padding: 10px;
           background-color: transparent;
-          width: 60%;
+          width: 100%;
           color: themed("textColor");
+          resize: none;
+          font-family: "Open Sans", sans-serif;
+          font-size: 14px;
+          line-height: 1.5;
+
+          &::placeholder {
+            color: themed("textColorSoft");
+          }
+        }
+      }
+
+      // Image preview area
+      .imagePreview {
+        position: relative;
+        margin: 12px 0 8px 60px;
+        display: inline-block;
+        border-radius: 12px;
+        overflow: hidden;
+        max-width: calc(100% - 60px);
+
+        img {
+          display: block;
+          max-height: 280px;
+          max-width: 100%;
+          width: auto;
+          border-radius: 12px;
+          object-fit: cover;
+        }
+
+        .removeImage {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background: rgba(0, 0, 0, 0.6);
+          border: none;
+          border-radius: 50%;
+          width: 28px;
+          height: 28px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          color: white;
+          transition: background 0.2s;
+
+          &:hover {
+            background: rgba(0, 0, 0, 0.85);
+          }
         }
       }
 
       hr {
-        margin: 50px 10px 40px 10px;
+        margin: 16px 10px;
         border: none;
         height: 0.5px;
         background-color: themed("border");
@@ -45,6 +94,7 @@
       .bottom {
         display: flex;
         justify-content: space-between;
+        align-items: center;
 
         .left {
           display: flex;
@@ -53,15 +103,19 @@
           .item {
             display: flex;
             align-items: center;
+            gap: 8px;
             cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: background 0.2s;
 
-            img {
-              height: 20px;
+            &:hover {
+              background-color: themed("bgSoft");
             }
 
             span {
-              font-size: 12px;
-              color: gray;
+              font-size: 13px;
+              color: themed("textColorSoft");
 
               @include mobile {
                 display: none;
@@ -79,13 +133,37 @@
 
           button {
             border: none;
-            padding: 5px 20px;
+            padding: 7px 22px;
             color: white;
             cursor: pointer;
             background-color: #5271ff;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s, opacity 0.2s;
+
+            &:hover:not(:disabled) {
+              background-color: #3a5bef;
+            }
+
+            &:disabled {
+              opacity: 0.6;
+              cursor: not-allowed;
+            }
           }
         }
+      }
+
+      .success {
+        margin-top: 10px;
+        color: #22c55e;
+        font-size: 13px;
+      }
+
+      .error {
+        margin-top: 10px;
+        color: #ef4444;
+        font-size: 13px;
       }
     }
   }

@@ -3,12 +3,16 @@ import mongoose from "mongoose";
 const pendingPostSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User", // Reference to the User collection
+    ref: "User",
     required: true,
   },
   desc: {
-    type: String, // TEXT in MySQL → String in Mongoose
-    required: true,
+    type: String,
+    default: "",
+  },
+  img: {
+    type: String,
+    default: null,
   },
   createdAt: {
     type: Date,

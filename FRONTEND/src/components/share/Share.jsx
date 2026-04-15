@@ -1,17 +1,56 @@
 import "./share.scss";
-import Image from "../../assets/img.png";
-import { useContext, useState } from "react";
+import { useContext, useState, useRef } from "react";
 import { AuthContext } from "../../context/authContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import fallbackAvatar from "../../assets/profile.jpg";
+import imageCompression from "browser-image-compression";
+import { Image, X } from "lucide-react";
 
 const Share = () => {
   const { currentUser } = useContext(AuthContext);
   const [desc, setDesc] = useState("");
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null); // base64 preview
+  const [imageFile, setImageFile] = useState(null);       // compressed base64 for upload
+  const [isPosting, setIsPosting] = useState(false);
+  const fileInputRef = useRef(null);
   const navigate = useNavigate();
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("Please select a valid image file.");
+      return;
+    }
+
+    try {
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1280,
+        useWebWorker: true,
+      });
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+        setImageFile(reader.result); // base64 string to send to backend
+        setError(null);
+      };
+      reader.readAsDataURL(compressedFile);
+    } catch (err) {
+      setError("Failed to process image. Please try again.");
+    }
+  };
+
+  const removeImage = () => {
+    setImagePreview(null);
+    setImageFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   const handleShare = async (e) => {
     e?.preventDefault?.();
@@ -22,20 +61,25 @@ const Share = () => {
       return;
     }
 
-    if (!desc.trim()) {
-      setError("Please enter some content to share.");
+    if (!desc.trim() && !imageFile) {
+      setError("Please add some text or an image to share.");
       return;
     }
+
+    setIsPosting(true);
 
     try {
       const res = await axios.post(
         "https://skill-sync-backend-522o.onrender.com/API_B/posts",
-        { desc },
+        { desc, image: imageFile },
         { withCredentials: true }
       );
       setSuccess(res.data.message);
       setError(null);
       setDesc("");
+      setImagePreview(null);
+      setImageFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       const errorMessage =
@@ -47,14 +91,18 @@ const Share = () => {
       if (err.response?.status === 401) {
         setTimeout(() => navigate("/login"), 2000);
       }
+    } finally {
+      setIsPosting(false);
     }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !e.shiftKey) {
       handleShare(e);
     } else if (e.key === "Escape") {
       setDesc("");
+      setImagePreview(null);
+      setImageFile(null);
       setError(null);
       setSuccess(null);
     }
@@ -79,8 +127,7 @@ const Share = () => {
               e.target.src = fallbackAvatar;
             }}
           />
-          <input
-            type="text"
+          <textarea
             placeholder={`What's on your mind ${currentUser?.name || "User"}?`}
             value={desc}
             onChange={(e) => {
@@ -89,20 +136,47 @@ const Share = () => {
               setSuccess(null);
             }}
             onKeyDown={handleKeyDown}
+            rows={2}
           />
         </div>
+
+        {/* Image Preview */}
+        {imagePreview && (
+          <div className="imagePreview">
+            <img src={imagePreview} alt="Preview" />
+            <button className="removeImage" onClick={removeImage} type="button">
+              <X size={16} />
+            </button>
+          </div>
+        )}
+
         <hr />
+
         <div className="bottom">
           <div className="left">
-            <div className="item disabled">
-              <img src={Image} alt="" />
-              <span>Add Image (Coming Soon)</span>
+            <div
+              className="item"
+              onClick={() => fileInputRef.current?.click()}
+              title="Add Photo"
+            >
+              <Image size={20} color={imagePreview ? "#5271ff" : "#555"} />
+              <span>{imagePreview ? "Change Photo" : "Add Photo"}</span>
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                style={{ display: "none" }}
+              />
             </div>
           </div>
           <div className="right">
-            <button onClick={handleShare}>Share</button>
+            <button onClick={handleShare} disabled={isPosting}>
+              {isPosting ? "Posting..." : "Share"}
+            </button>
           </div>
         </div>
+
         {success && <p className="success">{success}</p>}
         {error && <p className="error">{error}</p>}
       </div>

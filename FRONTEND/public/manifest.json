@@ -1,0 +1,27 @@
+{
+  "short_name": "SISTEC Alumni",
+  "name": "SISTec Alumni Portal",
+  "description": "Connect, collaborate, and grow with the SISTec Alumni Network",
+  "icons": [
+    {
+      "src": "/SISTec_Logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/SISTec_Logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#5271ff",
+  "background_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": ["education", "social"],
+  "lang": "en-IN"
+}

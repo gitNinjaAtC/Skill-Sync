@@ -1,6 +1,7 @@
 import Post from "../models/Post.js";
 import PendingPost from "../models/PendingPost.js";
 import User from "../models/Users.js";
+import cloudinary from "../lib/cloudinary.js";
 
 // GET ALL POSTS
 export const getPosts = async (req, res) => {
@@ -31,28 +32,38 @@ export const getPosts = async (req, res) => {
 };
 
 
-// ADD NEW POST
+// ADD NEW POST (with optional Cloudinary image)
 export const addPost = async (req, res) => {
   const userId = req.user.id;
-  const { desc } = req.body;
+  const { desc, image } = req.body;
 
-  if (!desc)
-    return res.status(400).json({ message: "Post content is required" });
+  if (!desc && !image)
+    return res.status(400).json({ message: "Post content or image is required" });
 
   try {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (user.role === "admin") {
-      const newPost = new Post({ userId, desc, status: "approved" });
-      await newPost.save();
-      return res.status(201).json({
-        success: true,
-        message: "Post created successfully",
-        postId: newPost._id,
-      });
-    } else if (user.role === "faculty") {
-      const newPost = new Post({ userId, desc, status: "approved" });
+    // Upload image to Cloudinary if provided
+    let imageUrl = null;
+    if (image) {
+      try {
+        const uploadResult = await cloudinary.uploader.upload(image, {
+          folder: "postImages",
+          transformation: [
+            { width: 1280, height: 1280, crop: "limit" },
+            { quality: "auto:good" },
+          ],
+        });
+        imageUrl = uploadResult.secure_url;
+      } catch (uploadErr) {
+        console.error("Cloudinary upload error:", uploadErr);
+        return res.status(500).json({ message: "Image upload failed. Please try again." });
+      }
+    }
+
+    if (user.role === "admin" || user.role === "faculty") {
+      const newPost = new Post({ userId, desc: desc || "", img: imageUrl, status: "approved" });
       await newPost.save();
       return res.status(201).json({
         success: true,
@@ -60,7 +71,7 @@ export const addPost = async (req, res) => {
         postId: newPost._id,
       });
     } else if (user.role === "alumni") {
-      const pendingPost = new PendingPost({ userId, desc });
+      const pendingPost = new PendingPost({ userId, desc: desc || "", img: imageUrl });
       await pendingPost.save();
       return res.status(201).json({
         success: true,
@@ -79,7 +90,6 @@ export const addPost = async (req, res) => {
 };
 
 
-
 // APPROVE or REJECT post
 export const reviewPost = async (req, res) => {
   const { postId, action } = req.body;
@@ -95,6 +105,7 @@ export const reviewPost = async (req, res) => {
         const approvedPost = new Post({
           userId: pendingPost.userId,
           desc: pendingPost.desc,
+          img: pendingPost.img || null,
           createdAt: pendingPost.createdAt ? new Date(pendingPost.createdAt) : new Date(),
           status: "approved",
         });
@@ -102,13 +113,6 @@ export const reviewPost = async (req, res) => {
         await approvedPost.save();
       } catch (saveError) {
         console.error("🔥 Error saving approved post:", saveError.message);
-        console.error("📦 Failing post data:", {
-          userId: pendingPost.userId,
-          desc: pendingPost.desc,
-          createdAt: pendingPost.createdAt,
-          status: "approved",
-        });
-
         return res.status(500).json({
           error: "Failed to approve post",
           reason: saveError.message,
@@ -146,6 +150,18 @@ export const deletePost = async (req, res) => {
         .json({ message: "Access denied: You cannot delete this post" });
     }
 
+    // Optionally delete image from Cloudinary
+    if (post.img) {
+      try {
+        // Extract public_id from URL (e.g. postImages/abc123)
+        const urlParts = post.img.split("/");
+        const publicId = urlParts.slice(-2).join("/").split(".")[0];
+        await cloudinary.uploader.destroy(publicId);
+      } catch (cloudErr) {
+        console.warn("Could not delete image from Cloudinary:", cloudErr.message);
+      }
+    }
+
     await Post.findByIdAndDelete(postId);
     return res
       .status(200)
@@ -155,6 +171,7 @@ export const deletePost = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 export const getPendingPosts = async (req, res) => {
   try {
