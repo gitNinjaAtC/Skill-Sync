@@ -37,17 +37,6 @@
       }
 
       /* Instant splash background — shown before React JS even loads */
-      html, body {
-        background: #0a0e2e;
-        height: 100%;
-        overflow: hidden;
-      }
-
-      #root {
-        height: 100%;
-      }
-
-      /* Native-feel loading fallback shown before bundle parses */
       body::before {
         content: '';
         position: fixed;
@@ -60,6 +49,7 @@
 
       body.app-ready::before {
         opacity: 0;
+        pointer-events: none;
       }
     </style>
     <title>SISTec Alumni Portal</title>
