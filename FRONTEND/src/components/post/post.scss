@@ -8,13 +8,14 @@
     color: themed("textColor");
 
     .container {
-      padding: 20px 20px 20px 20px;
+      padding: 20px;
 
       .user {
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
+        gap: 8px;
 
         .userInfo {
           display: flex;
@@ -26,6 +27,7 @@
             height: 40px;
             border-radius: 50%;
             object-fit: cover;
+            flex-shrink: 0;
           }
 
           .details {
@@ -46,13 +48,23 @@
       }
 
       .content {
-        margin: 20px 0px 30px 10px;
+        margin: 20px 0px 30px 0px;
+
+        p {
+          margin-bottom: 12px;
+          word-break: break-word;
+          line-height: 1.5;
+        }
 
         img {
+          display: block;
           width: 100%;
-          max-height: 500px;
-          object-fit: cover;          
+          height: auto;             /* preserve natural aspect ratio */
+          max-height: 520px;
+          object-fit: contain;     /* no cropping — full image always visible */
+          object-position: center;
           border-radius: 10px;
+          background-color: rgba(0, 0, 0, 0.04); /* subtle bg for portrait images */
         }
       }
 
@@ -68,16 +80,38 @@
           gap: 10px;
           cursor: pointer;
           font-size: 14px;
+          position: relative;
+
+          .likedByTooltip {
+            position: absolute;
+            bottom: 28px;
+            left: 0;
+            background: themed("bg");
+            border: 1px solid themed("border");
+            border-radius: 8px;
+            padding: 8px 12px;
+            z-index: 100;
+            min-width: 120px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
+            span {
+              font-size: 13px;
+              white-space: nowrap;
+            }
+          }
         }
       }
     }
 
-    // Tablet: max-width 768px
-    @media (max-width: 768px) {
+    // Tablet
+    @include tablet {
       .container {
-        padding: 16px;        
+        padding: 16px;
 
-        .userInfo {
+        .user .userInfo {
           gap: 12px;
 
           img {
@@ -86,38 +120,30 @@
           }
 
           .details {
-            .name {
-              font-size: 15px;
-            }
-
-            .date {
-              font-size: 11px;
-            }
+            .name { font-size: 15px; }
+            .date { font-size: 11px; }
           }
         }
 
         .content {
           img {
-            max-height: 400px;
+            max-height: 420px;
           }
         }
 
         .info {
           gap: 16px;
-
-          .item {
-            font-size: 13px;
-          }
+          .item { font-size: 13px; }
         }
       }
     }
 
-    // Mobile: max-width 480px
-    @media (max-width: 480px) {
+    // Mobile
+    @include mobile {
       .container {
         padding: 12px;
 
-        .userInfo {
+        .user .userInfo {
           gap: 10px;
 
           img {
@@ -126,25 +152,22 @@
           }
 
           .details {
-            .name {
-              font-size: 14px;
-            }
-
-            .date {
-              font-size: 10px;
-            }
+            .name { font-size: 14px; }
+            .date { font-size: 10px; }
           }
         }
 
         .content {
+          margin: 14px 0px 20px 0px;
+
           img {
-            max-height: 300px;
+            max-height: 320px;
+            border-radius: 8px;
           }
         }
 
         .info {
           gap: 12px;
-
           .item {
             font-size: 12px;
             gap: 8px;
@@ -171,10 +194,10 @@
     border-radius: 4px;
     cursor: pointer;
     z-index: 10;
+    white-space: nowrap;
 
     &:hover {
       background: #e04343;
     }
   }
 }
-

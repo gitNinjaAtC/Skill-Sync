@@ -16,7 +16,6 @@
         width: 35px;
         height: 35px;
         object-fit: contain;
-        font-weight: 750;
       }
 
       span {
@@ -24,20 +23,36 @@
         font-weight: 750;
       }
     }
+
+    @include tablet {
+      padding: 1rem 1rem 0rem;
+
+      .home-header span {
+        font-size: 1.5rem;
+      }
+    }
+
+    @include mobile {
+      padding: 0.75rem 0.75rem 0rem;
+
+      .home-header span {
+        font-size: 1.3rem;
+      }
+    }
   }
 }
 
 .home {
   @include themify($themes) {
-    padding: 0rem 1.5rem 0rem;
+    padding: 0rem 1.5rem 1.5rem;
     background-color: themed("bgSoft");
 
-    @include mobile {
-      padding: 0rem 1.5rem 0rem;
+    @include tablet {
+      padding: 0rem 1rem 1rem;
     }
 
-    @include tablet {
-      padding: 0rem 1.5rem 0rem;
+    @include mobile {
+      padding: 0rem 0.75rem 0.75rem;
     }
   }
 }

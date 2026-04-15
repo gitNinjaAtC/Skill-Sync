@@ -278,8 +278,8 @@ const Navbar = () => {
             <div className="menu">
               <span>Others</span>
               <div
-                className={`item ${isActive("/Fundraiser") ? "active" : ""}`}
-                onClick={() => closeSidebarAndNavigate("/Fundraiser")}
+                className={`item ${isActive("/collaborate") ? "active" : ""}`}
+                onClick={() => closeSidebarAndNavigate("/collaborate")}
               >
                 <img src={Fund} alt="Fundraiser" />
                 <span>Collaborate</span>
