@@ -35,6 +35,32 @@
         margin: 0;
         padding: 0;
       }
+
+      /* Instant splash background — shown before React JS even loads */
+      html, body {
+        background: #0a0e2e;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      #root {
+        height: 100%;
+      }
+
+      /* Native-feel loading fallback shown before bundle parses */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #0a0e2e 0%, #0d1b4b 40%, #112266 100%);
+        z-index: 99998;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+
+      body.app-ready::before {
+        opacity: 0;
+      }
     </style>
     <title>SISTec Alumni Portal</title>
   </head>

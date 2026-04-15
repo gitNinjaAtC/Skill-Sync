@@ -1,18 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { AuthContextProvider } from "./context/authContext";
 import { DarkModeContextProvider } from "./context/darkModeContext";
 import { register as registerSW } from "./serviceWorkerRegistration";
+import SplashScreen from "./components/SplashScreen/SplashScreen";
+
+// Remove the CSS ::before overlay once JS is running
+document.body.classList.add("app-ready");
+
+const Root = () => {
+  const [splashDone, setSplashDone] = useState(false);
+
+  return (
+    <>
+      {!splashDone && <SplashScreen onFinish={() => setSplashDone(true)} />}
+      <DarkModeContextProvider>
+        <AuthContextProvider>
+          <App />
+        </AuthContextProvider>
+      </DarkModeContextProvider>
+    </>
+  );
+};
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <DarkModeContextProvider>
-      <AuthContextProvider>
-        <App />
-      </AuthContextProvider>
-    </DarkModeContextProvider>
+    <Root />
   </React.StrictMode>
 );
 
