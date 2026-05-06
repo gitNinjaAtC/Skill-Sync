@@ -17,6 +17,13 @@ const AlumniUpdates = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  // Edit state
+  const [editingUpdate, setEditingUpdate] = useState(null); // holds the update being edited
+  const [editNote, setEditNote] = useState("");
+  const [editCategory, setEditCategory] = useState("Update");
+  const [editLoading, setEditLoading] = useState(false);
+  const [editMessage, setEditMessage] = useState("");
+
   const categories = [
     "Update",
     "Promotion",
@@ -129,6 +136,54 @@ const AlumniUpdates = () => {
     }
   };
 
+  // Open the edit modal with the selected update's current values
+  const handleEditOpen = (update) => {
+    setEditingUpdate(update);
+    setEditNote(update.note);
+    setEditCategory(update.category || "Update");
+    setEditMessage("");
+  };
+
+  // Close edit modal
+  const handleEditClose = () => {
+    setEditingUpdate(null);
+    setEditNote("");
+    setEditCategory("Update");
+    setEditMessage("");
+  };
+
+  // Submit the edited update
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    if (!editNote.trim()) {
+      setEditMessage("Note cannot be empty.");
+      return;
+    }
+
+    setEditLoading(true);
+    try {
+      const token = localStorage.getItem("adminToken");
+      await axios.put(
+        `${API_BASE_URL}/API_B/admin/alumni-updates/${editingUpdate._id}`,
+        { note: editNote, category: editCategory },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      setEditMessage("Update saved successfully!");
+      fetchUpdates();
+      setTimeout(() => handleEditClose(), 800);
+    } catch (err) {
+      console.error("Error updating:", err);
+      setEditMessage("Failed to save update.");
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
   return (
     <div className="alumni-updates-page">
       <h1>Alumni Notes & Updates</h1>
@@ -162,21 +217,21 @@ const AlumniUpdates = () => {
             </div>
           )}
 
-            <div className="form-group">
-              <label>Update Category / Badge:</label>
-              <select 
-                value={category} 
-                onChange={(e) => setCategory(e.target.value)}
-                className="category-select"
-              >
-                {categories.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-            </div>
+          <div className="form-group">
+            <label>Update Category / Badge:</label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="category-select"
+            >
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
 
-            <div className="form-group">
-              <label>Note / Update Details:</label>
+          <div className="form-group">
+            <label>Note / Update Details:</label>
             <textarea
               placeholder="Enter recent update or achievement of this alumni..."
               value={note}
@@ -210,11 +265,16 @@ const AlumniUpdates = () => {
             <tbody>
               {updates.map((update) => (
                 <tr key={update._id}>
-                    <td>{update.studentId?.StudentName}</td>
-                    <td><span className={`category-badge ${update.category?.toLowerCase()}`}>{update.category}</span></td>
-                    <td className="note-cell">{update.note}</td>
-                    <td>{new Date(update.createdAt).toLocaleDateString()}</td>
+                  <td>{update.studentId?.StudentName}</td>
                   <td>
+                    <span className={`category-badge ${update.category?.toLowerCase().replace(/\s+/g, "-")}`}>
+                      {update.category}
+                    </span>
+                  </td>
+                  <td className="note-cell">{update.note}</td>
+                  <td>{new Date(update.createdAt).toLocaleDateString()}</td>
+                  <td className="action-buttons">
+                    <button className="edit-btn" onClick={() => handleEditOpen(update)}>Edit</button>
                     <button className="delete-btn" onClick={() => handleDelete(update._id)}>Delete</button>
                   </td>
                 </tr>
@@ -223,6 +283,51 @@ const AlumniUpdates = () => {
           </table>
         )}
       </div>
+
+      {/* Edit Modal */}
+      {editingUpdate && (
+        <div className="modal-overlay" onClick={handleEditClose}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Edit Update</h2>
+              <button className="modal-close" onClick={handleEditClose}>&times;</button>
+            </div>
+            <p className="modal-student-name">
+              Alumni: <strong>{editingUpdate.studentId?.StudentName}</strong>
+            </p>
+            <form onSubmit={handleEditSubmit}>
+              <div className="form-group">
+                <label>Update Category / Badge:</label>
+                <select
+                  value={editCategory}
+                  onChange={(e) => setEditCategory(e.target.value)}
+                  className="category-select"
+                >
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Note / Update Details:</label>
+                <textarea
+                  value={editNote}
+                  onChange={(e) => setEditNote(e.target.value)}
+                  rows="4"
+                  placeholder="Update note here..."
+                ></textarea>
+              </div>
+              <div className="modal-actions">
+                <button type="button" className="cancel-btn" onClick={handleEditClose}>Cancel</button>
+                <button type="submit" disabled={editLoading}>
+                  {editLoading ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </form>
+            {editMessage && <p className="status-message">{editMessage}</p>}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

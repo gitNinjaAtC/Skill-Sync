@@ -2,6 +2,7 @@ import express from "express";
 import {
   searchStudents,
   upsertAlumniUpdate,
+  updateAlumniUpdate,
   getAllAlumniUpdates,
   getVisibleAlumniUpdates,
   deleteAlumniUpdate,
@@ -19,6 +20,7 @@ router.get("/admin/students/search", validateToken, searchStudents);
 // Admin management of updates
 router.post("/admin/alumni-updates", validateToken, upsertAlumniUpdate);
 router.get("/admin/alumni-updates", validateToken, getAllAlumniUpdates);
+router.put("/admin/alumni-updates/:id", validateToken, updateAlumniUpdate);
 router.delete("/admin/alumni-updates/:id", validateToken, deleteAlumniUpdate);
 
 export default router;

@@ -44,7 +44,7 @@ export const searchStudents = async (req, res) => {
   }
 };
 
-// Create or update an alumni note
+// Create a new alumni note
 export const upsertAlumniUpdate = async (req, res) => {
   try {
     const { studentId, note, isVisible, category } = req.body;
@@ -54,11 +54,6 @@ export const upsertAlumniUpdate = async (req, res) => {
       return res.status(400).json({ message: "StudentId and note are required" });
     }
 
-    // Check if an update already exists for this student, or create new
-    // The user requirement says "create or update", so let's allow multiple or update existing. 
-    // Usually "update" means modify an existing note or create a new one. 
-    // Let's implement CREATE for now as requested "create a note or update".
-    
     const newUpdate = new AlumniUpdate({
       studentId,
       note,
@@ -75,6 +70,39 @@ export const upsertAlumniUpdate = async (req, res) => {
   } catch (error) {
     console.error("Error creating alumni update:", error);
     res.status(500).json({ message: "Error creating alumni update" });
+  }
+};
+
+// Update an existing alumni note
+export const updateAlumniUpdate = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { note, category, isVisible } = req.body;
+
+    if (!note || !note.trim()) {
+      return res.status(400).json({ message: "Note is required" });
+    }
+
+    const updatedFields = {
+      ...(note !== undefined && { note: note.trim() }),
+      ...(category !== undefined && { category }),
+      ...(isVisible !== undefined && { isVisible }),
+    };
+
+    const updated = await AlumniUpdate.findByIdAndUpdate(
+      id,
+      { $set: updatedFields },
+      { new: true }
+    ).populate("studentId", "StudentName batch branch");
+
+    if (!updated) {
+      return res.status(404).json({ message: "Update not found" });
+    }
+
+    res.status(200).json({ message: "Alumni update modified successfully", data: updated });
+  } catch (error) {
+    console.error("Error updating alumni update:", error);
+    res.status(500).json({ message: "Error updating alumni update" });
   }
 };
 
