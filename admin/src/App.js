@@ -30,8 +30,7 @@ const App = () => {
     const token = localStorage.getItem("adminToken");
     if (token) setAdmin(true);
 
-    // Global axios interceptor — catches expired/invalid tokens on any API call
-    // and automatically logs the admin out instead of silently failing
+
     const interceptor = axios.interceptors.response.use(
       (response) => response,
       (error) => {
