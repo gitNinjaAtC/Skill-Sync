@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import axios from "axios";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
@@ -18,19 +19,39 @@ import JobDetail from "./pages/JobDetail";
 const App = () => {
   const [admin, setAdmin] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    if (token) setAdmin(true);
-  }, []);
-
-  const handleLogin = (adminData) => {
-    setAdmin(adminData);
-  };
-
   const handleLogout = () => {
     localStorage.removeItem("adminToken");
     localStorage.removeItem("adminData");
     setAdmin(null);
+  };
+
+  useEffect(() => {
+    // Restore session from localStorage on first load
+    const token = localStorage.getItem("adminToken");
+    if (token) setAdmin(true);
+
+    // Global axios interceptor — catches expired/invalid tokens on any API call
+    // and automatically logs the admin out instead of silently failing
+    const interceptor = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        const status = error?.response?.status;
+        if (status === 401 || status === 403) {
+          // Token is expired or invalid — clear session and redirect to login
+          handleLogout();
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    // Clean up the interceptor when the component unmounts
+    return () => {
+      axios.interceptors.response.eject(interceptor);
+    };
+  }, []);
+
+  const handleLogin = (adminData) => {
+    setAdmin(adminData);
   };
 
   return (
