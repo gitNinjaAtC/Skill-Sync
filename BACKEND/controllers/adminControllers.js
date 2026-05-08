@@ -106,73 +106,122 @@ export const importFile = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
-    const batch = req.body.batch; // Get batch from form-data
-    const branch = req.body.branch; // Get branch from form-data
-    const role = req.body.role || "student"; // Get role from form-data, default to "student"
+
+    const batch = req.body.batch;
+    const branch = req.body.branch;
+    const role = req.body.role || "student";
+
     if (batch && !/^\d{4}-\d{4}$/.test(batch)) {
       return res
         .status(400)
         .json({ error: "Batch must be in the format YYYY-YYYY" });
     }
+
     const filePath = req.file.path;
     let students = [];
     let duplicateRows = [];
     let invalidRows = [];
+
     const cleanMobileNo = (mobile) => {
       if (!mobile) return "0000000000";
       const cleaned = String(mobile).replace(/[^0-9]/g, "");
       return cleaned.length === 10 ? cleaned : "0000000000";
     };
+
     const validateStudent = (student) => {
       const errors = [];
       if (!student.EnrollmentNo || student.EnrollmentNo === "unknown")
         errors.push("Missing or invalid EnrollmentNo");
       if (!student.StudentName || student.StudentName === "unknown")
         errors.push("Missing or invalid StudentName");
-      // if (
-      //   !student.EmailId ||
-      //   student.EmailId === "unknown" ||
-      //   !/^\S+@\S+\.\S+$/.test(student.EmailId)
-      // ) {
-      //   errors.push("Missing or invalid EmailId");
-      // }
-      // if (
-      //   !student.MobileNo ||
-      //   student.MobileNo === "0000000000" ||
-      //   !/^\d{10}$/.test(student.MobileNo)
-      // ) {
-      //   errors.push("Missing or invalid MobileNo");
-      // }
       return errors;
     };
-    const checkDuplicates = async (student) => {
-      const errors = [];
-      if (student.EnrollmentNo && student.EnrollmentNo !== "unknown") {
-        const existingEnrollment = await Student.findOne({
-          EnrollmentNo: student.EnrollmentNo,
-        });
-        if (existingEnrollment) errors.push("Duplicate EnrollmentNo");
-      }
-      return errors;
-    };
+
     const buildStudentObject = (row, index) => {
-      const student = {
-        EnrollmentNo: row.EnrollmentNo
-          ? String(row.EnrollmentNo).trim()
-          : "unknown",
-        StudentName: row.StudentName
-          ? String(row.StudentName).trim()
-          : "unknown",
-        EmailId: row.EmailId
-          ? String(row.EmailId).trim().toLowerCase()
-          : `unknown_${index}_${Date.now()}`,
-        MobileNo: cleanMobileNo(row.MobileNo),
-        role: role, // Add role with default "student"
-      };
-      if (batch) student.batch = batch;
-      if (branch) student.branch = branch;
-      return student;
-    };
+  // Flexible header matching
+  const enrollmentNo =
+    row.EnrollmentNo ||
+    row["Enrollment No"] ||
+    row["Enrollment_Number"] ||
+    row.enrollmentNo ||
+    row.enrollmentno;
+
+  const studentName =
+    row.StudentName ||
+    row["Student Name"] ||
+    row.studentName ||
+    row.studentname;
+
+  const emailId =
+    row.EmailId ||
+    row["Email ID"] ||
+    row["EmailId"] ||
+    row.email ||
+    row.emailId;
+
+  const mobileNo =
+    row.MobileNo ||
+    row["Mobile No"] ||
+    row["MobileNo"] ||
+    row.mobile ||
+    row.mobileNo;
+
+  // Optional fields flexible matching
+  const village =
+    row.village ||
+    row.Village ||
+    row["Village Name"];
+
+  const district =
+    row.district ||
+    row.District;
+
+  const state =
+    row.state ||
+    row.State;
+
+  const pincode =
+    row.pincode ||
+    row.Pincode ||
+    row["Pin Code"];
+
+  const student = {
+    EnrollmentNo: enrollmentNo
+      ? String(enrollmentNo).trim()
+      : "unknown",
+
+    StudentName: studentName
+      ? String(studentName).trim()
+      : "unknown",
+
+    EmailId: emailId
+      ? String(emailId)
+          .trim()
+          .replace(/\s+/g, "")
+          .toLowerCase()
+      : `unknown_${index}_${Date.now()}`,
+
+    MobileNo: cleanMobileNo(mobileNo),
+
+    // New Fields - Optional
+    village: village ? String(village).trim() : null,
+
+    district: district ? String(district).trim() : null,
+
+    state: state ? String(state).trim() : null,
+
+    pincode: pincode ? String(pincode).trim() : null,
+
+    role: role,
+  };
+
+  if (batch) student.batch = batch;
+  if (branch) student.branch = branch;
+
+  return student;
+};
+
+    // ===================== CSV Processing =====================
     if (req.file.mimetype === "text/csv") {
       fs.createReadStream(filePath)
         .pipe(csv())
@@ -189,20 +238,23 @@ export const importFile = async (req, res) => {
               invalidRows,
             });
           }
+
           const savedStudents = [];
           for (const [index, student] of students.entries()) {
-            const validationErrors = await validateStudent(student);
-            const duplicateErrors = await checkDuplicates(student);
+            const validationErrors = validateStudent(student);
+
             if (validationErrors.length === 0) {
               try {
-                const saved = await Student.create(student);
+                const saved = await Student.findOneAndUpdate(
+                  { EnrollmentNo: student.EnrollmentNo },
+                  student,
+                  { upsert: true, new: true, runValidators: true }
+                );
                 savedStudents.push(saved);
               } catch (error) {
                 let reason = error.message;
                 if (error.code === 11000) {
-                  reason = `Duplicate key error: ${JSON.stringify(
-                    error.keyValue
-                  )}`;
+                  reason = `Duplicate key error: ${JSON.stringify(error.keyValue)}`;
                 }
                 invalidRows.push({
                   row: student,
@@ -217,14 +269,8 @@ export const importFile = async (req, res) => {
                 reason: validationErrors.join(", "),
               });
             }
-            if (duplicateErrors.length > 0) {
-              duplicateRows.push({
-                row: student,
-                rowIndex: index + 2,
-                reason: duplicateErrors.join(", "),
-              });
-            }
           }
+
           fs.unlinkSync(filePath);
           res.status(200).json({
             message: "Data imported successfully",
@@ -234,16 +280,22 @@ export const importFile = async (req, res) => {
           });
         })
         .on("error", (error) => {
-          res
-            .status(500)
-            .json({ error: `Error processing CSV file: ${error.message}` });
+          fs.unlinkSync(filePath);
+          res.status(500).json({ error: `Error processing CSV file: ${error.message}` });
         });
-    } else {
+    }
+    // ===================== Excel Processing =====================
+    else {
       const workbook = xlsx.readFile(filePath);
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
-      students = xlsx.utils.sheet_to_json(sheet);
-      students = students.map((row, index) => buildStudentObject(row, index));
+
+      // ✅ FIX: raw: false formats all cells as strings (prevents garbage mobile/email values)
+      //         defval: "" fills empty cells with "" instead of undefined
+      students = xlsx.utils.sheet_to_json(sheet, { raw: false, defval: "" }).map((row, index) =>
+        buildStudentObject(row, index)
+      );
+
       if (students.length === 0) {
         fs.unlinkSync(filePath);
         return res.status(400).json({
@@ -252,13 +304,18 @@ export const importFile = async (req, res) => {
           invalidRows,
         });
       }
+
       const savedStudents = [];
       for (const [index, student] of students.entries()) {
-        const validationErrors = await validateStudent(student);
-        const duplicateErrors = await checkDuplicates(student);
+        const validationErrors = validateStudent(student);
+
         if (validationErrors.length === 0) {
           try {
-            const saved = await Student.create(student);
+            const saved = await Student.findOneAndUpdate(
+              { EnrollmentNo: student.EnrollmentNo },
+              student,
+              { upsert: true, new: true, runValidators: true }
+            );
             savedStudents.push(saved);
           } catch (error) {
             let reason = error.message;
@@ -278,14 +335,8 @@ export const importFile = async (req, res) => {
             reason: validationErrors.join(", "),
           });
         }
-        if (duplicateErrors.length > 0) {
-          duplicateRows.push({
-            row: student,
-            rowIndex: index + 2,
-            reason: duplicateErrors.join(", "),
-          });
-        }
       }
+
       fs.unlinkSync(filePath);
       res.status(200).json({
         message: "Data imported successfully",
@@ -491,15 +542,33 @@ export const getEnrichedStudents = async (req, res) => {
     });
 
     let enriched = students.map(student => {
-      const userData = userMap.get(student.EmailId?.toLowerCase()) || {};
-      return {
-        ...student,
-        village: userData.village || "N/A",
-        district: userData.district || "N/A",
-        state: userData.state || "N/A",
-        pincode: userData.pincode || "N/A",
-      };
-    });
+  const userData = userMap.get(student.EmailId?.toLowerCase()) || {};
+
+  return {
+    ...student,
+
+    // Prefer Student collection data first
+    village:
+      student.village ||
+      userData.village ||
+      "N/A",
+
+    district:
+      student.district ||
+      userData.district ||
+      "N/A",
+
+    state:
+      student.state ||
+      userData.state ||
+      "N/A",
+
+    pincode:
+      student.pincode ||
+      userData.pincode ||
+      "N/A",
+  };
+});
 
     // Filter by state/district if provided
     if (state) enriched = enriched.filter(s => s.state?.toLowerCase() === state.toLowerCase());

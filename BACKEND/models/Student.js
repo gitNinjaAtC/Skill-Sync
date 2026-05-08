@@ -39,6 +39,26 @@ const studentSchema = new mongoose.Schema(
       trim: true,
       default: "student",
     },
+    village: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    district: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    state: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    pincode: {
+      type: String,
+      trim: true,
+      default: null,
+    },
   },
   {
     timestamps: true,

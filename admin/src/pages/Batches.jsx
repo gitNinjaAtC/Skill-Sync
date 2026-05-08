@@ -366,7 +366,7 @@ const Batches = () => {
   // ─── Template download ────────────────────────────────────────────────────
   const handleDownloadTemplate = () => {
     const wb = XLSX.utils.book_new();
-    const wsData = [["EnrollmentNo", "StudentName", "EmailId", "MobileNo"]];
+    const wsData = [["EnrollmentNo", "StudentName", "EmailId", "MobileNo", "Village", "District", "State", "Pincode" ]];
     const ws = XLSX.utils.aoa_to_sheet(wsData);
     XLSX.utils.book_append_sheet(wb, ws, "Template");
     XLSX.writeFile(wb, "Student_Template.xlsx");
